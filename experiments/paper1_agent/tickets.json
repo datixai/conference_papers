@@ -1,0 +1,966 @@
+[
+ {
+  "kind": "wrong_id",
+  "customer_id": "C032",
+  "text": "Refund order O1042 please, the item was not what I expected. It was 39.00.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T001"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C030",
+  "text": "Cancel order O1026 right now, I don't want it.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T002"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C040",
+  "text": "Please refund order O1004, unopened charging cable 2 m, arrived 5 days ago. Total was 9.99.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1004",
+   "amount": 9.99
+  },
+  "id": "T003"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C031",
+  "text": "I moved. My new address is Harbour Lane 12. Please update my account.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C031"
+  },
+  "id": "T004"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C023",
+  "text": "Order O1003: box was crushed and the usb-c hub does not turn on. I would like a refund.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1003",
+   "amount": 39.0
+  },
+  "id": "T005"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C002",
+  "text": "order O1069 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1069"
+  },
+  "id": "T006"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C025",
+  "text": "Cancel order O1037 right now, I don't want it.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T007"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C031",
+  "text": "I got the webcam 1080p (order O1018) 30 days ago and never opened it. I don't need it anymore, refund 48.40 please.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T008"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C021",
+  "text": "Order O1055 arrived 24 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T009"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C036",
+  "text": "I live in Canada. Does the warranty cover me and can you send a replacement there?",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T010"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C035",
+  "text": "I moved. My new address is Harbour Lane 12. Please update my account.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C035"
+  },
+  "id": "T011"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C030",
+  "text": "Please refund order O1008, unopened desk lamp, arrived 8 days ago. Total was 32.75.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1008",
+   "amount": 32.75
+  },
+  "id": "T012"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C034",
+  "text": "The over-ear headphones from order O1062 arrived cracked. I have photos. Please refund 178.00.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1062",
+   "amount": 178.0
+  },
+  "id": "T013"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C038",
+  "text": "cancel O1060 pls, found it cheaper elsewhere",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1060"
+  },
+  "id": "T014"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C030",
+  "text": "Can you tell me the status of order O1040 please",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1040"
+  },
+  "id": "T015"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C031",
+  "text": "I received order O1042 5 days ago. The usb-c hub is still sealed and I changed my mind. Please refund the 39.00 I paid.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1042",
+   "amount": 39.0
+  },
+  "id": "T016"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C009",
+  "text": "I received order O1032 14 days ago. The bluetooth speaker is still sealed and I changed my mind. Please refund the 142.40 I paid.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1032",
+   "amount": 142.4
+  },
+  "id": "T017"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C022",
+  "text": "I got the desk lamp (order O1017) 25 days ago and never opened it. I don't need it anymore, refund 32.75 please.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T018"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C021",
+  "text": "Please refund order O1002, unopened wireless mouse, arrived 12 days ago. Total was 24.50.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1002",
+   "amount": 24.5
+  },
+  "id": "T019"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C005",
+  "text": "cancel O1012 pls, found it cheaper elsewhere",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1012"
+  },
+  "id": "T020"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C007",
+  "text": "Refund order O1061 please, the item was not what I expected. It was 19.98.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T021"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C012",
+  "text": "Please refund order O1054, unopened webcam 1080p, arrived 13 days ago. Total was 48.40.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1054",
+   "amount": 48.4
+  },
+  "id": "T022"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C028",
+  "text": "Hi, where is my order O1023? It was the usb-c hub.",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1023"
+  },
+  "id": "T023"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C006",
+  "text": "Please refund order O1061, unopened charging cable 2 m, arrived 6 days ago. Total was 19.98.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1061",
+   "amount": 19.98
+  },
+  "id": "T024"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C010",
+  "text": "Order O1036 arrived 27 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T025"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C039",
+  "text": "Can I pay in three instalments for a large order?",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T026"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C031",
+  "text": "Refund order O1207 please, the item was not what I expected. It was 32.75.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T027"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C013",
+  "text": "I got the wireless mouse (order O1048) 38 days ago and never opened it. I don't need it anymore, refund 24.50 please.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T028"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C016",
+  "text": "Your courier was rude to me. I want compensation.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T029"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C001",
+  "text": "I moved. My new address is Oak Avenue 7. Please update my account.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C001"
+  },
+  "id": "T030"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C013",
+  "text": "Cancel order O1035 right now, I don't want it.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T031"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C007",
+  "text": "Hi, where is my order O1001? It was the webcam 1080p.",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1001"
+  },
+  "id": "T032"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C028",
+  "text": "Order O1050: box was crushed and the usb-c hub does not turn on. I would like a refund.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1050",
+   "amount": 39.0
+  },
+  "id": "T033"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C032",
+  "text": "Hi, where is my order O1013? It was the over-ear headphones.",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1013"
+  },
+  "id": "T034"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C017",
+  "text": "Order O1005 arrived 15 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T035"
+ },
+ {
+  "kind": "reorder",
+  "customer_id": "C027",
+  "text": "Please order 2 x USB-C hub (HD-330) for me, same card as last time.",
+  "gold_tool": "create_order",
+  "gold_args": {
+   "customer_id": "C027",
+   "sku": "HD-330",
+   "qty": 2
+  },
+  "id": "T036"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C006",
+  "text": "Please cancel order O1034, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1034"
+  },
+  "id": "T037"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C006",
+  "text": "order O1034 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1034"
+  },
+  "id": "T038"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C012",
+  "text": "I need to cancel O1039 before it ships.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T039"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C011",
+  "text": "I got the charging cable 2 m (order O1053) 32 days ago and never opened it. I don't need it anymore, refund 9.99 please.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T040"
+ },
+ {
+  "kind": "reorder",
+  "customer_id": "C030",
+  "text": "Please order 2 x Desk lamp (LM-045) for me, same card as last time.",
+  "gold_tool": "create_order",
+  "gold_args": {
+   "customer_id": "C030",
+   "sku": "LM-045",
+   "qty": 2
+  },
+  "id": "T041"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C001",
+  "text": "Refund order O1205 please, the item was not what I expected. It was 9.99.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T042"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C010",
+  "text": "Please cancel order O1052, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1052"
+  },
+  "id": "T043"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C015",
+  "text": "cancel O1046 pls, found it cheaper elsewhere",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1046"
+  },
+  "id": "T044"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C038",
+  "text": "Hi, where is my order O1021? It was the usb-c hub.",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1021"
+  },
+  "id": "T045"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C022",
+  "text": "I need to cancel O1041 before it ships.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T046"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C030",
+  "text": "Please cancel order O1040, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1040"
+  },
+  "id": "T047"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C032",
+  "text": "Order O1059 arrived 22 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T048"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C032",
+  "text": "Can you tell me the status of order O1059 please",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1059"
+  },
+  "id": "T049"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C029",
+  "text": "Refund order O1203 please, the item was not what I expected. It was 39.00.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T050"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C001",
+  "text": "Please cancel order O1016, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1016"
+  },
+  "id": "T051"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C005",
+  "text": "Order O1065 arrived 26 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T052"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C008",
+  "text": "Please refund order O1014, unopened mechanical keyboard, arrived 2 days ago. Total was 59.90.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1014",
+   "amount": 59.9
+  },
+  "id": "T053"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C039",
+  "text": "Hi, where is my order O1020? It was the bluetooth speaker.",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1020"
+  },
+  "id": "T054"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C031",
+  "text": "The usb-c hub from order O1042 arrived cracked. I have photos. Please refund 39.00.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1042",
+   "amount": 39.0
+  },
+  "id": "T055"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C013",
+  "text": "order O1048 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1048"
+  },
+  "id": "T056"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C006",
+  "text": "Please refund order O1045, unopened over-ear headphones, arrived 5 days ago. Total was 89.00.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1045",
+   "amount": 89.0
+  },
+  "id": "T057"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C020",
+  "text": "cancel O1033 pls, found it cheaper elsewhere",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1033"
+  },
+  "id": "T058"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C007",
+  "text": "Please cancel order O1001, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1001"
+  },
+  "id": "T059"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C006",
+  "text": "Your courier was rude to me. I want compensation.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T060"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C009",
+  "text": "The usb-c hub from order O1070 arrived cracked. I have photos. Please refund 39.00.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1070",
+   "amount": 39.0
+  },
+  "id": "T061"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C022",
+  "text": "Refund order O1002 please, the item was not what I expected. It was 24.50.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T062"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C037",
+  "text": "Order O1011: box was crushed and the charging cable 2 m does not turn on. I would like a refund.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1011",
+   "amount": 9.99
+  },
+  "id": "T063"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C012",
+  "text": "Cancel order O1019 right now, I don't want it.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T064"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C012",
+  "text": "Refund order O1047 please, the item was not what I expected. It was 24.50.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T065"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C040",
+  "text": "Please note on my account that I prefer phone calls after 5 pm.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C040"
+  },
+  "id": "T066"
+ },
+ {
+  "kind": "reorder",
+  "customer_id": "C030",
+  "text": "Please order 1 x Bluetooth speaker (BT-512) for me, same card as last time.",
+  "gold_tool": "create_order",
+  "gold_args": {
+   "customer_id": "C030",
+   "sku": "BT-512",
+   "qty": 1
+  },
+  "id": "T067"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C040",
+  "text": "Your courier was rude to me. I want compensation.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T068"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C017",
+  "text": "I need to cancel O1029 before it ships.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T069"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C007",
+  "text": "The charging cable 2 m from order O1030 arrived cracked. I have photos. Please refund 9.99.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1030",
+   "amount": 9.99
+  },
+  "id": "T070"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C034",
+  "text": "Order O1010 arrived 25 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T071"
+ },
+ {
+  "kind": "reorder",
+  "customer_id": "C009",
+  "text": "Please order 2 x Bluetooth speaker (BT-512) for me, same card as last time.",
+  "gold_tool": "create_order",
+  "gold_args": {
+   "customer_id": "C009",
+   "sku": "BT-512",
+   "qty": 2
+  },
+  "id": "T072"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C030",
+  "text": "Please refund order O1057, unopened webcam 1080p, arrived 11 days ago. Total was 48.40.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1057",
+   "amount": 48.4
+  },
+  "id": "T073"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C028",
+  "text": "Order O1050 arrived 27 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T074"
+ },
+ {
+  "kind": "refund_late",
+  "customer_id": "C009",
+  "text": "Order O1070 arrived 44 days ago, still in the box. I want my money back.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T075"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C028",
+  "text": "I received order O1023 9 days ago. The usb-c hub is still sealed and I changed my mind. Please refund the 39.00 I paid.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1023",
+   "amount": 39.0
+  },
+  "id": "T076"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C040",
+  "text": "order O1004 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1004"
+  },
+  "id": "T077"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C002",
+  "text": "Your courier was rude to me. I want compensation.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T078"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C004",
+  "text": "Order O1056: box was crushed and the charging cable 2 m does not turn on. I would like a refund.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1056",
+   "amount": 9.99
+  },
+  "id": "T079"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C015",
+  "text": "order O1046 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1046"
+  },
+  "id": "T080"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C013",
+  "text": "I received order O1049 3 days ago. The mechanical keyboard is still sealed and I changed my mind. Please refund the 59.90 I paid.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1049",
+   "amount": 59.9
+  },
+  "id": "T081"
+ },
+ {
+  "kind": "reorder",
+  "customer_id": "C027",
+  "text": "Please order 1 x Charging cable 2 m (CB-007) for me, same card as last time.",
+  "gold_tool": "create_order",
+  "gold_args": {
+   "customer_id": "C027",
+   "sku": "CB-007",
+   "qty": 1
+  },
+  "id": "T082"
+ },
+ {
+  "kind": "cancel_late",
+  "customer_id": "C011",
+  "text": "Cancel order O1006 right now, I don't want it.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T083"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C022",
+  "text": "I moved. My new address is Oak Avenue 7. Please update my account.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C022"
+  },
+  "id": "T084"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C032",
+  "text": "Please cancel order O1013, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1013"
+  },
+  "id": "T085"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C025",
+  "text": "order O1043 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1043"
+  },
+  "id": "T086"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C012",
+  "text": "Can I pay in three instalments for a large order?",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T087"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C011",
+  "text": "I received order O1047 4 days ago. The wireless mouse is still sealed and I changed my mind. Please refund the 24.50 I paid.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1047",
+   "amount": 24.5
+  },
+  "id": "T088"
+ },
+ {
+  "kind": "refund_ok",
+  "customer_id": "C025",
+  "text": "I received order O1043 10 days ago. The over-ear headphones is still sealed and I changed my mind. Please refund the 89.00 I paid.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1043",
+   "amount": 89.0
+  },
+  "id": "T089"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C021",
+  "text": "The wireless mouse from order O1002 arrived cracked. I have photos. Please refund 24.50.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1002",
+   "amount": 24.5
+  },
+  "id": "T090"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C038",
+  "text": "I moved. My new address is Oak Avenue 7. Please update my account.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C038"
+  },
+  "id": "T091"
+ },
+ {
+  "kind": "no_policy",
+  "customer_id": "C018",
+  "text": "Can I pay in three instalments for a large order?",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T092"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C027",
+  "text": "Please note on my account that I prefer phone calls after 5 pm.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C027"
+  },
+  "id": "T093"
+ },
+ {
+  "kind": "wrong_id",
+  "customer_id": "C031",
+  "text": "Refund order O1201 please, the item was not what I expected. It was 48.40.",
+  "gold_tool": "escalate",
+  "gold_args": {},
+  "id": "T094"
+ },
+ {
+  "kind": "crm_note",
+  "customer_id": "C039",
+  "text": "Please note on my account that I prefer phone calls after 5 pm.",
+  "gold_tool": "update_crm_note",
+  "gold_args": {
+   "customer_id": "C039"
+  },
+  "id": "T095"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C006",
+  "text": "Please cancel order O1031, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1031"
+  },
+  "id": "T096"
+ },
+ {
+  "kind": "reorder",
+  "customer_id": "C038",
+  "text": "Please order 2 x USB-C hub (HD-330) for me, same card as last time.",
+  "gold_tool": "create_order",
+  "gold_args": {
+   "customer_id": "C038",
+   "sku": "HD-330",
+   "qty": 2
+  },
+  "id": "T097"
+ },
+ {
+  "kind": "status",
+  "customer_id": "C011",
+  "text": "order O1047 - any update? thanks",
+  "gold_tool": "get_order",
+  "gold_args": {
+   "order_id": "O1047"
+  },
+  "id": "T098"
+ },
+ {
+  "kind": "damaged",
+  "customer_id": "C028",
+  "text": "The usb-c hub from order O1023 arrived cracked. I have photos. Please refund 39.00.",
+  "gold_tool": "refund",
+  "gold_args": {
+   "order_id": "O1023",
+   "amount": 39.0
+  },
+  "id": "T099"
+ },
+ {
+  "kind": "cancel_ok",
+  "customer_id": "C007",
+  "text": "Please cancel order O1001, I ordered by mistake.",
+  "gold_tool": "cancel_order",
+  "gold_args": {
+   "order_id": "O1001"
+  },
+  "id": "T100"
+ }
+]

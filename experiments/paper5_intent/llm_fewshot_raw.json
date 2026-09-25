@@ -1,0 +1,434 @@
+{
+ "177": {
+  "raw": "cancel_order",
+  "seconds": 87.19
+ },
+ "492": {
+  "raw": "cancel_order",
+  "seconds": 33.6
+ },
+ "356": {
+  "raw": "cancel_order",
+  "seconds": 65.41
+ },
+ "432": {
+  "raw": "cancel_order",
+  "seconds": 100.33
+ },
+ "1174": {
+  "raw": "delete_order",
+  "seconds": 48.65
+ },
+ "1061": {
+  "raw": "delete_order",
+  "seconds": 32.12
+ },
+ "771": {
+  "raw": "change_order",
+  "seconds": 34.08
+ },
+ "528": {
+  "raw": "change_order",
+  "seconds": 74.16
+ },
+ "2094": {
+  "raw": "set_up_shipping_address",
+  "seconds": 115.9
+ },
+ "2331": {
+  "raw": "set_up_shipping_address",
+  "seconds": 34.59
+ },
+ "1379": {
+  "raw": "set_up_shipping_address",
+  "seconds": 59.69
+ },
+ "2006": {
+  "raw": "set_up_shipping_address",
+  "seconds": 67.73
+ },
+ "3127": {
+  "raw": "check_refund_policy",
+  "seconds": 32.96
+ },
+ "2882": {
+  "raw": "cancel_order",
+  "seconds": 52.03
+ },
+ "2585": {
+  "raw": "cancel_order",
+  "seconds": 87.71
+ },
+ "2481": {
+  "raw": "cancel_order",
+  "seconds": 87.46
+ },
+ "3957": {
+  "raw": "check_invoice",
+  "seconds": 39.49
+ },
+ "3651": {
+  "raw": "check_invoice",
+  "seconds": 35.02
+ },
+ "3581": {
+  "raw": "get_invoice",
+  "seconds": 39.32
+ },
+ "3680": {
+  "raw": "check_invoice",
+  "seconds": 78.54
+ },
+ "4651": {
+  "raw": "check_payment_methods",
+  "seconds": 85.07
+ },
+ "5050": {
+  "raw": "check_payment_methods",
+  "seconds": 134.45
+ },
+ "4526": {
+  "raw": "check_payment_methods",
+  "seconds": 32.37
+ },
+ "4224": {
+  "raw": "check_payment_methods",
+  "seconds": 51.15
+ },
+ "6130": {
+  "raw": "check_refund_policy",
+  "seconds": 27.12
+ },
+ "5577": {
+  "raw": "check_refund_policy",
+  "seconds": 29.55
+ },
+ "5292": {
+  "raw": "check_refund_policy",
+  "seconds": 25.54
+ },
+ "5689": {
+  "raw": "check_refund_policy",
+  "seconds": 31.96
+ },
+ "6570": {
+  "raw": "complaint",
+  "seconds": 20.37
+ },
+ "7040": {
+  "raw": "complaint",
+  "seconds": 20.45
+ },
+ "6252": {
+  "raw": "complaint",
+  "seconds": 21.6
+ },
+ "6565": {
+  "raw": "complaint",
+  "seconds": 21.05
+ },
+ "7604": {
+  "raw": "contact_customer_service",
+  "seconds": 20.64
+ },
+ "8134": {
+  "raw": "contact_customer_service",
+  "seconds": 20.68
+ },
+ "7448": {
+  "raw": "contact_customer_service",
+  "seconds": 23.06
+ },
+ "8159": {
+  "raw": "contact_customer_service",
+  "seconds": 32.33
+ },
+ "8450": {
+  "raw": "contact_human_agent",
+  "seconds": 148.52
+ },
+ "8986": {
+  "raw": "contact_human_agent",
+  "seconds": 135.02
+ },
+ "8733": {
+  "raw": "contact_human_agent",
+  "seconds": 143.85
+ },
+ "8672": {
+  "raw": "contact_human_agent",
+  "seconds": 50.43
+ },
+ "9708": {
+  "raw": "create_account",
+  "seconds": 62.82
+ },
+ "9252": {
+  "raw": "create_account",
+  "seconds": 26.21
+ },
+ "10088": {
+  "raw": "create_account",
+  "seconds": 24.0
+ },
+ "9865": {
+  "raw": "create_account",
+  "seconds": 20.43
+ },
+ "10600": {
+  "raw": "delete_account",
+  "seconds": 24.36
+ },
+ "10159": {
+  "raw": "delete_account",
+  "seconds": 32.28
+ },
+ "10534": {
+  "raw": "edit_account",
+  "seconds": 35.88
+ },
+ "10903": {
+  "raw": "delete_account",
+  "seconds": 38.03
+ },
+ "11077": {
+  "raw": "delivery_options",
+  "seconds": 65.54
+ },
+ "11276": {
+  "raw": "delivery_options",
+  "seconds": 34.0
+ },
+ "11468": {
+  "raw": "delivery_options",
+  "seconds": 28.28
+ },
+ "11144": {
+  "raw": "place_order",
+  "seconds": 53.12
+ },
+ "12630": {
+  "raw": "delivery_period",
+  "seconds": 58.34
+ },
+ "12625": {
+  "raw": "delivery_period",
+  "seconds": 44.81
+ },
+ "12070": {
+  "raw": "delivery_period",
+  "seconds": 38.6
+ },
+ "12060": {
+  "raw": "delivery_period",
+  "seconds": 34.52
+ },
+ "13074": {
+  "raw": "edit_account",
+  "seconds": 42.02
+ },
+ "12672": {
+  "raw": "edit_account",
+  "seconds": 26.61
+ },
+ "12747": {
+  "raw": "edit_account",
+  "seconds": 60.94
+ },
+ "13343": {
+  "raw": "edit_account",
+  "seconds": 33.35
+ },
+ "13496": {
+  "raw": "get_invoice",
+  "seconds": 33.62
+ },
+ "13829": {
+  "raw": "get_invoice",
+  "seconds": 27.68
+ },
+ "13880": {
+  "raw": "get_invoice",
+  "seconds": 39.96
+ },
+ "13997": {
+  "raw": "get_invoice",
+  "seconds": 84.62
+ },
+ "14867": {
+  "raw": "get_refund",
+  "seconds": 64.28
+ },
+ "14871": {
+  "raw": "request_compensation",
+  "seconds": 41.05
+ },
+ "14625": {
+  "raw": "get_refund",
+  "seconds": 31.7
+ },
+ "14664": {
+  "raw": "get_refund",
+  "seconds": 27.67
+ },
+ "15787": {
+  "raw": "newsletter_subscription",
+  "seconds": 29.85
+ },
+ "15691": {
+  "raw": "cancel_newsletter",
+  "seconds": 26.71
+ },
+ "16262": {
+  "raw": "newsletter_subscription",
+  "seconds": 26.82
+ },
+ "15765": {
+  "raw": "newsletter_subscription",
+  "seconds": 29.94
+ },
+ "17098": {
+  "raw": "payment_issue",
+  "seconds": 29.92
+ },
+ "16763": {
+  "raw": "payment_issue",
+  "seconds": 32.7
+ },
+ "16741": {
+  "raw": "payment_issue",
+  "seconds": 89.48
+ },
+ "16392": {
+  "raw": "payment_issue",
+  "seconds": 28.53
+ },
+ "18104": {
+  "raw": "newsletter_subscription",
+  "seconds": 27.31
+ },
+ "18129": {
+  "raw": "place_order",
+  "seconds": 32.37
+ },
+ "17628": {
+  "raw": "place_order",
+  "seconds": 24.79
+ },
+ "17750": {
+  "raw": "place_order",
+  "seconds": 23.1
+ },
+ "18918": {
+  "raw": "recover_password",
+  "seconds": 30.67
+ },
+ "19107": {
+  "raw": "recover_password",
+  "seconds": 26.83
+ },
+ "18382": {
+  "raw": "unknown",
+  "seconds": 29.72
+ },
+ "18581": {
+  "raw": "recover_password",
+  "seconds": 28.91
+ },
+ "19841": {
+  "raw": "registration_problems",
+  "seconds": 33.97
+ },
+ "19680": {
+  "raw": "registration_problems",
+  "seconds": 24.19
+ },
+ "20082": {
+  "raw": "registration_problems",
+  "seconds": 23.19
+ },
+ "19286": {
+  "raw": "payment_issue",
+  "seconds": 32.34
+ },
+ "20823": {
+  "raw": "review",
+  "seconds": 40.73
+ },
+ "21244": {
+  "raw": "review",
+  "seconds": 29.33
+ },
+ "20994": {
+  "raw": "contact_customer_service",
+  "seconds": 24.45
+ },
+ "20439": {
+  "raw": "review",
+  "seconds": 24.7
+ },
+ "21845": {
+  "raw": "payment_issue",
+  "seconds": 24.4
+ },
+ "21832": {
+  "raw": "set_up_shipping_address",
+  "seconds": 23.17
+ },
+ "21466": {
+  "raw": "set_up_shipping_address",
+  "seconds": 21.65
+ },
+ "21573": {
+  "raw": "set_up_shipping_address",
+  "seconds": 20.56
+ },
+ "23098": {
+  "raw": "free_profile_access",
+  "seconds": 26.7
+ },
+ "22960": {
+  "raw": "change_order",
+  "seconds": 29.08
+ },
+ "22629": {
+  "raw": "edit_account",
+  "seconds": 31.32
+ },
+ "22892": {
+  "raw": "edit_account",
+  "seconds": 27.38
+ },
+ "23779": {
+  "raw": "track_order",
+  "seconds": 26.94
+ },
+ "23660": {
+  "raw": "track_order",
+  "seconds": 30.53
+ },
+ "23347": {
+  "raw": "track_order",
+  "seconds": 30.09
+ },
+ "23622": {
+  "raw": "delivery_period",
+  "seconds": 26.21
+ },
+ "24091": {
+  "raw": "newsletter_subscription",
+  "seconds": 26.83
+ },
+ "24312": {
+  "raw": "check_invoice",
+  "seconds": 26.14
+ },
+ "24230": {
+  "raw": "check_refund_policy",
+  "seconds": 26.57
+ },
+ "24009": {
+  "raw": "get_refund",
+  "seconds": 26.41
+ }
+}

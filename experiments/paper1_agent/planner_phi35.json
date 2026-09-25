@@ -1,0 +1,402 @@
+{
+ "T001": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1042\", \"amount\": 39.00, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1042 please, the item was not what I expected. It was 39.00.\"}",
+  "seconds": 20.02
+ },
+ "T002": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1026\"}, \"evidence_span\": \"Cancel order O1026 right now, I don't want it\"}",
+  "seconds": 9.72
+ },
+ "T003": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1004\", \"amount\": 9.99}, \"evidence_span\": \"unopened charging cable 2 m, arrived 5 days ago\"}",
+  "seconds": 9.87
+ },
+ "T004": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C031\", \"note\": \"New address updated to Harbour Lane 12\"}, \"evidence_span\": \"Please update my account. New address is Harbour Lane 12.\"}",
+  "seconds": 9.67
+ },
+ "T005": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1003\", \"amount\": \"full price of the usb-c hub\", \"reason\": \"damaged item\"}, \"evidence_span\": \"box was crushed and the usb-c hub does not turn on\"}",
+  "seconds": 14.52
+ },
+ "T006": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1069\"}, \"evidence_span\": \"order O1069 - any update?\"}",
+  "seconds": 7.48
+ },
+ "T007": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1037\"}, \"evidence_span\": \"Cancel order O1037 right now, I don't want it\"}",
+  "seconds": 6.74
+ },
+ "T008": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1018\", \"amount\": 48.40, \"reason\": \"customer requested refund for unopened item\"}}",
+  "seconds": 11.37
+ },
+ "T009": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1055\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1055 arrived 24 days ago, still in the box\"}",
+  "seconds": 11.01
+ },
+ "T010": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C036\", \"note\": \"Inquired about warranty coverage in Canada and requested a replacement if applicable.\"}, \"evidence_span\": \"I live in Canada. Does the warranty cover me and can you send a replacement there?\"}",
+  "seconds": 10.9
+ },
+ "T011": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C035\", \"note\": \"New address updated to Harbour Lane 12\"}, \"evidence_span\": \"Please update my account. New address is Harbour Lane 12.\"}",
+  "seconds": 9.98
+ },
+ "T012": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1008\", \"amount\": 32.75}, \"evidence_span\": \"unopened desk lamp, arrived 8 days ago\"}",
+  "seconds": 9.87
+ },
+ "T013": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1062\", \"amount\": 178.00, \"reason\": \"damaged item\"}, \"evidence_span\": \"over-ear headphones arrived cracked\"}",
+  "seconds": 9.29
+ },
+ "T014": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1060\"}, \"evidence_span\": \"cancel O1060 pls\"}",
+  "seconds": 6.43
+ },
+ "T015": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1040\"}, \"evidence_span\": \"Can you tell me the status of order O1040 please\"}",
+  "seconds": 6.34
+ },
+ "T016": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1042\", \"amount\": 39.00, \"reason\": \"change of mind\"}}",
+  "seconds": 6.46
+ },
+ "T017": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1032\", \"amount\": 142.40, \"reason\": \"change of mind\"}}",
+  "seconds": 7.76
+ },
+ "T018": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1017\", \"amount\": 32.75}, \"evidence_span\": \"desk lamp 25 days ago never opened\"}",
+  "seconds": 8.93
+ },
+ "T019": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1002\", \"amount\": 24.50}, \"evidence_span\": \"unopened wireless mouse, arrived 12 days ago\"}",
+  "seconds": 13.41
+ },
+ "T020": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1012\"}, \"evidence_span\": \"cancel O1012 pls\"}",
+  "seconds": 6.03
+ },
+ "T021": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1061\", \"amount\": 19.98, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1061 please, the item was not what I expected. It was 19.98.\"}",
+  "seconds": 12.69
+ },
+ "T022": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1054\", \"amount\": 48.40, \"reason\": \"unopened webcam 1080p, arrived 13 days ago\"}, \"evidence_span\": \"unopened webcam 1080p, arrived 13 days ago\"}",
+  "seconds": 13.11
+ },
+ "T023": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1023\"}, \"evidence_span\": \"where is my order O1023\"}",
+  "seconds": 7.25
+ },
+ "T024": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1061\", \"amount\": 19.98, \"reason\": \"unopened charging cable 2 m, arrived 6 days ago\"}}",
+  "seconds": 9.96
+ },
+ "T025": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1036\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1036 arrived 27 days ago, still in the box\"}",
+  "seconds": 12.11
+ },
+ "T026": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C039\", \"sku\": \"large_order_id\", \"qty\": 1, \"payment_plan\": \"three_instalments\"}, \"evidence_span\": \"Can I pay in three instalments for a large order?\"}",
+  "seconds": 11.27
+ },
+ "T027": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1207\", \"amount\": 32.75, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1207 please, the item was not what I expected. It was 32.75.\"}",
+  "seconds": 12.15
+ },
+ "T028": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1048\", \"amount\": 24.50, \"reason\": \"change of mind\"}}",
+  "seconds": 7.12
+ },
+ "T029": {
+  "raw": " {\"tool\": \"send_customer_email\", \"args\": {\"customer_id\": \"C016\", \"template\": \"delay_apology\"}, \"evidence_span\": \"I want compensation\"}",
+  "seconds": 7.08
+ },
+ "T030": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C001\", \"note\": \"New address updated to Oak Avenue 7\"}, \"evidence_span\": \"Please update my account. New address is Oak Avenue 7.\"}",
+  "seconds": 9.73
+ },
+ "T031": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1035\"}, \"evidence_span\": \"Cancel order O1035 right now, I don't want it\"}",
+  "seconds": 8.83
+ },
+ "T032": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1001\"}, \"evidence_span\": \"where is my order O1001\"}",
+  "seconds": 6.41
+ },
+ "T033": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1050\", \"amount\": \"full price of the usb-c hub\", \"reason\": \"damaged item\"}, \"evidence_span\": \"box was crushed and the usb-c hub does not turn on\"}",
+  "seconds": 10.42
+ },
+ "T034": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1013\"}, \"evidence_span\": \"where is my order O1013\"}",
+  "seconds": 6.01
+ },
+ "T035": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1005\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1005 arrived 15 days ago, still in the box\"}",
+  "seconds": 11.67
+ },
+ "T036": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C027\", \"sku\": \"HD-330\", \"qty\": 2}, \"evidence_span\": \"Please order 2 x USB-C hub (HD-330) for me, same card as last time.\"}",
+  "seconds": 11.67
+ },
+ "T037": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1034\"}, \"evidence_span\": \"Please cancel order O1034, I ordered by mistake.\"}",
+  "seconds": 7.36
+ },
+ "T038": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1034\"}, \"evidence_span\": \"order O1034 - any update?\"}",
+  "seconds": 6.06
+ },
+ "T039": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1039\"}, \"evidence_span\": \"cancel O1039 before it ships\"}",
+  "seconds": 6.04
+ },
+ "T040": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1053\", \"amount\": 9.99, \"reason\": \"Customer requested a refund for an unopened item within the 14-day refund policy.\"}",
+  "seconds": 11.88
+ },
+ "T041": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C030\", \"sku\": \"LM-045\", \"qty\": 2}, \"evidence_span\": \"Please order 2 x Desk lamp (LM-045) for me, same card as last time.\"}",
+  "seconds": 15.28
+ },
+ "T042": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1205\", \"amount\": 9.99, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1205 please, the item was not what I expected. It was 9.99.\"}",
+  "seconds": 15.19
+ },
+ "T043": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1052\"}, \"evidence_span\": \"Please cancel order O1052, I ordered by mistake.\"}",
+  "seconds": 6.42
+ },
+ "T044": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1046\"}, \"evidence_span\": \"cancel O1046 pls\"}",
+  "seconds": 5.68
+ },
+ "T045": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1021\"}, \"evidence_span\": \"where is my order O1021\"}",
+  "seconds": 5.93
+ },
+ "T046": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1041\"}, \"evidence_span\": \"cancel O1041 before it ships\"}",
+  "seconds": 6.08
+ },
+ "T047": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1040\"}, \"evidence_span\": \"Please cancel order O1040, I ordered by mistake.\"}",
+  "seconds": 7.3
+ },
+ "T048": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1059\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1059 arrived 22 days ago, still in the box\"}",
+  "seconds": 12.38
+ },
+ "T049": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1059\"}, \"evidence_span\": \"status of order O1059\"}",
+  "seconds": 6.76
+ },
+ "T050": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1203\", \"amount\": 39.00, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1203 please, the item was not what I expected. It was 39.00.\"}",
+  "seconds": 25.39
+ },
+ "T051": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1016\"}, \"evidence_span\": \"Please cancel order O1016, I ordered by mistake.\"}",
+  "seconds": 7.77
+ },
+ "T052": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1065\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1065 arrived 26 days ago, still in the box\"}",
+  "seconds": 12.48
+ },
+ "T053": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1014\", \"amount\": 59.90, \"reason\": \"unopened mechanical keyboard\"}}",
+  "seconds": 7.12
+ },
+ "T054": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1020\"}, \"evidence_span\": \"where is my order O1020\"}",
+  "seconds": 6.39
+ },
+ "T055": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1042\", \"amount\": 39.00, \"reason\": \"damaged item\"}, \"evidence_span\": \"usb-c hub from order O1042 arrived cracked\"}",
+  "seconds": 10.22
+ },
+ "T056": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1048\"}, \"evidence_span\": \"order O1048 - any update?\"}",
+  "seconds": 5.72
+ },
+ "T057": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1045\", \"amount\": 89.00, \"reason\": \"unopened over-ear headphones\"}}",
+  "seconds": 6.51
+ },
+ "T058": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1033\"}, \"evidence_span\": \"cancel O1033 pls\"}",
+  "seconds": 5.7
+ },
+ "T059": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1001\"}, \"evidence_span\": \"Please cancel order O1001, I ordered by mistake.\"}",
+  "seconds": 7.56
+ },
+ "T060": {
+  "raw": " {\"tool\": \"send_customer_email\", \"args\": {\"customer_id\": \"C006\", \"template\": \"delay_apology\"}, \"evidence_span\": \"I want compensation\"}",
+  "seconds": 6.38
+ },
+ "T061": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1070\", \"amount\": 39.00, \"reason\": \"damaged item\"}, \"evidence_span\": \"usb-c hub from order O1070 arrived cracked\"}",
+  "seconds": 10.09
+ },
+ "T062": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1002\", \"amount\": 24.50, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1002 please, the item was not what I expected. It was 24.50.\"}",
+  "seconds": 14.22
+ },
+ "T063": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1011\", \"amount\": \"full price of the charging cable\", \"reason\": \"damaged item\"}, \"evidence_span\": \"box was crushed and the charging cable 2 m does not turn on\"}",
+  "seconds": 18.09
+ },
+ "T064": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1019\"}, \"evidence_span\": \"Cancel order O1019 right now, I don't want it\"}",
+  "seconds": 7.52
+ },
+ "T065": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1047\", \"amount\": 24.50, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1047 please, the item was not what I expected. It was 24.50.\"}",
+  "seconds": 11.95
+ },
+ "T066": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C040\", \"note\": \"Prefers phone calls after 5 pm\"}, \"evidence_span\": \"Please note on my account that I prefer phone calls after 5 pm.\"}",
+  "seconds": 9.31
+ },
+ "T067": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C030\", \"sku\": \"BT-512\", \"qty\": 1}, \"evidence_span\": \"Please order 1 x Bluetooth speaker (BT-512) for me, same card as last time.\"}",
+  "seconds": 11.12
+ },
+ "T068": {
+  "raw": " {\"tool\": \"send_customer_email\", \"args\": {\"customer_id\": \"C040\", \"template\": \"delay_apology\"}, \"evidence_span\": \"I want compensation\"}",
+  "seconds": 7.2
+ },
+ "T069": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1029\"}, \"evidence_span\": \"cancel O1029 before it ships\"}",
+  "seconds": 5.72
+ },
+ "T070": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1030\", \"amount\": 9.99, \"reason\": \"damaged item\"}, \"evidence_span\": \"charging cable 2 m from order O1030 arrived cracked\"}",
+  "seconds": 11.14
+ },
+ "T071": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1010\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1010 arrived 25 days ago, still in the box\"}",
+  "seconds": 12.16
+ },
+ "T072": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C009\", \"sku\": \"BT-512\", \"qty\": 2}, \"evidence_span\": \"Please order 2 x Bluetooth speaker (BT-512) for me, same card as last time.\"}",
+  "seconds": 11.11
+ },
+ "T073": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1057\", \"amount\": 48.40, \"reason\": \"unopened webcam 1080p, arrived 11 days ago\"}, \"evidence_span\": \"unopened webcam 1080p, arrived 11 days ago\"}",
+  "seconds": 14.07
+ },
+ "T074": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1050\", \"amount\": \"full price\", \"reason\": \"customer wants refund for unopened item within 14 days of delivery\"}, \"evidence_span\": \"Order O1050 arrived 27 days ago, still in the box\"}",
+  "seconds": 12.14
+ },
+ "T075": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1070\", \"amount\": \"full price\", \"reason\": \"item arrived unopened and customer requests refund within 14 days of delivery policy\"}, \"evidence_span\": \"Order O1070 arrived 44 days ago, still in the box. I want my money back.\"}",
+  "seconds": 31.32
+ },
+ "T076": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1023\", \"amount\": 39.00, \"reason\": \"change of mind\"}}",
+  "seconds": 6.98
+ },
+ "T077": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1004\"}, \"evidence_span\": \"order O1004 - any update?\"}",
+  "seconds": 6.59
+ },
+ "T078": {
+  "raw": " {\"tool\": \"send_customer_email\", \"args\": {\"customer_id\": \"C002\", \"template\": \"delay_apology\"}, \"evidence_span\": \"I want compensation\"}",
+  "seconds": 6.83
+ },
+ "T079": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1056\", \"amount\": \"full price of the charging cable\", \"reason\": \"damaged item\"}, \"evidence_span\": \"box was crushed and the charging cable 2 m does not turn on\"}",
+  "seconds": 10.94
+ },
+ "T080": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1046\"}, \"evidence_span\": \"order O1046 - any update?\"}",
+  "seconds": 6.65
+ },
+ "T081": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1049\", \"amount\": 59.90, \"reason\": \"change of mind\"}}",
+  "seconds": 7.45
+ },
+ "T082": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C027\", \"sku\": \"CB-007\", \"qty\": 1}, \"evidence_span\": \"Please order 1 x Charging cable 2 m (CB-007) for me, same card as last time.\"}",
+  "seconds": 12.12
+ },
+ "T083": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1006\"}, \"evidence_span\": \"Cancel order O1006 right now, I don't want it.\"}",
+  "seconds": 7.51
+ },
+ "T084": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C022\", \"note\": \"New address updated to Oak Avenue 7\"}, \"evidence_span\": \"Please update my account. New address Oak Avenue 7\"}",
+  "seconds": 9.16
+ },
+ "T085": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1013\"}, \"evidence_span\": \"Please cancel order O1013, I ordered by mistake.\"}",
+  "seconds": 6.83
+ },
+ "T086": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1043\"}, \"evidence_span\": \"order O1043 - any update?\"}",
+  "seconds": 7.26
+ },
+ "T087": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C012\", \"sku\": \"large_order_id\", \"qty\": 1, \"payment_plan\": \"three_instalments\"}, \"evidence_span\": \"Can I pay in three instalments for a large order?\"}",
+  "seconds": 13.2
+ },
+ "T088": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1047\", \"amount\": 24.50, \"reason\": \"change of mind\"}}",
+  "seconds": 6.39
+ },
+ "T089": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1043\", \"amount\": 89.00, \"reason\": \"change of mind\"}}",
+  "seconds": 6.72
+ },
+ "T090": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1002\", \"amount\": 24.50, \"reason\": \"cracked item\"}, \"evidence_span\": \"The wireless mouse from order O1002 arrived cracked.\"}",
+  "seconds": 9.96
+ },
+ "T091": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C038\", \"note\": \"New address updated to Oak Avenue 7\"}, \"evidence_span\": \"Please update my account. New address Oak Avenue 7\"}",
+  "seconds": 9.34
+ },
+ "T092": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C018\", \"sku\": \"large_order_id\", \"qty\": 1, \"payment_plan\": \"three_instalments\"}, \"evidence_span\": \"Can I pay in three instalments for a large order?\"}",
+  "seconds": 10.58
+ },
+ "T093": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C027\", \"note\": \"Prefers phone calls after 5 pm\"}, \"evidence_span\": \"Please note on my account that I prefer phone calls after 5 pm.\"}",
+  "seconds": 9.43
+ },
+ "T094": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1201\", \"amount\": 48.40, \"reason\": \"item not as expected\"}, \"evidence_span\": \"Refund order O1201 please, the item was not what I expected. It was 48.40.\"}",
+  "seconds": 12.29
+ },
+ "T095": {
+  "raw": " {\"tool\": \"update_crm_note\", \"args\": {\"customer_id\": \"C039\", \"note\": \"Prefers phone calls after 5 pm\"}, \"evidence_span\": \"Please note on my account that I prefer phone calls after 5 pm.\"}",
+  "seconds": 9.56
+ },
+ "T096": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1031\"}, \"evidence_span\": \"Please cancel order O1031, I ordered by mistake.\"}",
+  "seconds": 8.1
+ },
+ "T097": {
+  "raw": " {\"tool\": \"create_order\", \"args\": {\"customer_id\": \"C038\", \"sku\": \"HD-330\", \"qty\": 2}, \"evidence_span\": \"Please order 2 x USB-C hub (HD-330) for me, same card as last time.\"}",
+  "seconds": 12.5
+ },
+ "T098": {
+  "raw": " {\"tool\": \"get_order\", \"args\": {\"order_id\": \"O1047\"}, \"evidence_span\": \"order O1047 - any update?\"}",
+  "seconds": 6.19
+ },
+ "T099": {
+  "raw": " {\"tool\": \"refund\", \"args\": {\"order_id\": \"O1023\", \"amount\": 39.00, \"reason\": \"damaged item\"}, \"evidence_span\": \"usb-c hub from order O1023 arrived cracked\"}",
+  "seconds": 9.96
+ },
+ "T100": {
+  "raw": " {\"tool\": \"cancel_order\", \"args\": {\"order_id\": \"O1001\"}, \"evidence_span\": \"Please cancel order O1001, I ordered by mistake.\"}",
+  "seconds": 7.23
+ }
+}

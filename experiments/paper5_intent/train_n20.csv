@@ -1,0 +1,461 @@
+,instruction,intent
+118,iwant assistance canceling order {{Order Number}},cancel_order
+16,what do I have to do to cancel purchase {{Order Number}}?,cancel_order
+434,I have a proble with canceling purchase {{Order Number}},cancel_order
+35,i need assistance canceling purchase {{Order Number}},cancel_order
+99,I want assistance canceling purchase {{Order Number}},cancel_order
+101,could you help me canceling purchase {{Order Number}}?,cancel_order
+20,I'm trying to cancel order {{Order Number}},cancel_order
+301,need help to cancel purchase {{Order Number}},cancel_order
+422,"I no longer want order {{Order Number}}, I would like to cancel it",cancel_order
+81,i want help to cancel purchase {{Order Number}},cancel_order
+348,i can no longer arford purchase {{Order Number}},cancel_order
+426,"I can't afford purchase {{Order Number}}, could you cancel it?",cancel_order
+443,where do i cancel order {{Order Number}},cancel_order
+428,cancel purchase00123842,cancel_order
+175,"I do not want this item, cancel order {{Order Number}}",cancel_order
+167,camceling order {{Order Number}},cancel_order
+405,I have a probllem with canceling order {{Order Number}},cancel_order
+38,i need help to cancel purchase {{Order Number}},cancel_order
+157,can you help me cancelling order {{Order Number}}?,cancel_order
+302,i do not know how i could casncel order {{Order Number}},cancel_order
+999,remove some items fropm order {{Order Number}},change_order
+1348,how ot edit order {{Order Number}}?,change_order
+574,change order {{Order Number}},change_order
+618,i cant swap an item of order {{Order Number}},change_order
+807,how can i get information about updating order {{Order Number}},change_order
+1014,wanna correct order {{Order Number}},change_order
+584,help me adding some products to order {{Order Number}},change_order
+1113,i want help correcting purchase {{Order Number}},change_order
+739,wanna remove some items from order {{Order Number}},change_order
+1205,how do i change an item of order {{Order Number}},change_order
+670,swap some products of order {{Order Number}},change_order
+759,need to switch some products of purchase {{Order Number}},change_order
+578,want help to change something of order {{Order Number}},change_order
+936,I want help to switch something of order {{Order Number}},change_order
+848,edit order  {{Order Number}},change_order
+567,help with deleting an item from order {{Order Number}},change_order
+566,I want to remove some articles from order {{Order Number}},change_order
+1016,can I modify order {{Order Number}}?,change_order
+1085,help me add some articles to purchase {{Order Number}},change_order
+675,how can I delete several ites from purchase {{Order Number}}?,change_order
+3294,locate the bill #12588,check_invoice
+3572,i have got to look for bill #85632,check_invoice
+3451,how can i give a quick look at my bills from {{Person Name}},check_invoice
+3389,how can I check my fucking bill from {{Person Name}}?,check_invoice
+4110,check my ibll from {{Person Name}},check_invoice
+3684,i dont know what to do to locate invoice #85632,check_invoice
+3968,i dont know what i have to do to look fopr my bill #00108,check_invoice
+4021,want help to see my bilo from {{Person Name}},check_invoice
+3973,help to give a quick look at my invoice #85632,check_invoice
+3682,see the invoice #00108,check_invoice
+3881,i dont kmow how i can locate bill #37777,check_invoice
+3332,I don't know how to locate the invoice #85632,check_invoice
+3958,checking invoice,check_invoice
+3335,how to locate my bill #12588?,check_invoice
+3407,how can I give a quick look at my bill #00108?,check_invoice
+3964,help me to take a quick look at my invoice #12588,check_invoice
+4050,"I want to locate invoice #37777, how to do it?",check_invoice
+3415,how can I find bill #00108?,check_invoice
+3647,i cannot find invoiced #00108,check_invoice
+3970,i have to see the invoice #00108,check_invoice
+5078,I want assistance seeing your accepted payment methods,check_payment_methods
+4711,how can I check what payment methods are accepted?,check_payment_methods
+4424,I do not know how I can list the allowed payment options,check_payment_methods
+4405,I want assistance listing your allowed payment methods,check_payment_methods
+4616,want assistance to check your accepted payment options,check_payment_methods
+4663,"I have got to see your payment modalities, will you help me?",check_payment_methods
+4376,"I want to see the allowed payment methods, can you help me?",check_payment_methods
+4763,I am trying to see the accepted payment options,check_payment_methods
+4230,want assistance seeing what payment optionsare available,check_payment_methods
+4674,can uhelp me check the bloody allowed paymentmethods,check_payment_methods
+5112,i do not know how to check the allowed payment modalities,check_payment_methods
+5161,show me your fucking accepted payment options,check_payment_methods
+4831,I want help to see the payment methods,check_payment_methods
+5121,I try to check the payment modalities,check_payment_methods
+5094,I need assistance listing the available payment methods,check_payment_methods
+4359,i have got to see the available payment modalities,check_payment_methods
+4806,"I have to se what payment methods you accept, I need help",check_payment_methods
+5016,can I check the bloody payment methods?,check_payment_methods
+4447,"I want to check your payment methods, I need assistance",check_payment_methods
+4766,is it possible to check the allowed paymentmodalities,check_payment_methods
+5275,I have got to see how long refunds take,check_refund_policy
+5920,help me check in which cases can i ask ofr reimbursements,check_refund_policy
+5944,check under which circumstances can I ask to be refunded,check_refund_policy
+5434,i have to check in what cases can i ask for refunds,check_refund_policy
+5566,see in which cases can I ask to be reimbursed,check_refund_policy
+5852,help checking in which cases can I request reimbursements,check_refund_policy
+5943,"I would like to check your money back guarantee, help me",check_refund_policy
+5561,can I see under what circumstances can I request a refund?,check_refund_policy
+5865,can i see in what situations can i request to be refunded,check_refund_policy
+5240,help checking in what cases can I request to be reimbursed,check_refund_policy
+6027,I need to see in what cases can I request to be refunded,check_refund_policy
+6099,help me seeing in which cases can I ask for my money back,check_refund_policy
+5261,I want to check in which cases can I request my money back,check_refund_policy
+5518,show me in which cases can I request a refund,check_refund_policy
+5853,show me under which circumstances can i ask to be reimbursed,check_refund_policy
+5922,show me ur reimbursement policy,check_refund_policy
+5778,help to check in which cases can I ask to be refunded,check_refund_policy
+5999,I have to check in which cases can I request my money back,check_refund_policy
+5912,in what situations can I request to be refunded ?,check_refund_policy
+5994,wanna see inwhich cases can i ask to be refunded i need help,check_refund_policy
+6505,my experience with uwas too bad help to file a reclqmation,complaint
+7123,how can I lodge a consumer claim against your business?,complaint
+6697,"I ain't happy with your services, help lodging a complaint",complaint
+7104,need help filing a reclamation,complaint
+6882,I am trying to lodge a customer complaint,complaint
+6627,I need help making a claim against your business,complaint
+6585,lodging claim,complaint
+6642,how can I lodge a customer claim?,complaint
+7121,file complaint,complaint
+6441,I do not know how I can make a bloody reclamation,complaint
+6486,making consumer complaint against ur business,complaint
+6575,"I have got to lodge a complaint, can I get some help?",complaint
+6951,I do not know how to lodge a claim against your business,complaint
+6679,making complaint against your organization,complaint
+6901,I want assistance making a complaint against your business,complaint
+6356,"I am unhappy with your services, how do I lodge a complaint?",complaint
+6238,"I am unhappy with your service, I have to file a reclamation",complaint
+6579,I need help making a complaint,complaint
+6439,can i lodge a customer claim against ur business,complaint
+6759,need help lodging a reclamation against ur business,complaint
+8113,how can I check at what time I can call customer service?,contact_customer_service
+7678,wanna contact customer assistance,contact_customer_service
+7544,how do I see at what time I can call customer support?,contact_customer_service
+7388,"I have to speak to customer support, how can I do it?",contact_customer_service
+7639,I need help to call customer assistance,contact_customer_service
+7788,see what hours customer support available is,contact_customer_service
+7291,is it possible to get in touch with customer support?,contact_customer_service
+7526,I need  help speaking with customer assistance,contact_customer_service
+7683,help checking what hours customer support available is,contact_customer_service
+7880,tell me at what time customer service available is,contact_customer_service
+7819,i dont know what to do to talk to customer support,contact_customer_service
+7334,can i check at what time i can reach customer support,contact_customer_service
+7674,help me calling customer assistance,contact_customer_service
+8147,"I need to talk to customer support, how can I do it?",contact_customer_service
+8012,i want assistance calling customer support,contact_customer_service
+8032,"I want to contact customer support, can I get some help?",contact_customer_service
+7677,how do I see what hours I can contact customer service?,contact_customer_service
+7362,how to see at what time I can contact customer service?,contact_customer_service
+8047,I odn't know how I could speak to customer support,contact_customer_service
+7737,i want help speaking to customer support,contact_customer_service
+8555,I do not know how I can talk with a human agent,contact_human_agent
+8487,need assistance to speak with somebody,contact_human_agent
+8333,can you help me contact osmeone?,contact_human_agent
+8578,help me speaking with a person,contact_human_agent
+8987,I need to chat with an assistant,contact_human_agent
+8813,i want help speaking to somebody,contact_human_agent
+8758,I do not know what to do to chat with an operator,contact_human_agent
+8953,I do not know how to talk with a live agent,contact_human_agent
+9056,i dont know what to do to chat with a fucking assistant,contact_human_agent
+8625,what do i have to do to contact an agwnt,contact_human_agent
+9082,I need assistance speaking to a human agent,contact_human_agent
+8715,I don't know how to speak with a humnan agent,contact_human_agent
+8877,can I speak with a person ?,contact_human_agent
+8933,i want assistance chatting with a person,contact_human_agent
+8905,I don't know what I have to do to contact someone,contact_human_agent
+8879,want help speaking with a live agent,contact_human_agent
+8659,i need assistance talking to a person,contact_human_agent
+8723,i dont know what i have to do to speak to an assistant,contact_human_agent
+9140,I need assistance to contact a live agent,contact_human_agent
+8945,"I cannot understand you, help me talking to a live agent",contact_human_agent
+9896,open gold account,create_account
+9294,i try to create a damn {{Account Category}} account,create_account
+9505,i need a {{Account Category}} account i wanna open it,create_account
+9995,"I need to open a new fucking standard account, help me",create_account
+9779,have a problem with creating a Premiumaccount,create_account
+10045,new pro account,create_account
+9751,"I am not registered, I want assistance opening a {{Account Type}} accont",create_account
+9585,I have to open an pro account for my dad,create_account
+9961,i have to open a platinum account,create_account
+9335,would it be possible to open a {{Account Type}} account for my daughter?,create_account
+9878,"I have to create a {{Account Category}} account, I need assistance",create_account
+10042,where do I create a gold account?,create_account
+9344,i have problems  with opening a {{Account Category}} account,create_account
+9421,creating new pro account,create_account
+9876,can i open a {{Account Type}} account,create_account
+9839,"I ain't registered yet, I try to open a {{Account Category}} account",create_account
+9577,opening new {{Account Type}} account,create_account
+10052,I need help opening a new goddamn gold account,create_account
+9493,whatdo i have to do to create a goddamn {{Account Type}} account,create_account
+9849,how do i create a {{Account Category}} account,create_account
+10185,what do I have to do to cancel my {{Account Category}} acdcount?,delete_account
+10232,"I don't want my user account, help cancelling it",delete_account
+10497,is it possible to delete my standard account?,delete_account
+10311,could you help me deleting a platinum account?,delete_account
+10713,I have a question about the deletion of my {{Account Type}} account,delete_account
+10226,i do not know what i need to do to cancel the gold account,delete_account
+10729,problem with the termination of my pro account,delete_account
+10441,I don't know how I can close my platinum account,delete_account
+10214,i want assistance to cancel a {{Account Type}} account,delete_account
+10887,is it possible to delete the standard account?,delete_account
+10169,"I have to close my bloody standard account, how to do it?",delete_account
+10816,"I don't use the {{Account Type}} account, need help cancelling it",delete_account
+10831,delete pro account,delete_account
+10585,problem with the removal of a freemium account,delete_account
+10544,pfoblem with {{Account Category}} account terminations,delete_account
+10984,delete account,delete_account
+10482,I have problems with the deletion of my {{Account Category}} account,delete_account
+10595,i want assistance cancelling an {{Account Category}} account,delete_account
+10941,i dont know what to do to canfel my {{Account Type}} account,delete_account
+10915,give me information about the removal of a {{Account Type}} account,delete_account
+11624,I want help checking what shipment options I can choose,delivery_options
+11370,I have to see the shipment options,delivery_options
+11511,how to see the shipment options,delivery_options
+11416,"I have to see what options for delivery are there, help me",delivery_options
+11441,i dont know how i can see the delivery options,delivery_options
+11036,can you tell me more about the methods for delivery?,delivery_options
+11154,can I place an ordewr from {{Delivery Country}}?,delivery_options
+11520,can I place a bloody order from {{Delivery City}}?,delivery_options
+11119,where can I find information about the methods for shipping?,delivery_options
+11246,can you help me see what methods for delivery I have?,delivery_options
+11381,I am calling to see what shipment methods are there,delivery_options
+11140,is it possibleto place an order from {{Delivery City}},delivery_options
+11542,want assistance seeing the delivery options,delivery_options
+11528,where can i see the methods for shipping,delivery_options
+11428,help me check what shipping methods are available,delivery_options
+11150,where can I see what methods for delivery are available?,delivery_options
+11179,can I see the shipping options?,delivery_options
+11189,what shipment options can I choose?,delivery_options
+11481,I don't know how to check the goddamn shipment methods,delivery_options
+11363,i dont know how to check what methods for delivery are there,delivery_options
+12123,can I check how soon can I expect the parcel?,delivery_period
+12304,where  to check how soon can I expect my shipment?,delivery_period
+11952,I have got to see when my package is going to arrive,delivery_period
+12492,where do I check when my package is going to arrive?,delivery_period
+12016,i have to see how long it takes for my delivery to arrive,delivery_period
+12520,where do I check how long it takes for my package to arrive?,delivery_period
+11918,want help checking how soon can i expect my shipment,delivery_period
+12287,I want assistance seeing how soon can I expect my parcel,delivery_period
+11946,need to check when my parcel is gonna arrive help me,delivery_period
+12384,help me to see when my purchase is gonn arrive,delivery_period
+11732,"I want to check when will my product arrive, how do I do it?",delivery_period
+12414,i do not know what to do to see how long the shipping takes,delivery_period
+12025,can you show me how long it takes for my delivery to arrive?,delivery_period
+11711,can you help me see how soon can I expect the order?,delivery_period
+12009,i dont know how i can ese how soon can i expect the order,delivery_period
+11714,I want to check when will my purchase arrive,delivery_period
+12519,"I want to see how long the shipment takes, can you help me?",delivery_period
+11822,I'm calling to see when my delivery is gonna arrive,delivery_period
+11870,where do i see when my product is gonna arrive,delivery_period
+12214,where do I see when my package is going to arrive?,delivery_period
+13410,modifying standard account,edit_account
+13230,changing data on standard  account,edit_account
+12733,correcting info on standard aqccount,edit_account
+13118,could I edit my personal information?,edit_account
+12981,change details on {{Account Category}} account,edit_account
+13184,i do not know what i have to do to edit the user information,edit_account
+12788,change data on pro account,edit_account
+13177,edit information on premium account,edit_account
+13151,chnge data on gold account,edit_account
+13308,correct data on pro account,edit_account
+13140,updating info on pro account,edit_account
+13411,wanna change the personal details i need help,edit_account
+13173,updating pro account,edit_account
+13025,correct info on premium account,edit_account
+13382,correcting infornation on gold account,edit_account
+12792,"I want to modify the info on my user, I need assistance",edit_account
+13246,"I want to update my goddamn personal info, how to do it?",edit_account
+12848,updating data on {{Account Type}} account,edit_account
+13189,need to change the info included on my user,edit_account
+12911,edit data on {{Account Type}} account,edit_account
+13511,i need assistance to download the bills from {{Person Name}},get_invoice
+13728,need to download bill #12588 how do i do it,get_invoice
+14122,is it possible to get my bill #00108?,get_invoice
+13871,I don't know how to get the bill #85632,get_invoice
+13721,I don't know how to download my bill #00108,get_invoice
+14093,need assistance to get my bills frlm {{Person Name}},get_invoice
+13816,i do not know what i need to do to download my bill #12588,get_invoice
+13773,I don't know how I can get the invoice #85632,get_invoice
+14332,I don't know how I can download invoice #37777,get_invoice
+14335,i wanr help downloading the invoice from {{Person Name}},get_invoice
+13557,help me to get the invoice fro {{Person Name}},get_invoice
+14214,i dont know what i need to do to get the bill #85632,get_invoice
+14352,i do not know how to download my bill from {{Person Name}},get_invoice
+14098,getting invoices from last purchase,get_invoice
+13499,send me bill from {{Person Name}},get_invoice
+13943,I do not know what I need to d to download the bill #37777,get_invoice
+14057,assistance to get invoice  #12588,get_invoice
+13803,i dont know what i have to do to download my bill #85632,get_invoice
+13451,I don't know what I need to do to get the bill #12588,get_invoice
+14229,I want assistance downloading boll #37777,get_invoice
+14388,I don't know what I need to do to request rebates,get_refund
+14693,"I paid {{Currency Symbol}}{{Refund Amount}} for an item, how could I get a bloody refund?",get_refund
+14599,reimburse {{Refund Amount}} dollar,get_refund
+14377,reimburse {{Currency Symbol}}{{Refund Amount}},get_refund
+14653,where to receive restitutions of money,get_refund
+14775,want help to get my money back,get_refund
+14569,how can I obtain my money back?,get_refund
+15087,i do not know how i can receive rebates of my money,get_refund
+14658,how to request reimbursements of my money,get_refund
+15105,when am I getting a rebate?,get_refund
+14609,i dont know how to get a reimbursement of my money,get_refund
+15211,can you help me receive goddamn compensations of money?,get_refund
+14466,i have to demand a compensation,get_refund
+14777,"I paid {{Currency Symbol}}{{Refund Amount}} for a product, where can I get a fucking rebate?",get_refund
+14579,refunding {{Refund Amount}} dollars,get_refund
+15008,i do not knowhow to request a restitution of money,get_refund
+15212,i paid $1499for this article help obtaining a refund,get_refund
+14429,I do not know how to demand a reimbursement,get_refund
+14716,i dont know how to ask for compensations of money,get_refund
+14662,"I paid {{Currency Symbol}}{{Refund Amount}} for an article, I want my compensation",get_refund
+15790,I don't know what to do to sign up to your newsletter,newsletter_subscription
+15278,how do I receive your newsletter?,newsletter_subscription
+16011,would it be possible to sign up to the newsletter?,newsletter_subscription
+15401,how to unsubscribe from ur company newsletter,newsletter_subscription
+15896,I can't receive the damn corporate newsletter,newsletter_subscription
+15581,help me see the status of my subscription to your newsletter,newsletter_subscription
+15972,I want assistance to receive your corporate newsletter,newsletter_subscription
+15959,I want to sign up to your corporate newsletter,newsletter_subscription
+15590,could i unsubscribe from the newsletter,newsletter_subscription
+16051,how can I cancel the corporate newsletter subscription?,newsletter_subscription
+15996,how can I see the status of my newsletter subscription?,newsletter_subscription
+16052,want help cancelling my company newsletter subscriptikon,newsletter_subscription
+16244,help to receive your newsletter,newsletter_subscription
+16130,i need assistane unsubscribing to ur corporate newsletter,newsletter_subscription
+15465,I need assistance unsubscribing to the company newsletter,newsletter_subscription
+15402,ihave got to receive ur damn company newsletter i need help,newsletter_subscription
+16030,were to sign up to the newsletter?,newsletter_subscription
+15907,tell me about cancel the subscription to the newsletter,newsletter_subscription
+15836,can you tell me more about unsubscribing to your newsletter?,newsletter_subscription
+15404,what do I have to do to receive the newsletter?,newsletter_subscription
+16328,how can I notify of an error with online payment?,payment_issue
+16352,need assistance notifying of a problen with payment,payment_issue
+17088,I do not know how to notify of a problem with payment,payment_issue
+16621,where do i inform of errors with payment,payment_issue
+16345,I don't know what to do to inform of errors with payment,payment_issue
+17227,want help notifying of a trouble with payment,payment_issue
+16749,i need assistance to notify of troubles with payment,payment_issue
+16359,I want assistance to inform of issues with payment,payment_issue
+16978,help informing of a fucking payment problem,payment_issue
+16299,wanna report issues with online pahment,payment_issue
+16873,need to report troubles with online payment,payment_issue
+16361,i cant pay  inform of a problem with payment,payment_issue
+16810,report payment issue,payment_issue
+16881,I am trying to inform of a trouble with online payment,payment_issue
+16349,I have to inform of damn problems with payment,payment_issue
+16629,want assistance to solve a payment problem,payment_issue
+17172,reporting payment issue,payment_issue
+16981,can you help me solve issues with payment?,payment_issue
+16348,i want assistance to notify of troubles with payment,payment_issue
+16795,can ya help me to inform of an problem with payment,payment_issue
+18000,where can I order some items?,place_order
+17332,I do not know how to acquire some of your article,place_order
+18169,"I have to earn an article, how can I do it?",place_order
+17763,assistance ordering some of your article,place_order
+17605,how do I acquire some of your product?,place_order
+17305,I need help to purchase some bloody products,place_order
+17594,I want help to place an order,place_order
+17428,can you help me acquiring a few of your product?,place_order
+17425,I don't know how toearn something,place_order
+17720,i need assistance acquiring some rpoducts,place_order
+17585,i do not know what to do to earn some items,place_order
+17409,i domt know how to buy several of ur item,place_order
+17417,i dont know what i need to do to shop a few of ur product,place_order
+17349,I want assistance earning some of your product,place_order
+17280,i do not know what i need to do to buy several items,place_order
+17597,I want to shop a few of your product,place_order
+18228,wanna earn an article i need asisstance,place_order
+17559,where can i shop some articles,place_order
+17283,I want assistance to shop several articles,place_order
+17734,I do not know what I need to do to purchase some products,place_order
+18973,I am trying to recover my user profile PIN,recover_password
+18688,I cannot recover my account PIN code,recover_password
+19235,help me to retrieve my profile access key,recover_password
+18355,what do i have to do to reset the pwd of my user,recover_password
+18594,I need assistance retrieving the PIN of my account,recover_password
+19116,could you help me reset the PIN of my user profile?,recover_password
+19126,how can I reset my profile access key?,recover_password
+18684,how too recover the key of my user account,recover_password
+19216,how to recover the key of my user account?,recover_password
+18621,"someone stole my PIN code, assistance restoring it",recover_password
+18457,help me to restore the access key of my user profile,recover_password
+18470,"someone stole my PIN, I want assistance to restore it",recover_password
+18951,I'm trying to recover my account key,recover_password
+19201,assistance to retrieve the key of my user profile,recover_password
+18735,i have got to restore my user pwd,recover_password
+18996,I have got to recover the PIN of my user,recover_password
+18474,is it possible to reset my user account key?,recover_password
+18627,what do I have to do to restore the key of my user profile?,recover_password
+19032,I need help to reset the PIN of my user profile,recover_password
+18694,assistance resetting the key of my user account,recover_password
+19548,I need to inform of an error with registrations,registration_problems
+20230,I try to notify of an error with registrations,registration_problems
+19395,reporting registration issues,registration_problems
+19266,I need support with my sign-up,registration_problems
+19731,i want help to notify of a problem with sign-up,registration_problems
+19321,report registration issue,registration_problems
+19834,"I cannot sign up, can I inform of a damn signup error?",registration_problems
+19547,can i inform of an issue with a registration,registration_problems
+20077,I am having problems with my registration,registration_problems
+19564,hw can I notify of errors with a signup?,registration_problems
+19914,I do not know what to do to inform of issues with a sign-up,registration_problems
+19799,I want assistance notifying of a sign-up error,registration_problems
+19870,"I cannot open a profile, I have to report a signup error",registration_problems
+19957,need help informing of rergistration errors,registration_problems
+19463,where can I report a problem with a signup?,registration_problems
+19474,how do i inform of a problem with a signup,registration_problems
+20088,"I have to inform of errosr with a sign-up, how can I do it?",registration_problems
+19519,i want help notifying of signup errors,registration_problems
+19871,need help regadring my sign-up,registration_problems
+19275,assistance reporting problems with signup,registration_problems
+21192,"I need to leave an opinion, can I get some help?",review
+21170,uhave a way to leave an opinion for ur products,review
+20847,where do I leavefeedback about your products?,review
+20371,how could I write a review?,review
+20742,wanna leave goddamn feedback about ur services,review
+21062,how to submit my feedback about your services?,review
+20984,want assistance to leave an opinion about a service,review
+20993,i want assistance to send feedback for ur company,review
+20433,is there an e-mail to send my feedbakc for ur products,review
+20533,uhave an address to submit an opinion about a product,review
+21092,do ya have an e-mail to leave a commnt,review
+20923,i need help sending soke feedback about a product,review
+20345,"I have got to leave some feedback for your services, help me",review
+20382,I am trying to submit feedback about a product,review
+20529,need assiwtance leaving some feedback for ur company,review
+21045,help me leaving a comment for ur company,review
+21261,assistance to send some feedback about your products,review
+20808,can ya help me send feedback for ur products,review
+21224,can uhelp me to submit some feedback about ur products,review
+20520,need assistance to leave my feedback about a service,review
+21273,I try to set  up my goddamn shipping address,set_up_shipping_address
+22000,i do not know how i can set up the delivery address,set_up_shipping_address
+21790,I try to submit a different delivery address,set_up_shipping_address
+21477,is it possible to submit my delivery adress,set_up_shipping_address
+21877,"I need to submit a shipping address, can you help me?",set_up_shipping_address
+22057,problems entering the new delivery address,set_up_shipping_address
+22046,assistance to submit the secondary shipping address,set_up_shipping_address
+21420,there are problems setting up the new delivery address,set_up_shipping_address
+21983,I do not know how I can enter another shipping address,set_up_shipping_address
+21363,help me submitting my new delivery addres,set_up_shipping_address
+21765,I do not know what I need to do to set a shipping address up,set_up_shipping_address
+21941,i  cannot enter a shipping address,set_up_shipping_address
+21501,I have problems setting up the new delivery address,set_up_shipping_address
+21683,I have problems entering a different shipping address,set_up_shipping_address
+21585,I have problems submitting my new delivery address,set_up_shipping_address
+22237,I have a problem setting up the new delivery address,set_up_shipping_address
+22184,how to submit another shipping address,set_up_shipping_address
+21820,errors setting a delivery address up,set_up_shipping_address
+21535,help me to set up my secondary shipping address,set_up_shipping_address
+21464,how to set the delivery address up?,set_up_shipping_address
+23239,help me see purchase {{Order Number}} status,track_order
+23851,need to trafk order {{Order Number}} help me,track_order
+23894,i want assistance to see the ETA of the order {{Order Number}},track_order
+23723,help me see the ETA of purchase {{Order Number}},track_order
+23809,i need assistance checking the ETA of the purchase {{Order Number}},track_order
+23335,checking purchase {{Order Number}} current status,track_order
+23788,need help to check the eta  of purchase {{Order Number}},track_order
+23261,order {{Order Number}} current status,track_order
+23460,want asistance checking the eta of the order {{Order Number}},track_order
+23190,I want help to check order {{Order Number}} current status,track_order
+23882,need assistance checking the ETA of the purchase {{Order Number}},track_order
+23156,can uhelp me to check the ETA of purchase {{Order Number}},track_order
+23241,where can i check the bloody eta of order {{Order Number}},track_order
+23180,checking order status,track_order
+23286,I want assistance locating purchase {{Order Number}},track_order
+23789,can you help me seeing the ETA of the order {{Order Number}}?,track_order
+23584,I have to see the status of purchase {{Order Number}},track_order
+23914,can ya help me to check the ETA of the order {{Order Number}},track_order
+23305,I need help seeing the ETA of the order {{Order Number}},track_order
+23145,wanna track purchase {{Order Number}},track_order

@@ -1,0 +1,15 @@
+{
+ "n": 108,
+ "n_known": 92,
+ "n_unknown": 16,
+ "llm_acc_known": 0.8586956521739131,
+ "minilm_acc_known": 0.9891304347826086,
+ "llm_acc_known_noisy": 0.8260869565217391,
+ "minilm_acc_known_noisy": 0.9782608695652174,
+ "llm_invalid_rate": 0.046296296296296294,
+ "llm_unknown_on_heldout": 0.0,
+ "llm_unknown_on_known": 0.010869565217391304,
+ "llm_wrong_label_on_heldout": 0.9375,
+ "minilm_auto_on_heldout": 0.0,
+ "llm_mean_seconds": 42.50407407407407
+}
