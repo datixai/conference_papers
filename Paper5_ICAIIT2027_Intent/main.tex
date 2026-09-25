@@ -1,0 +1,229 @@
+% Paper 5 -- ICAIIT 2027, Track 4 (Artificial Intelligence, Machine Learning and Data Science)
+% Compile: pdflatex main.tex (twice). Anonymous submission copy: \documentclass[review]{icaiit2027}
+\documentclass{icaiit2027}
+
+\title{Intent and Aspect Detection in Customer Messages for Reliable Handover to Business Automation}
+\icaiitauthors{Ahmed Ali and Asher Mehfooz}
+\icaiitaffiliations{University of Kotli Azad Jammu and Kashmir, Kotli 11100, Azad Jammu and Kashmir, Pakistan\\
+rajaahmedalikhan97@gmail.com, info.hasher@gmail.com}
+
+\keywords{Intent Detection, Aspect Classification, Selective Classification, Open-Set Recognition, Customer Service Automation.}
+
+\abstract{Business automation fails before any agent runs when the system misreads what a customer wants. A refund request routed as an order change, or an unfamiliar request forced into the nearest known label, starts the wrong workflow. Sentiment polarity does not help here, because it says how a customer feels, not what should happen next. Existing intent benchmarks report accuracy on a closed label set, and aspect-based sentiment work targets clean product reviews; neither decides when a classifier is sure enough to hand a message to automation. This paper specifies a handover layer that predicts an intent and a business aspect for each customer message and auto-routes only when the intent confidence clears a threshold, the aspect is actionable, and the two predictions agree. The threshold is tuned by leaving known intents out as pseudo-unknowns, so that tuning sees the failure the deployment will meet. We evaluate on a public customer-support corpus of 26,872 messages with four intents withheld from training, a TF-IDF baseline, a frozen MiniLM sentence encoder, and a few-shot small language model. With 20 labelled messages per intent the encoder reaches 98.5\% intent accuracy on known intents, yet a threshold tuned on known intents alone still auto-routes 62\% of messages from unseen intents. The leave-intents-out threshold cuts that leakage to 12\%, auto-routes 69\% of eligible known messages with no wrong intent, and keeps false auto-routes at 1.8\% of all traffic. The remaining errors concentrate on unseen intents that are near paraphrases of a known one. The contribution is a measured handover policy, not a new classifier.}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Customer-service automation now chains a text classifier to downstream actions: a language-model agent issues a refund, a workflow opens a return label, or a ticket is placed in a queue. The weakest link is often the first one. If the classifier reads \emph{I want my money back for the late parcel} as an order-tracking request, every later step is correct for the wrong problem. If a request type the system has never seen is forced into the nearest known label, automation acts with full confidence on a misreading.
+
+Many deployed pipelines still attach a sentiment score to each message. Polarity is useful for dashboards but it is not an action. An angry refund request and an angry delivery complaint have the same polarity and need different workflows. What a handover needs is the \emph{intent} (what the customer wants done) and the \emph{aspect} (which part of the business is involved: billing, account access, delivery, orders), together with a decision about whether the prediction is safe to act on.
+
+Intent detection has strong benchmarks and strong models \cite{casanueva2020,larson2019,liu2021}. Those benchmarks score accuracy on a closed set. Out-of-scope detection has been studied as a separate problem \cite{larson2019,lin2019,zhang2021}. Selective classification studies when a model should abstain \cite{geifman2017}. In a business pipeline these questions meet in one number: the fraction of messages that are automatically routed with the wrong intent. We call this the \emph{false auto-route rate} and treat it, together with coverage, as the primary metric.
+
+This paper makes three contributions. First, it specifies a handover gate over a joint intent and aspect prediction with three conditions: confidence, an actionable aspect, and agreement between the two heads. Second, it proposes a simple way to tune the confidence threshold for open-set traffic: known intents are left out in turn as pseudo-unknowns during tuning. Third, it measures the gate on a public customer-support corpus with withheld intents and noisy wording, comparing a lexical baseline, a frozen sentence encoder, and a few-shot small language model. The paper does not propose a new transformer, and it does not call any business action; it stops at the decision to automate.
+
+The rest of the paper is organised as follows. Section~2 reviews related work. Section~3 defines labels, the handover policy, and the data. Section~4 describes the models and threshold tuning. Section~5 reports results, Section~6 discusses limits, and Section~7 concludes.
+
+\section{Related Work}
+
+\subsection{Intent Detection}
+
+Banking77 \cite{casanueva2020}, CLINC150 \cite{larson2019}, and HWU64 \cite{liu2021} established fine-grained intent classification for conversational systems. Sentence encoders fine-tuned from BERT \cite{devlin2019} reach high accuracy on these sets, and dual sentence encoders make that accuracy cheap at inference time \cite{casanueva2020}. Sentence-BERT \cite{reimers2019} and distilled encoders such as MiniLM \cite{wang2020} produce embeddings that a linear head can classify with few labelled examples; SetFit \cite{tunstall2022} adds contrastive fine-tuning to the same idea. These results are reported as closed-set accuracy. They do not say how many messages a deployment can safely hand to automation.
+
+\subsection{Out-of-Scope and Open Intents}
+
+CLINC150 added an out-of-scope class and showed that models with high in-scope accuracy often fail to reject unsupported requests \cite{larson2019}. Later work learns margins or decision boundaries around known intents so that unknown intents fall outside them \cite{lin2019,zhang2021}. A widely used baseline thresholds the maximum softmax probability \cite{hendrycks2017}. The threshold, however, has to be set on some validation data, and validation data from the deployment's future unknown intents do not exist. Our leave-intents-out tuning addresses exactly that gap with no change to the classifier.
+
+\subsection{Aspects and Abstention}
+
+Aspect-based sentiment analysis \cite{pontiki2014} links opinions to parts of a product or service, but it has been developed mostly on clean restaurant and laptop reviews and it outputs polarity rather than a routing decision. Selective classification \cite{geifman2017} formalises the trade-off between coverage and risk that we measure. Few-shot prompting of large language models \cite{brown2020} is an alternative to training a classifier; small open models such as Phi-3 \cite{abdin2024} make that option cheap enough to run on a CPU, which is the setting of a small business. We include such a model as a baseline rather than as the proposed method.
+
+\section{Task Definition}
+
+\subsection{Labels}
+
+Each message receives an \emph{intent} (27 labels in the corpus, of which 23 are visible during training) and an \emph{aspect}. The aspect is a coarse business area derived from the corpus category: \emph{access} (account), \emph{billing} (payment, invoice, refund, cancellation fee), \emph{delivery} (delivery, shipping), \emph{order}, and \emph{other} (contact requests, feedback and complaints, newsletter). Because the corpus defines each intent inside one category, the aspect implied by a predicted intent can be compared with the aspect predicted by a separate head. Disagreement between the two is used as an additional abstain signal.
+
+\subsection{Handover Policy}
+
+A message is auto-routed to the automation layer only if all three conditions hold: (i) the maximum intent probability is at least $t$; (ii) the predicted aspect is not \emph{other}, because complaints, requests for a human, and feedback should reach a person; and (iii) the aspect head agrees with the aspect implied by the predicted intent. Otherwise the message goes to the human queue. An auto-routed message carries a structured ticket \{intent, aspect\} that an agent can consume. Figure~\ref{fig:pipeline} shows the layer.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/fig1_handover_pipeline.png}
+  \caption{Handover layer. A message is auto-routed only when the intent confidence clears $t$, the aspect is actionable, and the two heads agree.}
+  \label{fig:pipeline}
+\end{figure*}
+
+A \emph{false auto-route} is an auto-routed message whose predicted intent differs from the true intent. For a message from an unseen intent every auto-route is false. We report coverage (share of all messages auto-routed), the false auto-route rate over all messages, and the rate among auto-routed messages.
+
+\subsection{Data}
+
+We use the public Bitext customer-support dataset \cite{bitext2023}: 26,872 English customer messages over 27 intents in 11 categories. Each message carries tags for linguistic variation; we treat messages tagged with typos, colloquial language, abbreviations, or offensive language as \emph{noisy}. No private customer data are used.
+
+Four intents are withheld from training and validation and appear only at test time: \emph{track\_refund}, \emph{change\_shipping\_address}, \emph{check\_cancellation\_fee}, and \emph{switch\_account}. They were chosen because each has a close relative among the known intents, which makes them a hard test of the gate. For each intent 150 messages form the test set. For each known intent 30 further messages form the validation set, and 20 or 100 messages form the training set. Table~\ref{tab:data} summarises the splits. The low-resource setting of 20 examples per intent (460 labelled messages) matches what a small business can annotate in a day.
+
+\begin{table}[t]
+  \caption{Data splits after removing duplicate messages.}
+  \label{tab:data}
+  \centering\footnotesize
+  \begin{tabularx}{\columnwidth}{@{}X r@{}}
+    \toprule
+    Split & Messages \\
+    \midrule
+    Train, 23 known intents $\times$ 20 (or $\times$ 100) & 460 (2,300) \\
+    Validation, 23 known intents $\times$ 30 & 690 \\
+    Test, known intents & 3,450 \\
+    \quad of which noisy / clean & 1,776 / 1,674 \\
+    \quad of which eligible for automation (aspect $\neq$ other) & 2,700 \\
+    Test, 4 unseen intents & 600 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Because 5 of the 23 known intents have aspect \emph{other}, at most 2,700 of the 4,050 test messages (66.7\%) should ever be auto-routed. This ceiling is shown in the results.
+
+\section{Method}
+
+\subsection{Lexical Baseline}
+
+The baseline represents a message by word unigrams and bigrams plus character 3--5-grams, both TF-IDF weighted, and trains two multinomial logistic regression heads (intent, aspect) with $C = 10$. It trains in about one second on a laptop CPU.
+
+\subsection{Frozen Sentence Encoder}
+
+The second model encodes each message with the all-MiniLM-L6-v2 sentence encoder \cite{reimers2019,wang2020} exported to ONNX, mean-pools the token states, normalises the vector, and trains the same two logistic heads ($C = 20$). The encoder is not fine-tuned. Encoding takes 3.2~ms per message on the CPU used for all runs (AMD Ryzen 5 7430U), so the model is practical without a GPU.
+
+\subsection{Few-Shot Small Language Model}
+
+The third model is Phi-3.5-mini-instruct \cite{abdin2024} in 4-bit quantisation, run on the same CPU with ONNX Runtime and greedy decoding. The prompt lists the 23 known intents, each with the first eight words of one training example, and an \emph{unknown} option, and asks for the label only. An answer that is not a valid label is treated as an abstain. Because each call takes seconds rather than milliseconds, the model is evaluated on a stratified subset of 108 test messages (4 per intent, 16 from unseen intents), and the encoder is scored on the same subset for comparison.
+
+\subsection{Threshold Tuning}
+
+A threshold tuned on validation data from known intents can only learn how confident the model is when it is right or confused between known classes. It never sees a message the model has no label for. We therefore compare two tuning rules, both choosing the smallest $t$ for which the false auto-route rate among auto-routed validation messages is at most 2\%:
+
+\begin{itemize}
+  \item \emph{Known-only}: the final model is scored on the validation split.
+  \item \emph{Leave-intents-out}: the known intents are divided into six groups; for each group a model is trained without it and scored on the whole validation split, so that the left-out intents play the role of unknown requests. Errors are pooled over the six folds (Algorithm~\ref{alg:lio}).
+\end{itemize}
+
+\begin{algorithm}[t]
+\begin{algobody}
+Input:  train D, validation V,
+\ind\ind known intents K, risk r
+Output: threshold t
+1: split K into groups G1..G6
+2: for each group Gi do
+3: \ind train heads on D without Gi
+4: \ind store probabilities on V
+5: end for
+6: for t = 0.05 to 0.99 step 0.01 do
+7: \ind A = V messages auto-routed at t
+8: \ind if wrong(A) / |A| <= r then
+9: \ind\ind return t
+10: end for
+11: return 0.99
+\end{algobody}
+\caption{Leave-intents-out threshold tuning.}
+\label{alg:lio}
+\end{algorithm}
+
+The threshold chosen by either rule is then applied, unchanged, to the final model trained on all known intents. No test data and no unseen intent are used in tuning.
+
+\section{Results}
+
+\subsection{Closed-Set Accuracy}
+
+Table~\ref{tab:acc} reports accuracy on the 3,450 test messages from known intents. With 20 examples per intent the frozen encoder reaches 98.5\% intent accuracy against 96.1\% for TF-IDF, and it loses only one point on noisy wording. With 100 examples per intent both models reach 99.2\%. Aspect macro-F1 is above 0.99 in every setting. By the usual benchmark standard the classification problem is nearly solved.
+
+\begin{table}[t]
+  \caption{Accuracy on known intents (3,450 test messages). Macro-F1 for aspects.}
+  \label{tab:acc}
+  \centering\footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\columnwidth}{@{}X r r r r@{}}
+    \toprule
+    Model (examples per intent) & Intent & Clean & Noisy & Aspect F1 \\
+    \midrule
+    TF-IDF + LR (20) & 96.1 & 97.0 & 95.3 & 0.998 \\
+    MiniLM + LR (20) & 98.5 & 99.0 & 98.0 & 0.993 \\
+    TF-IDF + LR (100) & 99.2 & 99.1 & 99.3 & 0.999 \\
+    MiniLM + LR (100) & 99.2 & 99.4 & 99.1 & 0.997 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Handover Without and With Abstention}
+
+Routing every message is not safe even with near-perfect closed-set accuracy (Table~\ref{tab:handover}). All 600 messages from unseen intents receive some known label, so 16.1\% of all traffic is auto-routed with the wrong intent for the encoder and 18.1\% for TF-IDF.
+
+\begin{table*}[t]
+  \caption{Handover outcomes on all 4,050 test messages with 20 training examples per intent. All rates in \%. FAR = false auto-route rate.}
+  \label{tab:handover}
+  \centering\footnotesize
+  \begin{tabular}{@{}l l r r r r r@{}}
+    \toprule
+    Model & Policy & $t$ & Coverage & FAR, all & FAR, auto-routed & Unseen auto-routed \\
+    \midrule
+    MiniLM + LR & Route everything & -- & 100.0 & 16.1 & 16.1 & 100.0 \\
+     & Known-only threshold & 0.31 & 75.4 & 10.3 & 13.7 & 62.3 \\
+     & Leave-intents-out threshold & 0.88 & 48.0 & 1.8 & 3.7 & 11.8 \\
+    \midrule
+    TF-IDF + LR & Route everything & -- & 100.0 & 18.1 & 18.1 & 100.0 \\
+     & Known-only threshold & 0.38 & 69.1 & 7.6 & 11.0 & 40.3 \\
+     & Leave-intents-out threshold & 0.99 & 0.05 & 0.0 & 0.0 & 0.0 \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+The known-only threshold looks safe on validation data by construction, yet on test data it still auto-routes 62.3\% of unseen-intent messages for the encoder. The threshold is low ($t = 0.31$) because known-intent errors are rare; the model is almost never confused between classes it has seen, so validation gives no reason to be strict. Unseen intents are the error the validation split cannot show.
+
+The leave-intents-out threshold is much stricter ($t = 0.88$) because pseudo-unknowns during tuning receive confident wrong labels. On the test set the encoder then auto-routes 48.0\% of all messages, which is 69.4\% of the 2,700 eligible known messages, and every auto-routed known message has the correct intent. The 71 false auto-routes that remain (1.8\% of traffic) all come from unseen intents. The false auto-route rate among auto-routed messages is 3.7\%, above the 2\% tuning target: pseudo-unknowns approximate real unknowns but do not reproduce them. On noisy messages alone the policy covers 44.4\% of traffic at 3.5\% risk among auto-routed messages, so noise lowers coverage rather than raising risk.
+
+TF-IDF behaves differently. Its logistic probabilities are too flat to separate pseudo-unknowns from known intents, and no threshold below 0.99 meets the target, so the gate routes almost nothing. With 100 examples per intent it covers 11.7\% of traffic. A lexical model can be made safe, but not useful. Figure~\ref{fig:curve} shows the full coverage--risk curves: the encoder dominates TF-IDF at every coverage level, and the two tuning rules pick very different points on the same curve.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig2_coverage_risk.png}
+  \caption{Coverage against false auto-routes as the threshold varies (20 examples per intent). Markers show the thresholds chosen by the two tuning rules; the dashed line is the share of messages eligible for automation.}
+  \label{fig:curve}
+\end{figure}
+
+More training data make the leakage problem worse for the known-only rule, not better (Figure~\ref{fig:leak}). With 100 examples per intent the encoder auto-routes 85.3\% of unseen-intent messages under the known-only threshold, because the model becomes more confident everywhere. The leave-intents-out rule holds leakage at 15.3\% while covering 58.9\% of traffic.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig3_unknown_leakage.png}
+  \caption{Share of messages from the four unseen intents that the gate auto-routes, by model, training size, and threshold rule.}
+  \label{fig:leak}
+\end{figure}
+
+\subsection{Where the Gate Still Fails}
+
+Leakage is not spread evenly. Under the leave-intents-out threshold the encoder never auto-routes \emph{check\_cancellation\_fee} or \emph{switch\_account}. It auto-routes 32.7\% of \emph{change\_shipping\_address} messages, almost all as \emph{set\_up\_shipping\_address}, and 14.7\% of \emph{track\_refund} messages, almost all as \emph{get\_refund}. These are near paraphrases: the words that separate changing an address from setting one up are few. The practical consequence is that an intent taxonomy for automation should either merge such pairs into one action that asks a clarifying question, or include both from the start. The aspect-agreement condition removes a further 3.2\% of messages on which the two heads disagree; on this corpus it cannot catch the near-paraphrase errors, because both members of each pair share the same aspect.
+
+\subsection{Few-Shot Language Model}
+
+On the 108-message subset the few-shot model reaches 85.9\% intent accuracy on the 92 known-intent messages against 98.9\% for the encoder, and 82.6\% against 97.8\% on noisy messages; 4.6\% of its answers are not a valid label. The explicit \emph{unknown} option did not help: the model gave that answer to none of the 16 unseen-intent messages and assigned a known label to 15 of them, whereas the encoder's gate with the leave-intents-out threshold auto-routed none of these 16. Each call takes 42.5~s on the CPU, including prompt processing, against 3.2~ms for the encoder, a factor of more than 10,000. For short customer messages with a fixed label set, a frozen encoder with a tuned gate is more accurate, safer on unseen requests, and four orders of magnitude cheaper than prompting a small language model.
+
+\section{Discussion}
+
+The results support a design rule for handover layers: tune the abstain threshold against simulated unknown intents, not against known ones. The rule costs nothing at inference time and requires only the labelled data a team already has. It turns a model with 98.5\% benchmark accuracy and 16\% false auto-routes into one that automates two thirds of eligible traffic with no wrong known intent.
+
+\subsection{Limitations}
+
+The corpus is public and partly synthetic in wording; real tickets are longer, contain several requests, and carry order numbers and dates. The aspect is derived from the corpus category and is therefore implied by the intent; a corpus with independent aspect labels would test the agreement condition more severely. Four withheld intents are a small open-set sample, and a different choice would move the numbers. The language model baseline uses one small model on a subset. We did not fine-tune the encoder, which would raise accuracy but also confidence, so the tuning question would remain. No customer or agent took part in this study, and the business cost of a false auto-route is not measured in money.
+
+\subsection{Threats to Validity}
+
+Construct validity rests on the false auto-route metric: it counts a wrong intent as an error even when the downstream action would be harmless. Internal validity is limited by the random fold assignment in leave-intents-out tuning; the six folds were drawn once with a fixed seed. External validity is limited to English text and to one taxonomy. The code, splits, and all numbers are generated by scripts published with the paper.
+
+\section{Conclusion}
+
+A classifier that is almost always right on known intents can still hand one message in six to automation with the wrong label, because the requests it has never seen look familiar to it. Checking the threshold against known intents does not reveal this. Leaving known intents out during tuning does, and with a frozen sentence encoder it yields a handover layer that routes 48\% of all traffic, and 69\% of eligible traffic, with no wrong known intent and 1.8\% false auto-routes overall. The remaining errors sit on near-paraphrase intents and point to a taxonomy fix rather than a model fix. The next step is to connect the gate to a validated tool-calling agent and measure end-to-end business errors.
+
+\input{references.tex}
+
+\end{document}
