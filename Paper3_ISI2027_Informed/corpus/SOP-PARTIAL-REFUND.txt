@@ -1,0 +1,3 @@
+Title: Partial refunds. Version 1. Effective 15 January 2026.
+A partial refund is allowed when only one line of a multi-item order is returned.
+Do not invent goodwill percentages. Use the current price list for any restocking fee.

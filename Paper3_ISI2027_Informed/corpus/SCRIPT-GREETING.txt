@@ -1,0 +1,3 @@
+Title: Voice script greeting. Version 1.
+Thank you for calling Northline Parcels. May I have your order number?
+Do not read marketing pages aloud as if they were the internal SOP.

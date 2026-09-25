@@ -1,0 +1,3 @@
+Title: Cancel before dispatch. Version 2. Effective 2 February 2026.
+An order may be cancelled at no charge until the warehouse marks it as dispatched.
+After dispatch the unopened-item refund SOP applies.
