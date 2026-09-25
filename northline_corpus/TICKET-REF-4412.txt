@@ -1,0 +1,3 @@
+Title: Example ticket REF-4412. Closed 18 February 2026.
+Customer received a dented box. Agent applied damaged-goods SOP and issued a replacement.
+Note: the agent first quoted the 14-day unopened rule and then corrected after opening the damaged-goods SOP.

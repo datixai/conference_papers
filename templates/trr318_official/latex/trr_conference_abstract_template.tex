@@ -1,0 +1,88 @@
+% -----------------------------------------------------------------------------
+% TRR Conference Abstract Template
+% Extended abstract: 1--2 pages including references
+% -----------------------------------------------------------------------------
+
+\documentclass[11pt,a4paper]{article}
+
+% -----------------------------------------------------------------------------
+% Page layout and typography
+% -----------------------------------------------------------------------------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+
+% -----------------------------------------------------------------------------
+% Links and references
+% -----------------------------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+% -----------------------------------------------------------------------------
+% Title formatting
+% -----------------------------------------------------------------------------
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+
+\pretitle{\begin{center}\Large\bfseries}
+\posttitle{\par\end{center}\vspace{-0.5em}}
+\preauthor{\begin{center}\normalsize}
+\postauthor{\par\end{center}\vspace{-1em}}
+\predate{}
+\postdate{}
+
+% -----------------------------------------------------------------------------
+% Submission information
+% Replace the placeholder text below with your own information.
+% -----------------------------------------------------------------------------
+
+\title{Title}
+
+\author{
+First Author\textsuperscript{1}, Second Author\textsuperscript{2}, and Third Author\textsuperscript{1}\\[0.4em]
+\small \textsuperscript{1}Affiliation\\
+\small \textsuperscript{2}Affiliation\\[0.4em]
+\small \href{mailto:first.author@example.com}{first.author@example.com};
+\href{mailto:second.author@example.com}{second.author@example.com};
+\href{mailto:third.author@example.com}{third.author@example.com}
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{Keywords:} keyword 1; keyword 2; keyword 3; keyword 4; keyword 5
+
+\vspace{0.8em}
+
+% -----------------------------------------------------------------------------
+% Abstract body
+% The full submission should be 1--2 pages, including references.
+% You may use paragraphs only, or add unnumbered sections if helpful.
+% -----------------------------------------------------------------------------
+
+\section*{Abstract}
+
+Please replace this text with your extended abstract. The submission should be 1--2 pages in total, including references. It should include the title, author name(s), affiliation(s), email address(es), and 4--5 keywords.
+
+Since the conference brings together researchers from different disciplines, authors are encouraged to write in a way that is accessible to an interdisciplinary audience.
+
+You may cite relevant literature in the text, for example \textcite{example2024}, or use parenthetical citations such as \parencite{example2024}.
+
+% Optional structure, if useful:
+% \section*{Background and Research Question}
+% \section*{Approach}
+% \section*{Contribution}
+
+\section*{References}
+
+\printbibliography[heading=none]
+
+\end{document}

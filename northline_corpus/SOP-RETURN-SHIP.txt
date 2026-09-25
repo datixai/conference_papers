@@ -1,0 +1,3 @@
+Title: Return shipping labels. Version 2. Effective 19 December 2025.
+Issue a prepaid label when the item is damaged, incorrect, or late.
+For change-of-mind unopened returns, the customer pays return shipping unless a campaign says otherwise.

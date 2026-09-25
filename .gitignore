@@ -1,0 +1,10 @@
+experiments/_models/
+__pycache__/
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.synctex.gz

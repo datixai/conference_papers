@@ -1,0 +1,3 @@
+Title: Changelog for refund policy. Last entry 1 March 2026.
+2024-06-01: v2 set unopened refunds at 30 days.
+2026-03-01: v3 reduced the unopened refund window from 30 days to 14 days after repeated abuse of late returns.
