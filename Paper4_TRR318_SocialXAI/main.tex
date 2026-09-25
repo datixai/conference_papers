@@ -1,0 +1,98 @@
+% -----------------------------------------------------------------------------
+% Paper 4 -- 4th TRR 318 Conference "Scaffolding Social XAI", Paderborn 2027
+% Built on the official TRR conference abstract template (unchanged preamble).
+% Extended abstract: 1--2 pages including references.
+% Compile: pdflatex main -> biber main -> pdflatex main -> pdflatex main
+% -----------------------------------------------------------------------------
+
+\documentclass[11pt,a4paper]{article}
+
+% -----------------------------------------------------------------------------
+% Page layout and typography
+% -----------------------------------------------------------------------------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+
+% -----------------------------------------------------------------------------
+% Links and references
+% -----------------------------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+% -----------------------------------------------------------------------------
+% Title formatting
+% -----------------------------------------------------------------------------
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+
+\pretitle{\begin{center}\Large\bfseries}
+\posttitle{\par\end{center}\vspace{-0.5em}}
+\preauthor{\begin{center}\normalsize}
+\postauthor{\par\end{center}\vspace{-1em}}
+\predate{}
+\postdate{}
+
+% -----------------------------------------------------------------------------
+% Submission information
+% -----------------------------------------------------------------------------
+
+\title{Scaffolding Social Explainability When Workers Contest Language-Model Automation}
+
+\author{
+Ahmed Ali\textsuperscript{1} and Asher Mehfooz\textsuperscript{1}\\[0.4em]
+\small \textsuperscript{1}University of Kotli Azad Jammu and Kashmir, Pakistan\\[0.4em]
+\small \href{mailto:rajaahmedalikhan97@gmail.com}{rajaahmedalikhan97@gmail.com};
+\href{mailto:info.hasher@gmail.com}{info.hasher@gmail.com}
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{Keywords:} social XAI; workplace automation; language-model agents; contestability; XAI literacy
+
+\vspace{0.8em}
+
+\section*{Background and Research Question}
+
+Small firms now let language-model agents prepare business actions such as refunds, cancellations, and customer e-mails. The usual safeguard is an \emph{Approve} button beside a one-line reason. Approval is treated as oversight, but it is not an explanation in any social sense. Automation research has long shown that people who confirm machine proposals under time pressure drift into complacency and automation bias \parencite{Parasuraman2010}. Feature-attribution scores do not help there: weights are not the language in which a desk worker argues about a refund. A fluent generated narrative can sound grounded when it is not.
+
+TRR 318 frames explanation as a social practice that is co-constructed between explainer and explainee \parencite{Rohlfing2021}, and everyday explanations are contrastive, selective, and interactive \parencite{Miller2019}. Contestability research asks systems to support people who disagree with a decision \parencite{Alfrink2023}. Our question joins these lines at the approve-click: \emph{what minimal dialogue moves let a worker contest a proposed automated action, and does offering them change whether the worker refuses a bad action?}
+
+\section*{Approach: A Four-Move Scaffold}
+
+We use a validator-gated agent from a separate systems study, in which a small open language model proposes one JSON tool call per customer ticket and deterministic code checks it against a synthetic shop's records and policy. We freeze three real proposals. In a \emph{correct} case it refunds 48.40 for an unopened webcam delivered 13 days ago. In a \emph{wrong-ID} case customer C032 writes ``Refund order O1042 please, the item was not what I expected''; the model proposes a well-formed refund with a verbatim evidence quote, but O1042 belongs to another customer. In a \emph{policy-missing} case a customer writes ``Your courier was rude to me. I want compensation''; the model proposes sending the approved \emph{delay\_apology} e-mail, a call that passes schema and template checks although no policy covers compensation.
+
+Instead of a static reason, the worker can open four moves, each answered from records rather than free generation:
+
+\begin{itemize}
+  \setlength{\itemsep}{0pt}
+  \item \textbf{Evidence}: which words in the ticket and which record fields the proposal rests on (``order O1042, owner C031'').
+  \item \textbf{Rule}: which policy line licenses the action, or the statement that none does.
+  \item \textbf{Counterfactual}: what would have to be different for the decision to flip (``allowed if the order belonged to the sender'').
+  \item \textbf{Limit}: what the system cannot know (identity beyond the account, the condition of the item).
+\end{itemize}
+
+The moves scaffold in the original sense \parencite{Wood1976}: they narrow the contest without supplying the verdict. They also frame XAI literacy as situated competence \parencite{Long2020}: the wrong-ID case yields to \emph{Evidence}, the policy-missing case to \emph{Rule}.
+
+\section*{Planned Study}
+
+Five to eight customer-service workers, or business students as proxies, judge two matched sets of three cases (same failure types, different tickets, all real agent output): one set with the static reason (condition A), the other with the queryable scaffold (condition B), with set and order counterbalanced. The primary outcome is whether the participant refuses or escalates the two bad proposals and approves the correct one. Think-aloud talk is coded for contestation moves that challenge evidence, rule, or scope. We expect B to raise refusals more for wrong-ID cases than for policy-missing ones, since a missing rule must be noticed as an absence. No results are reported here; the study runs before the conference.
+
+\section*{Contribution and Limits}
+
+The contribution is a dyadic, record-grounded explanation format for approving language-model actions at work, with a protocol that tests refusal rather than rubber-stamping, not a new explainer algorithm. The cases are synthetic, the sample small, and students are imperfect proxies for accountable staff. The design follows the reflective, sociotechnical view of explainability \parencite{Ehsan2020}: whether a scaffold helps depends on who may say no, not only on what the screen shows.
+
+\section*{References}
+
+\printbibliography[heading=none]
+
+\end{document}
