@@ -1,0 +1,377 @@
+[
+  {
+    "task": "T1 Factoid",
+    "slot": "days",
+    "gold": 14,
+    "top3": [
+      {
+        "days": 30,
+        "days_all": [
+          30
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": true,
+        "current": false,
+        "no_intl": false,
+        "name": "SOP-REFUND-UNOPENED-v2",
+        "bm25": 10.481
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": true,
+        "no_intl": false,
+        "name": "SOP-REFUND-UNOPENED-v3",
+        "bm25": 10.049
+      },
+      {
+        "days": 30,
+        "days_all": [
+          30
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "POLICY-WEB-RETURNS",
+        "bm25": 4.486
+      }
+    ],
+    "policies": {
+      "always_rank1": {
+        "pred": 30,
+        "reason": "answer_rank1",
+        "outcome": "wrong_answer"
+      },
+      "conflict_refuse": {
+        "pred": "REFUSE",
+        "reason": "refuse_conflict",
+        "outcome": "false_refuse"
+      },
+      "current_override": {
+        "pred": 14,
+        "reason": "answer_current_override",
+        "outcome": "correct_answer"
+      }
+    }
+  },
+  {
+    "task": "T2 Conflict",
+    "slot": "days",
+    "gold": 14,
+    "top3": [
+      {
+        "days": 30,
+        "days_all": [
+          30
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "POLICY-WEB-RETURNS",
+        "bm25": 10.994
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "SOP-DAMAGED-GOODS",
+        "bm25": 7.172
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": true,
+        "no_intl": false,
+        "name": "SOP-REFUND-UNOPENED-v3",
+        "bm25": 6.344
+      }
+    ],
+    "policies": {
+      "always_rank1": {
+        "pred": 30,
+        "reason": "answer_rank1",
+        "outcome": "wrong_answer"
+      },
+      "conflict_refuse": {
+        "pred": "REFUSE",
+        "reason": "refuse_conflict",
+        "outcome": "false_refuse"
+      },
+      "current_override": {
+        "pred": 14,
+        "reason": "answer_current_override",
+        "outcome": "correct_answer"
+      }
+    }
+  },
+  {
+    "task": "T3 Stale fee",
+    "slot": "pct",
+    "gold": 8,
+    "top3": [
+      {
+        "days": null,
+        "days_all": [],
+        "pct": 15,
+        "pct_all": [
+          15
+        ],
+        "superseded": true,
+        "current": false,
+        "no_intl": false,
+        "name": "PRICE-LIST-2024",
+        "bm25": 11.905
+      },
+      {
+        "days": null,
+        "days_all": [],
+        "pct": 8,
+        "pct_all": [
+          8
+        ],
+        "superseded": false,
+        "current": true,
+        "no_intl": false,
+        "name": "PRICE-LIST-2026",
+        "bm25": 10.564
+      },
+      {
+        "days": 30,
+        "days_all": [
+          30
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "POLICY-WEB-RETURNS",
+        "bm25": 5.799
+      }
+    ],
+    "policies": {
+      "always_rank1": {
+        "pred": 15,
+        "reason": "answer_rank1",
+        "outcome": "wrong_answer"
+      },
+      "conflict_refuse": {
+        "pred": "REFUSE",
+        "reason": "refuse_conflict",
+        "outcome": "false_refuse"
+      },
+      "current_override": {
+        "pred": 8,
+        "reason": "answer_current_override",
+        "outcome": "correct_answer"
+      }
+    }
+  },
+  {
+    "task": "T4 Missing",
+    "slot": "warranty",
+    "gold": "REFUSE",
+    "top3": [
+      {
+        "days": null,
+        "days_all": [],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": true,
+        "name": "SOP-WARRANTY-DOMESTIC",
+        "bm25": 9.664
+      },
+      {
+        "days": 30,
+        "days_all": [
+          30
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "POLICY-WEB-RETURNS",
+        "bm25": 3.558
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": true,
+        "no_intl": false,
+        "name": "SOP-REFUND-UNOPENED-v3",
+        "bm25": 2.417
+      }
+    ],
+    "policies": {
+      "always_rank1": {
+        "pred": 12,
+        "reason": "answer_rank1_domestic",
+        "outcome": "wrong_answer"
+      },
+      "conflict_refuse": {
+        "pred": "REFUSE",
+        "reason": "refuse_absent_scope",
+        "outcome": "correct_refuse"
+      },
+      "current_override": {
+        "pred": "REFUSE",
+        "reason": "refuse_absent_scope",
+        "outcome": "correct_refuse"
+      }
+    }
+  },
+  {
+    "task": "T5 Inform others",
+    "slot": "days",
+    "gold": 14,
+    "top3": [
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": true,
+        "no_intl": false,
+        "name": "SOP-REFUND-UNOPENED-v3",
+        "bm25": 3.925
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "SOP-DAMAGED-GOODS",
+        "bm25": 3.318
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "TICKET-REF-4412",
+        "bm25": 3.276
+      }
+    ],
+    "policies": {
+      "always_rank1": {
+        "pred": 14,
+        "reason": "answer_rank1",
+        "outcome": "correct_answer"
+      },
+      "conflict_refuse": {
+        "pred": 14,
+        "reason": "answer_agree",
+        "outcome": "correct_answer"
+      },
+      "current_override": {
+        "pred": 14,
+        "reason": "answer_current",
+        "outcome": "correct_answer"
+      }
+    }
+  },
+  {
+    "task": "T6 Repair",
+    "slot": "days",
+    "gold": 14,
+    "top3": [
+      {
+        "days": 14,
+        "days_all": [
+          30,
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "CHANGELOG-REFUNDS",
+        "bm25": 7.776
+      },
+      {
+        "days": 14,
+        "days_all": [
+          14
+        ],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": true,
+        "no_intl": false,
+        "name": "SOP-REFUND-UNOPENED-v3",
+        "bm25": 7.147
+      },
+      {
+        "days": null,
+        "days_all": [],
+        "pct": null,
+        "pct_all": [],
+        "superseded": false,
+        "current": false,
+        "no_intl": false,
+        "name": "HOLIDAY-HOURS",
+        "bm25": 5.953
+      }
+    ],
+    "policies": {
+      "always_rank1": {
+        "pred": 14,
+        "reason": "answer_rank1",
+        "outcome": "correct_answer"
+      },
+      "conflict_refuse": {
+        "pred": "REFUSE",
+        "reason": "refuse_conflict",
+        "outcome": "false_refuse"
+      },
+      "current_override": {
+        "pred": 14,
+        "reason": "answer_current_override",
+        "outcome": "correct_answer"
+      }
+    }
+  }
+]

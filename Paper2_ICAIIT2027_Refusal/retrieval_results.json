@@ -1,0 +1,158 @@
+[
+  {
+    "task": "T1 Factoid",
+    "query": "What is the refund window for an unopened item in original packaging?",
+    "top5": [
+      [
+        "SOP-REFUND-UNOPENED-v2",
+        10.481
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v3",
+        10.049
+      ],
+      [
+        "POLICY-WEB-RETURNS",
+        4.486
+      ],
+      [
+        "SOP-DAMAGED-GOODS",
+        4.463
+      ],
+      [
+        "SOP-CANCEL-DISPATCH",
+        4.336
+      ]
+    ]
+  },
+  {
+    "task": "T2 Conflict",
+    "query": "A customer wants a refund on day 20 for an unopened unused item. Can we refund?",
+    "top5": [
+      [
+        "POLICY-WEB-RETURNS",
+        10.994
+      ],
+      [
+        "SOP-DAMAGED-GOODS",
+        7.172
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v3",
+        6.344
+      ],
+      [
+        "PRICE-LIST-2024",
+        6.335
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v2",
+        6.322
+      ]
+    ]
+  },
+  {
+    "task": "T3 Stale fee",
+    "query": "What restocking fee do we charge for an opened but unused return?",
+    "top5": [
+      [
+        "PRICE-LIST-2024",
+        11.905
+      ],
+      [
+        "PRICE-LIST-2026",
+        10.564
+      ],
+      [
+        "POLICY-WEB-RETURNS",
+        5.799
+      ],
+      [
+        "SOP-PARTIAL-REFUND",
+        5.015
+      ],
+      [
+        "SOP-CANCEL-DISPATCH",
+        4.587
+      ]
+    ]
+  },
+  {
+    "task": "T4 Missing",
+    "query": "A customer in another country asks how long the international warranty lasts.",
+    "top5": [
+      [
+        "SOP-WARRANTY-DOMESTIC",
+        9.664
+      ],
+      [
+        "POLICY-WEB-RETURNS",
+        3.558
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v3",
+        2.417
+      ],
+      [
+        "SOP-RETURN-SHIP",
+        2.332
+      ],
+      [
+        "TICKET-REF-4412",
+        2.276
+      ]
+    ]
+  },
+  {
+    "task": "T5 Inform others",
+    "query": "Write one sentence I can send to the day-20 customer about their unopened refund.",
+    "top5": [
+      [
+        "SOP-REFUND-UNOPENED-v3",
+        3.925
+      ],
+      [
+        "SOP-DAMAGED-GOODS",
+        3.318
+      ],
+      [
+        "TICKET-REF-4412",
+        3.276
+      ],
+      [
+        "SOP-PARTIAL-REFUND",
+        3.214
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v2",
+        3.106
+      ]
+    ]
+  },
+  {
+    "task": "T6 Repair",
+    "query": "The assistant said the unopened refund window is 30 days. Is that still correct?",
+    "top5": [
+      [
+        "CHANGELOG-REFUNDS",
+        7.776
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v3",
+        7.147
+      ],
+      [
+        "HOLIDAY-HOURS",
+        5.953
+      ],
+      [
+        "SOP-DAMAGED-GOODS",
+        5.159
+      ],
+      [
+        "SOP-REFUND-UNOPENED-v2",
+        5.075
+      ]
+    ]
+  }
+]
