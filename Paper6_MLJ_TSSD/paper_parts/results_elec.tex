@@ -1,0 +1,24 @@
+Table~\ref{tab:elec} monitors 18 consecutive segments of the Elec2 market data in time order.
+
+On exchangeable source-period nulls, TSSD alarms on 2/300 (SR) and 4/300 (test) streams. All comparators were calibrated to 5\% on these nulls.
+
+The offline oracle splits the segments into two regimes. In the first five (records 8000--17999) the input distribution has moved (AUC 0.55--0.79) and a prior correction removes most of the excess loss (gap $\le0.053$ nats). In the remaining 13 (records 18000 onwards) the frozen posterior fails badly (frozen log loss 5.7--15.3) and only a refit repairs it (gap 2.2--8.8 nats).
+
+TSSD follows this structure exactly. In the first regime it raises an alarm in every run and reports a covariate shift, never a concept shift. In the second regime it makes a \emph{certified} concept claim in all 260 runs (median SR delay 24 records). The loss-based detectors agree on the second regime: Page--Hinkley fires in all of its runs, and the conformal martingale in 15--20 of 20 per segment. The WATCH-style weighted martingale fires in only 4--9 of 20 runs on four of these segments. Its covariate weighting absorbs part of the change when the inputs move strongly, the behaviour it is designed to have for benign covariate shift. Among the input detectors, BBSD fires in both regimes. TSSD is the only method whose output distinguishes them with a guarantee.
+
+The early segments use labels that are serially dependent and only roughly exchangeable, so the absence of concept claims there is descriptive rather than a test of validity.
+
+\begin{table}[t]
+\centering
+\caption{Electricity: chronological segments of 1000 records (20 runs each, 5\% labels). The oracle type and gap come from Table~\ref{tab:oracle}'s procedure. TSSD columns give alarm counts and the SR action-type counts concept/label/covariate. Comparator columns give alarm counts at matched thresholds (PH = Page--Hinkley; CTM = conformal TM; WATCH = WATCH-style WCTM).}
+\label{tab:elec}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrcrrrr@{}}
+\toprule
+Segment start & Oracle & Gap & SR alarm & Test alarm & C / L / X & PH & CTM & WATCH & BBSD \\
+\midrule
+\tabinput{results/tables/elec_rows.tex}
+\bottomrule
+\end{tabular}
+\end{table}

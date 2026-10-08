@@ -1,0 +1,8 @@
+data/
+results/traces_*.npz
+results/*_orig.*
+__pycache__/
+*.aux
+*.log
+*.out
+*.synctex.gz

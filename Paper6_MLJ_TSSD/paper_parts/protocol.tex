@@ -1,0 +1,34 @@
+\section{Experimental protocol}
+\label{sec:protocol}
+
+All code is pure Python/NumPy/SciPy and is released with the paper. All configuration constants of TSSD were fixed before any reported stream was generated: windows, bet grids, gates, the tempering grid, the alternative mixture weight, discount factors and SR starts. Every evaluation seed ($\ge30000$) is disjoint from the clip-calibration seeds (9000--9019). Nothing was tuned on evaluation streams. The 11 ablations in Section~\ref{sec:ablation} report the sensitivity to each constant.
+
+\subsection{Data and shifts}
+\paragraph{Controlled Gaussian streams.} $K=3$ classes, $d=10$, uniform prior, $X\mid Y=y\sim N(\mu_y,I)$, with a multinomial logistic model fitted on 2000 source pairs (well specified for this family). Streams have $T=400$ steps, a change at step 201, label reveal rate $\rho=0.05$, and a fresh source reference per step. The six alternatives are as follows. \emph{Covariate}: every class cloud is translated by $s\cdot(2,\dots,2)$ and labels are drawn from the source Bayes posterior, so $P(Y\mid X)$ is unchanged (this also changes prevalence). \emph{Label}: prior $(0.7,0.2,0.1)$ with $P(X\mid Y)$ unchanged. \emph{Concept}: inputs from the source marginal and the observed class cycled by one. The mixtures \emph{covariate+label}, \emph{covariate+concept} and \emph{label+concept} apply both mechanisms. Under covariate+label the target posterior equals a prior correction of the source posterior with a modified prior, so it belongs to $H^C$ and the correct action type is ``covariate'' or ``label'' but never ``concept''. Sweeps vary the covariate scale $s\in\{0.1,0.2,0.35,0.5\}$, the label mixing $\gamma\in\{0.25,0.5,0.75\}$ (prior $(1-\gamma)\pi+\gamma(0.7,0.2,0.1)$), the fraction of cycled labels $\in\{0.1,0.25,0.5\}$, $\rho\in\{0.02,0.05,0.10,0.20\}$ and the change time $t_0\in\{100,500,1000,2000\}$ (horizon $t_0+300$). There are 200 streams per cell (100 for change times), 1000 null streams for calibration and 1000 independent null streams for evaluation.
+
+\paragraph{Digits (exact-validity protocol).} The 1797 handwritten digits ($d=64$, $K=10$) are split once into a fitting set (719), a reference pool and a target pool (539 each). Every stream draws its references and its targets \emph{without replacement} from their pools (Proposition~\ref{prop:pool}). Streams have $T=300$ steps with a change at step 151. Covariate shift is an acquisition corruption (contrast $\times1.35$ and Gaussian noise $\sigma=0.45$); label shift resamples to 75\% mass on digits 0--2; concept shift cycles the digit label; the mixtures combine these. We use 300 calibration nulls, 300 evaluation nulls and 100 streams per shift.
+
+\paragraph{Covertype (natural geographic shift).} We fit the source model on 4000 cases of wilderness area~0 (Rawah) using the ten cartographic variables ($K=7$). A further 20{,}000 area-0 cases form the reference pool, and the remaining area-0 cases are a held-out same-domain target pool, which gives exact null streams. Each shifted stream switches at step 201 (of 600) to the natural population of area 1, 2 or 3 (Neota, Comanche Peak, Cache la Poudre).
+
+\paragraph{Electricity (chronological drift).} The Elec2 market data \citep{harries1999} has 45{,}312 half-hourly records and an up/down price label. The model is fitted on the first 4000 records, and the next 4000 are split at random into a reference pool and a source-period null pool. We monitor 18 consecutive 1000-record segments (starting at records 8000, 10000, \dots, 42000) in chronological order, with 20 independent reveal and reference draws per segment.
+
+\paragraph{Offline oracle typing for natural shifts.} For natural shifts the true mechanism is unknown, so we characterise each target domain or segment \emph{offline with all of its labels}, which is information the monitor never sees. A random half of the target data is used to fit (i) the best prior-and-tempering correction from family \eqref{eq:family} and (ii) a refitted logistic model. On the other half we compare their log losses with that of the frozen model, and we also compute a domain-classifier AUC for the inputs. The oracle type is ``concept'' when the refit beats the best prior correction by more than $0.05$ nats with a bootstrap lower bound above zero. Otherwise it is ``label'' if the prior correction gains more than $0.02$ nats over the frozen model, and ``covariate'' if the AUC exceeds $0.6$.
+
+\subsection{Comparators}
+We re-implemented ten detectors and ran them on the identical streams.
+\begin{itemize}[itemsep=0.05em]
+\item BBSD-KS on classifier outputs in 50-case blocks \citep{rabanser2019}.
+\item The multiclass classifier-CUSUM of \citet{evans2024}, using 168 alternative priors.
+\item Page--Hinkley on revealed log loss \citep{page1954}.
+\item DDM \citep{gama2004ddm} and ADWIN \citep{bifet2007adwin} on revealed errors.
+\item The risk-tracking betting test of \citet{podkopaev2022}, for an increase in 0--1 risk.
+\item Kernel two-sample testing by betting \citep{shekhar2023}, with an online-Newton-step bet on the paired MMD witness.
+\item The sequential classifier two-sample test of \citet{jang2022}, with an online logistic discriminator.
+\item A conformal test martingale on revealed log-loss scores \citep{vovk2021retrain,vovk2020concept}.
+\item A WATCH-style covariate-weighted conformal test martingale \citep{prinster2025watch}, with online density-ratio weights (monitoring component only, without adaptation).
+\end{itemize}
+The \emph{specialist ensemble} raises an alarm when BBSD, classifier-CUSUM or Page--Hinkley fires, each at $\alpha/3$. It reports concept if Page--Hinkley fired, label if CUSUM fired, and covariate if only BBSD fired.
+
+Methods with their own guarantee are reported at their native threshold (anytime-valid tests at $1/\alpha=20$; DDM at its 3-sigma rule; ADWIN at $\delta=0.002$). In addition, \emph{every} method, TSSD included, is calibrated to a matched 5\% horizon false-alarm rate on the 1000 calibration nulls and evaluated on the independent nulls and shifted streams. For TSSD the matched threshold is a common shift of the three log thresholds.
+
+\paragraph{Metrics.} A stream with a crossing before the change is a pre-change (false) alarm and is never counted as a detection. Detection delay is the crossing step minus the change step. The reported type is the online state at the horizon. For each condition we report detections, typed-correct detections (the type is in the condition's allowed set) and the median delay.

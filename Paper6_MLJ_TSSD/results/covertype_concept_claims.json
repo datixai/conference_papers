@@ -1,0 +1,59 @@
+[
+ {
+  "method": "TSSD-2 C (test)",
+  "area0_heldout": [
+   0,
+   30
+  ],
+  "area1": [
+   0,
+   30
+  ],
+  "area2": [
+   1,
+   30
+  ],
+  "area3": [
+   0,
+   30
+  ]
+ },
+ {
+  "method": "TSSD-2 C (SR)",
+  "area0_heldout": [
+   0,
+   30
+  ],
+  "area1": [
+   0,
+   30
+  ],
+  "area2": [
+   3,
+   30
+  ],
+  "area3": [
+   4,
+   30
+  ]
+ },
+ {
+  "method": "TSSD-1 paired C",
+  "area0_heldout": [
+   0,
+   30
+  ],
+  "area1": [
+   13,
+   30
+  ],
+  "area2": [
+   11,
+   30
+  ],
+  "area3": [
+   30,
+   30
+  ]
+ }
+]

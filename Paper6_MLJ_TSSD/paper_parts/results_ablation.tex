@@ -1,0 +1,20 @@
+Table~\ref{tab:ablation} perturbs each design constant on fresh streams: 300 nulls and 100 streams per shift. The default configuration corresponds to the main study (Table~\ref{tab:typing}).
+
+No perturbation produced a false concept claim. Null alarm rates stayed at or below $4/300$. The covariate, label and covariate+label results move by at most a few streams in SR mode, and the test-mode label witness is sensitive only to a tighter gate (65 versus 86 typed-correct).
+
+The concept results reveal a robustness--power trade-off in the null family. Removing tempering ($B=\{1\}$) or narrowing the prior box ($|u_k|\le4$) raises the typed concept rate from 87 to 97--99. A wider tempering grid lowers it to 76. On the well-specified Gaussian model the smaller family is safe. We nevertheless keep the tempered family as the default, because it is what protects the concept claim against moderate miscalibration on real data, where the source model is not well specified. The two-component alternative without the refit expert performs similarly on Gaussian data (85 versus 87); the refit expert matters most when the posterior change involves directions that the frozen logits do not represent.
+
+\begin{table}[t]
+\centering
+\caption{Ablations (Gaussian; 300 nulls, 100 streams per shift). Each cell gives SR / test-mode values: null streams with any alarm, or typed-correct detections. The last column counts concept claims (either mode) on the 700 streams whose posterior is prior-correctable.}
+\label{tab:ablation}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Perturbation & Null & Cov & Lab & Con & C+L & L+C & False $C$ \\
+\midrule
+\tabinput{results/tables/ablation_rows.tex}
+\bottomrule
+\end{tabular}
+\end{table}

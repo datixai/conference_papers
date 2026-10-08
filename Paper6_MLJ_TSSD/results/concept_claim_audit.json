@@ -1,0 +1,40 @@
+{
+ "per_experiment": {
+  "gauss_main": [
+   0,
+   2600
+  ],
+  "gauss_reveal": [
+   0,
+   1800
+  ],
+  "gauss_magnitude": [
+   0,
+   1400
+  ],
+  "gauss_ablation": [
+   0,
+   7800
+  ],
+  "gauss_changetime": [
+   0,
+   1000
+  ],
+  "digits": [
+   0,
+   1300
+  ],
+  "covertype": [
+   0,
+   630
+  ],
+  "electricity": [
+   0,
+   300
+  ]
+ },
+ "total": {
+  "streams": 16830,
+  "claims": 0
+ }
+}

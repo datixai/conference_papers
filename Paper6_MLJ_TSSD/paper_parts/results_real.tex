@@ -1,0 +1,40 @@
+\paragraph{Digits.} Table~\ref{tab:digits} reports the exact-validity Digits study. The null alarm rates are 1/300 (SR) and 3/300 (test) at 5\% labels, and 2/100 and 3/100 at 20\%. The acquisition corruption is detected and typed as covariate in all streams. Prevalence change is TSSD's weak spot here: SR mode types 53/100 label streams correctly against 99/100 detections by classifier-CUSUM. The test mode is weaker still, because the covariate gate often closes before the label evidence accumulates. With ten classes and about seven post-change labels at 5\%, the certified concept claim fires on only 12--31\% of the concept alternatives. At 20\% labels it fires on 100/100 in each of the three concept arms, and it makes no false claim on any null, covariate, label or covariate+label stream at either rate. Unlike on the Gaussian data, the specialist ensemble types Digits well at 5\% labels: CUSUM is silent under the acquisition corruption, so the ensemble's characteristic failure does not arise. Its concept reports remain uncertified, however\footnote{The ensemble's thresholds are matched at 5\% labels. At 20\% its null alarm rate rises to 32/100, so its 20\% entries are not shown.}.
+
+\begin{table}[t]
+\centering
+\caption{Digits (exact-validity protocol, 100 streams per shift). Entries are typed-correct detections for TSSD and the ensemble and detections for the other methods. Comparators use matched thresholds except CTM and WATCH-style, which use their native anytime-valid thresholds.}
+\label{tab:digits}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & Cov & Lab & Con & C+L & C+C & L+C \\
+\midrule
+\multicolumn{7}{@{}l}{\emph{5\% labels}}\\
+\tabinput{results/tables/digits_rows05.tex}
+\midrule
+\multicolumn{7}{@{}l}{\emph{20\% labels (theory/native thresholds)}}\\
+\tabinput{results/tables/digits_rows20.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Covertype: natural geographic shift.} On exact same-domain nulls (held-out Rawah data), TSSD alarms on 3/300 (SR) and 2/300 (test) streams. The ensemble, calibrated on disjoint nulls of the same kind, alarms on 27/300. All three natural target domains are detected by TSSD in 96--100\% of streams (median SR delay 31--57 steps). They are reported as covariate or label shifts, and the certified concept claim is never made at 5\% labels and is made in 3--4 of 30 streams at 20\%.
+
+The offline oracle (Table~\ref{tab:oracle}) explains this. In every domain the refitted model beats the best prior correction by 0.19--0.37 nats per case, so the oracle type is concept. But a prior correction already removes 43\%, 75\% and 98\% of the frozen model's excess loss in areas 1, 2 and 3. Certifying the remaining gap of a few tenths of a nat per label, against a null fitted with hindsight over seven classes, needs more labels than the 20--80 available. The ensemble reports concept on most area-2 and area-3 streams. This agrees with the oracle, but the ensemble's concept claims are uncertified: the same rule produced 149 false concept claims on the Gaussian streams. We read Covertype as an honest limitation. TSSD's ``covariate'' state means \emph{inputs moved and no posterior change is certified}, not \emph{the model is safe}. When harm matters more than type, it should be combined with a risk monitor (Section~\ref{sec:discuss}).
+
+\begin{table}[t]
+\centering
+\caption{Offline full-label characterisation of the natural shifts (not available to any monitor). LL: log loss on held-out target data (nats per case); prior: best prior and tempering correction in the family \eqref{eq:family}; refit: logistic model refitted on target data; AUC: input domain classifier.}
+\label{tab:oracle}
+\small
+\begin{tabular}{@{}lrrrrrrl@{}}
+\toprule
+Domain / segment & acc.\ frozen & LL frozen & LL prior & LL refit & gap & AUC & oracle \\
+\midrule
+\tabinput{results/tables/oracle_rows.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Electricity: chronological drift.} \input{paper_parts/results_elec.tex}

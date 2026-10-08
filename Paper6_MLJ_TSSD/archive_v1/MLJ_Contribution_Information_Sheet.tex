@@ -1,0 +1,52 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\setlist{leftmargin=1.25em,itemsep=0.25em,topsep=0.25em}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\emergencystretch=2em
+\begin{document}
+\begin{center}
+{\Large\bfseries Machine Learning Journal Contribution Information Sheet}\par
+\vspace{0.35em}
+{\bfseries Manuscript:} Anytime-Valid Typed Shift Monitoring with Covariate, Label, and Concept Witnesses under Sparse Labels
+\end{center}
+
+\textbf{1. What is the main claim of the paper, and why is it important?}
+
+The paper's main claim is that covariate-, label-, and concept-oriented deployment evidence can be monitored simultaneously with an explicit family-wise anytime-valid false-alarm guarantee while labels are sparse. TSSD constructs three bounded source-referenced capital-mixture e-processes and gives an online diagnostic state based on which witnesses have crossed. The revised label witness uses a predictable gate based only on past covariate evidence. This improves scarce-label prevalence-shift power without invalidating the martingale argument or allowing a later clear covariate departure to keep feeding the label process.
+
+The contribution is important because deployment monitors are commonly evaluated either as fixed-horizon two-sample tests, specialized detectors for one shift mechanism, or adaptive systems whose statistical guarantees and diagnostic semantics differ. TSSD separates two questions that are often conflated: (i) whether continuous monitoring has a controlled false-alarm probability under optional stopping and (ii) which type of evidence is active when an alarm occurs. The paper does not claim universal state-of-the-art detection power; it claims a validity-preserving typed monitoring architecture and quantifies where specialized alternatives are stronger.
+
+\textbf{2. What evidence supports the claim?}
+
+\begin{itemize}
+\item \textbf{Theory.} Under the stated global-null exchangeability, independent source-reference sampling, independent label reveal, and predictability assumptions, the paper proves that all three implemented witness mixtures are nonnegative martingales. The predictable label gate and unrevealed concept steps are identity updates. Ville's inequality plus a three-way union bound yields family-wise time-uniform false-alarm control at level $\alpha$.
+\item \textbf{Null study.} At $\alpha=0.05$, 3 of 200 independent Gaussian null streams alarm (1.5\%; Wilson 95\% CI approximately 0.5--4.3\%).
+\item \textbf{Primary 200-replicate shift study at 5\% label reveal.} TSSD detects 200/200 covariate streams, 170/200 label streams, and 127/200 concept streams after excluding pre-change alarms. Horizon singleton diagnoses are correct in 199/200 covariate streams, all 170 detected label streams, and all 127 detected concept streams. Median post-change delays are 43.0, 129.5, and 150.0 steps, respectively.
+\item \textbf{Common-stream external baselines.} BBSD-soft and a multiclass classifier-CUSUM are stronger on the imposed label shift, while Page--Hinkley on revealed predictive loss is stronger on the concept shift. Their thresholds are calibrated on 1000 disjoint null streams and checked on another 1000 null streams. These results demonstrate complementary power rather than universal dominance by TSSD.
+\item \textbf{Higher-dimensional real-data stress test.} On the 64-feature, 10-class scikit-learn Digits measurements, TSSD alarms on 1/50 null streams; detects and correctly singleton-types 50/50 acquisition/covariate streams; detects 40/50 prevalence-shift streams (29 label-only, 5 multiple-witness); and detects and correctly singleton-types 21/50 concept streams at 5\% label reveal.
+\item \textbf{Concept-label-budget sensitivity.} With the fixed two-sided concept capital rate $\lambda_C=1$, concept-witness crossings rise from 128/200 at 5\% reveal to 198/200 at both 10\% and 20\% reveal, while no concept crossing is introduced on the 200 null, 200 pure-covariate, or 200 pure-label primary streams.
+\item \textbf{Chronological real-data case study.} A frozen classifier is monitored prospectively on 600 chronologically ordered weeks of the Mauna Loa atmospheric CO$_2$ record (1981--1992) with 5\% label reveal and no manufactured change point. TSSD raises a covariate witness alarm on 19 September 1981; offline frozen-model log loss increases from 0.517 in the first 200 monitored weeks to 0.606 in the last 200.
+\item \textbf{Closer modern identification comparison.} A Roschewitz-style prevalence-adjustment pipeline is implemented on the same Digits representation. It identifies 47/50 prevalence-shift batches but labels all 50 chosen acquisition corruptions as prevalence shift after adjustment. The paper reports this negative result explicitly and attributes the difference cautiously to representation dependence rather than claiming superiority over the original medical-imaging pipeline.
+\end{itemize}
+
+\textbf{3. Which papers are most closely related, and how does this paper differ?}
+
+\textbf{WATCH} (Prinster et al., ICML 2025) uses weighted conformal martingales for adaptive deployment monitoring and distinguishes harmful concept shift from extreme covariate shift. It has broader real-world evaluation and an adaptation component. TSSD does not claim to dominate WATCH; it targets an explicit covariate/label/concept witness set under one family-wise false-alarm budget.
+
+\textbf{Vovk (2020), Testing for concept shift online} is the closest martingale decomposition conceptually, separating exchangeability evidence associated with concept and label shift. TSSD adds a separate source-referenced, classifier-orthogonalized covariate witness, sparse-label operation, and a joint family-wise monitoring rule.
+
+\textbf{Evans and G'Sell (2024)} provide a purpose-built sequential label-shift detector. Their specialization can yield higher label-shift power; TSSD instead embeds label evidence in a three-witness anytime-valid system.
+
+\textbf{Roschewitz et al. (MICCAI 2025)} identify prevalence, covariate, and mixed shift using BBSD/MMD, prevalence estimation, and prevalence-adjusted re-testing on medical-imaging representations. TSSD adds an online time-uniform stopping construction and a concept witness. The submitted experiments implement their core identification logic on a common Digits representation, while explicitly not claiming a bit-for-bit reproduction of the original medical feature extractor.
+
+\textbf{4. Has any part of the paper been published before?}
+
+No prior archival publication or conference version is identified in the manuscript or supplied project materials. The submitting authors must verify this statement before upload. If any earlier version exists, this paragraph must be replaced by a precise overlap-and-extension statement as required by the journal.
+
+\end{document}

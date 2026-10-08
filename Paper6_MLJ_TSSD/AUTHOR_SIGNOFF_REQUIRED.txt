@@ -1,0 +1,12 @@
+AUTHOR SIGN-OFF REQUIRED BEFORE JOURNAL UPLOAD
+
+These items are factual/ethical declarations and must be confirmed by the human authors; they have deliberately NOT been invented from the computational package:
+
+1. Competing interests: provide the final author-attested statement.
+2. Funding: provide the verified funding/no-funding statement and grant numbers if applicable.
+3. Author contributions: approve final CRediT roles for Asher Mehfooz and Atif Ali.
+4. Prior publication/overlap: confirm that no archival conference/journal version exists, or replace the draft statement in the MLJ Contribution Information Sheet with a precise overlap-and-extension statement.
+5. ORCID: add each author's ORCID if available (optional but encouraged by the journal).
+6. AI-assisted workflow disclosure: review and approve the disclosure in the manuscript before submission.
+
+Do not submit until items 1-4 are confirmed by all authors.

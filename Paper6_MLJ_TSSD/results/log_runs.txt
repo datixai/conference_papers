@@ -1,0 +1,49 @@
+gauss_main: 3200 streams in 823s; clips={'X': 0.03062504980191901, 'Xraw': 0.058168275469558675, 'L': 0.33784442060459857, 'Cp': 1.0888520042427263}
+digits: 1900 streams in 2618s; clips={'X': 0.02462365280981289, 'Xraw': 0.04667963176687818, 'L': 0.9589063843278391, 'Cp': 2.291064049232221}
+covertype: 1020 streams in 2915s; clips={'X': 0.04911486824670931, 'Xraw': 0.06563576220078805, 'L': 0.2471109201551195, 'Cp': 1.5269365347281556}
+electricity: 660 streams in 558s; clips={'X': 0.10940873566903844, 'Xraw': 0.12016919592981722, 'L': 0.6522255254475798, 'Cp': 2.5494949106477724}
+gauss_magnitude: 2000 streams in 534s; clips={'X': 0.03062504980191901, 'Xraw': 0.058168275469558675, 'L': 0.33784442060459857, 'Cp': 1.0888520042427263}
+gauss_reveal: 3000 streams in 3048s; clips={'X': 0.03062504980191901, 'Xraw': 0.058168275469558675, 'L': 0.33784442060459857, 'Cp': 1.0888520042427263}
+gauss_ablation: 10400 streams in 2522s; clips={'X': 0.03062504980191901, 'Xraw': 0.058168275469558675, 'L': 0.33784442060459857, 'Cp': 1.0888520042427263}
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "C:\Program Files\Python311\Lib\concurrent\futures\process.py", line 261, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\process.py", line 210, in _process_chunk
+    return [fn(*args) for args in chunk]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\process.py", line 210, in <listcomp>
+    return [fn(*args) for args in chunk]
+            ^^^^^^^^^
+  File "D:\TSSD_MLJ_CLOSURE_FINAL\code\run_experiments.py", line 90, in _job
+    meta = dict(seed=seed, cond=cond, tag=tag, t0=int(t0), T=len(st["y_tgt"]),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: dict() got multiple values for keyword argument 't0'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\TSSD_MLJ_CLOSURE_FINAL\code\run_experiments.py", line 204, in <module>
+    raise ValueError(which)
+    ^^^^^^^
+  File "D:\TSSD_MLJ_CLOSURE_FINAL\code\run_experiments.py", line 158, in main
+    run(which, "gauss", jobs)
+  File "D:\TSSD_MLJ_CLOSURE_FINAL\code\run_experiments.py", line 104, in run
+    for i, (meta, tr) in enumerate(ex.map(_job, jobs, chunksize=4)):
+  File "C:\Program Files\Python311\Lib\concurrent\futures\process.py", line 620, in _chain_from_iterable_of_lists
+    for element in iterable:
+  File "C:\Program Files\Python311\Lib\concurrent\futures\_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+TypeError: dict() got multiple values for keyword argument 't0'

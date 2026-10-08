@@ -1,0 +1,35 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=3 by 1, horizontal sep=0.9cm},
+  width=0.36\textwidth, height=0.3\textwidth, ymin=-0.02, ymax=1.02,
+  ylabel style={font=\small}, xlabel style={font=\small}, tick label style={font=\scriptsize},
+  title style={font=\small}, legend style={font=\scriptsize, at={(0.5,-0.42)}, anchor=north, legend columns=5, draw=none},
+  every axis plot/.append style={thick, mark size=1.6pt}]
+\nextgroupplot[title={Covariate}, xlabel={translation scale $s$}, ylabel={fraction of streams}, xmode=log, xtick={0.1,0.2,0.5,1}, xticklabels={0.1,0.2,0.5,1}]
+\addplot[black, mark=*] table[x=level,y=TSSDSR]{figures/mag_covariate.dat};
+\addplot[black, dashed, mark=o] table[x=level,y=Ensemble]{figures/mag_covariate.dat};
+\addplot[blue, mark=square*] table[x=level,y=Kernel2ST]{figures/mag_covariate.dat};
+\addplot[orange, mark=triangle*] table[x=level,y=BBSD]{figures/mag_covariate.dat};
+\addplot[red!70!black, mark=diamond*] table[x=level,y=CUSUM]{figures/mag_covariate.dat};
+\nextgroupplot[title={Label}, xlabel={prior mixing $\gamma$}]
+\addplot[black, mark=*] table[x=level,y=TSSDSR]{figures/mag_label.dat};
+\addplot[black, dashed, mark=o] table[x=level,y=Ensemble]{figures/mag_label.dat};
+\addplot[blue, mark=square*] table[x=level,y=Kernel2ST]{figures/mag_label.dat};
+\addplot[orange, mark=triangle*] table[x=level,y=BBSD]{figures/mag_label.dat};
+\addplot[red!70!black, mark=diamond*] table[x=level,y=CUSUM]{figures/mag_label.dat};
+\nextgroupplot[title={Concept}, xlabel={fraction of labels cycled}]
+\addplot[black, mark=*] table[x=level,y=TSSDSR]{figures/mag_concept.dat};
+\addplot[black, dashed, mark=o] table[x=level,y=Ensemble]{figures/mag_concept.dat};
+\addplot[green!50!black, mark=pentagon*] table[x=level,y=PH]{figures/mag_concept.dat};
+\addplot[violet, mark=x] table[x=level,y=CTM]{figures/mag_concept.dat};
+\addplot[cyan!70!black, mark=star] table[x=level,y=WATCH]{figures/mag_concept.dat};
+\end{groupplot}
+\node[font=\scriptsize, anchor=north, align=center] at ($(group c2r1.south)+(0,-1.05cm)$) {%
+\tikz{\draw[black,thick](0,0)--(0.4,0);\fill (0.2,0) circle (1.6pt);} TSSD (SR, typed)\quad
+\tikz{\draw[black,thick,dashed](0,0)--(0.4,0);\draw (0.2,0) circle (1.6pt);} specialist ensemble (typed)\quad
+\tikz{\draw[blue,thick](0,0)--(0.4,0);} kernel 2ST\quad
+\tikz{\draw[orange,thick](0,0)--(0.4,0);} BBSD\\
+\tikz{\draw[red!70!black,thick](0,0)--(0.4,0);} CUSUM\quad
+\tikz{\draw[green!50!black,thick](0,0)--(0.4,0);} Page--Hinkley\quad
+\tikz{\draw[violet,thick](0,0)--(0.4,0);} conformal TM\quad
+\tikz{\draw[cyan!70!black,thick](0,0)--(0.4,0);} WATCH-style};
+\end{tikzpicture}

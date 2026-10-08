@@ -1,0 +1,43 @@
+\appendix
+
+\section{Proofs}
+\label{app:proofs}
+
+\paragraph{Lemma A (paired increments).} Let $\mathcal G_t=\sigma(\mathcal F_{t-1},R_t)$. Under $H^{\mathrm{glob}}$ with a single-use reference drawn from $P$ independently of the target, $(Z_t,Z'_t)$ is exchangeable given $\mathcal G_t$ by (A1). The paired witnesses apply one $\mathcal G_t$-measurable score $s$ to both cases, so swapping them maps $D_t$ to $-D_t$ (the outer clip is odd). Hence $D_t$ is conditionally symmetric, $|D_t|\le1$ and $\E[D_t\mid\mathcal G_t]=0$. For $\lambda\in[0,1]$ and $s\in\{\pm1\}$, $f_t=1+s\lambda D_t\ge0$ and $\E[f_t\mid\mathcal G_t]=1$. A predictably skipped update ($f_t\equiv1$) has the same property.
+
+\paragraph{Lemma B (likelihood-ratio factors).} Let $\theta^\ast_t$ be the true parameter path under $H^C$ and $\mathcal H_t=\sigma(\mathcal F_{t-1},X_t,R_t)$. On a labelled step, $a_{t-1}(\cdot\mid X_t)$ is $\mathcal H_t$-measurable and sums to one, and by (A1) $Y_t\mid\mathcal H_t\sim\eta_{\theta^\ast_t}(\cdot\mid X_t)$. Therefore $\E[a_{t-1}(Y_t\mid X_t)/\eta_{\theta^\ast_t}(Y_t\mid X_t)\mid\mathcal H_t]=\sum_y a_{t-1}(y\mid X_t)=1$. Unlabelled steps contribute the factor 1. Consequently, for every start $j$, $L^{(j)}_t=\prod_{\text{labelled } i\in[j,t]}a_{i-1}(Y_i\mid X_i)/\eta_{\theta^\ast_i}(Y_i\mid X_i)$ is a nonnegative martingale with $L^{(j)}_{j-1}=1$, whatever the law of the inputs.
+
+\paragraph{Lemma C (domination).} The path $\theta^\ast$ restricted to the labelled indices $m,\dots,n$ is constant or has one change at some index $c$. In the first case $\sum_u\log\eta_{\theta^\ast}(Y_{i_u}\mid X_{i_u})\le\sup_\theta\ell_\theta(m{:}n)$; in the second it is at most $\sup_\theta\ell_\theta(m{:}c-1)+\sup_\theta\ell_\theta(c{:}n)$. Either way it is at most $S^\star(m{:}n)$, so $E^{(m)}_n\le L^{(i_m)}_{i_n}$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:test}]
+By Lemma A, each component product of $X$ and $L$ is a nonnegative martingale started at one, and so is each finite average. By (A3) the global null is contained in $H^C$ with a constant path, so Lemmas B--C give $E^C_t\le L^{(1)}_t$. Ville's inequality bounds each witness's crossing probability by $\alpha/3$; a union bound over the three witnesses gives the claim. No independence between witnesses is needed.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:sr}]
+For a paired component, $\E[R^c_t\mid\mathcal F_{t-1}]=\E[f^c_t\mid\mathcal F_{t-1}](R^c_{t-1}+1)=R^c_{t-1}+1$, so $R^c_t-t$ is a martingale and $R^c$ is a nonnegative submartingale with $\E R^c_t=t$; averages over components inherit both properties. For the posterior-validity witness, Lemmas B--C give $R^C_t\le\tilde R^C_t:=\sum_{j\le t}L^{(j)}_t$, and the same computation shows $\tilde R^C_t-t$ is a martingale. Put $\tilde R^X=R^X$, $\tilde R^L=R^L$ and $S_t=\sum_k\tilde R^k_t$, so $S_t-3t$ is a martingale and $S_t\ge\max_kR^k_t$.
+\emph{Finite window.} $\Pr(\tau\le m)\le\sum_k\Pr(\max_{t\le m}\tilde R^k_t\ge A)\le\sum_k\E[\tilde R^k_m]/A=3m/A$ by Doob's maximal inequality.
+\emph{ARL.} If $\E\tau=\infty$ there is nothing to prove. Otherwise optional stopping at $\tau\wedge n$ gives $\E[S_{\tau\wedge n}]=3\E[\tau\wedge n]\le3\E[\tau]$, and Fatou's lemma gives $\E[S_\tau]\le3\E[\tau]$. Since $S_\tau\ge A$ on $\{\tau<\infty\}$, $A\le3\E[\tau]$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:concept}]
+Under $H^C$, Lemmas B--C hold with no assumption on the inputs, the references or the other witnesses. The test-mode claim follows from Ville's inequality applied to $L^{(1)}\ge E^{(1)}$. The SR claims follow from the argument of Theorem~\ref{thm:sr} with a single witness: $R^C_t\le\tilde R^C_t$, $\tilde R^C_t-t$ is a martingale, $\Pr(\tau_C\le m)\le m/A_C$ and $\E[\tau_C]\ge A_C$. Discarding SR starts removes nonnegative summands and preserves every bound.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:pool}]
+A uniformly random ordering of an i.i.d.\ sample is again i.i.d., and drawing without replacement reads the pool in such an order. The first $T$ references are therefore i.i.d.\ $P$, and they are independent of the target stream because the pool is. Each reference is used once, so Lemma A applies at every step.
+\end{proof}
+
+\section{Witness details}
+\label{app:witness}
+
+\paragraph{Covariate witness.} With $W_t$ and $W'_t$ the last $\le50$ targets and references,
+\[
+h_t(x)=\frac{1}{|W_t|}\sum_{u\in W_t}k(x,u)-\frac{1}{|W'_t|}\sum_{u\in W'_t}k(x,u),
+\]
+with a Gaussian kernel of median-heuristic bandwidth on the source sample. The orthogonalised score is $h^\perp_t(x)=h_t(x)-c_t^\top G^{-1}v(x)-b_t$, where $G=n_0^{-1}V_0^\top V_0+10^{-8}I$ is frozen on the source sample (at most 2000 points), and $c_t$ and $b_t$ are the window differences of the source kernel means weighted by $v$ and unweighted, respectively. Both depend only on the windows. For $t=1$ both scores are zero.
+
+\paragraph{Label witness.} $q_{t-1}$ is obtained by ten EM steps on the last 200 target cases, with revealed labels entering as counts, and is projected to $q_k\ge10^{-3}$. Scores are clipped at the source-calibrated 95th percentile.
+
+\paragraph{Calibration.} Clip constants are the 95th percentiles of the absolute raw scores on 20 (Gaussian) or 10 (other data) disjoint source-only streams. They are fixed before any monitored stream is evaluated. The posterior-validity witness has no clip.
+
+\paragraph{Complexity.} A step costs $O(d(w+n_0))$ for the covariate witness and $O(wK)$ for EM. On a labelled step with $n$ labels so far, the $C$ witness solves $n|B|$ warm-started concave programs in $K-1$ variables. A 400-step Gaussian stream takes 1--2\,s in pure Python/NumPy on one CPU core.

@@ -1,0 +1,58 @@
+\subsection{Shift magnitude}
+\label{sec:magnitude}
+
+Figure~\ref{fig:magnitude} varies the strength of each shift. Thresholds are matched for the comparators and at the theoretical value for TSSD; each curve is the fraction of 200 streams detected (for TSSD and the ensemble, detected \emph{and} correctly typed).
+
+\emph{Covariate.} TSSD is the most sensitive covariate detector in the study. At one tenth of the base translation it detects and correctly types 114/200 streams, against 44 for the best specialist (kernel two-sample betting) and 3 for the ensemble. At 0.2 it types 200/200. The ensemble's typed accuracy stays poor at every magnitude (79/200 at half strength), because prevalence-driven CUSUM alarms label most covariate shifts as label shifts.
+
+\emph{Label.} Mild prevalence changes are TSSD's weakest regime. At $\gamma=0.5$ the classifier-CUSUM detects 188/200 and TSSD 59/200, and only at $\gamma=0.75$ does TSSD reach 182/200. The label witness has to work through the gate and the orthogonalised covariate witness, while the CUSUM is optimised for exactly this alternative.
+
+\emph{Partial concept.} When only a fraction of labels is cycled, the certified concept claim needs much more evidence than an uncorrected loss monitor. With half of the labels cycled, TSSD certifies 76/200 streams while Page--Hinkley detects 194/200; at 10\% cycling TSSD certifies essentially none. This is the clearest instance of the price of certification. A partial label permutation lies close to the prior-correctable family, and with about ten post-change labels the null fitted with hindsight absorbs most of the evidence.
+
+\begin{figure}[t]
+\centering
+\input{figures/fig_magnitude.tex}
+\caption{Detection versus shift magnitude (Gaussian, 200 streams per point; level 1 is the main study). TSSD and the ensemble count typed-correct detections; the other detectors count detections. Comparators use matched 5\% thresholds; TSSD uses its theoretical SR threshold.}
+\label{fig:magnitude}
+\end{figure}
+
+\subsection{Label budget}
+\label{sec:reveal}
+
+Figure~\ref{fig:reveal}(a) and Table~\ref{tab:reveal} vary the reveal rate; Figure~\ref{fig:reveal}(b) shows the three test-mode evidence processes on one label+concept stream. The covariate and label witnesses hardly depend on it. The certified concept claim depends on it strongly: it types 70/200 concept streams correctly at 2\%, 180/200 at 5\%, 198/200 at 10\% and 199/200 at 20\%, where the median delay drops to 22 steps. From 10\% upwards it matches the conformal test martingale's detection rate, while also certifying the type. At 2\% the clipped paired witness of the ablation detects only 5/200. Across all four rates, no concept claim was made on any of the 4400 streams whose posterior is prior-correctable.
+
+\begin{figure}[t]
+\centering
+\input{figures/fig_reveal_trace.tex}
+\caption{(a) Typed-correct concept detections versus label budget (Gaussian). (b) Test-mode log evidence on one label+concept stream; the change is at step 201 (dashed). The certified concept witness crosses about 70 steps after the change and fixes the reported action type as concept; the label witness crosses only near the horizon, and the covariate witness stays flat.}
+\label{fig:reveal}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Label-budget sensitivity (Gaussian, 200 streams per cell; theory thresholds). Entries are typed-correct detections; ``null'' is the number of null streams with any alarm. CTM = conformal test martingale (native threshold), counted as detections.}
+\label{tab:reveal}
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Rate & Condition & TSSD SR & TSSD test & Paired $C$ (ablation) & CTM \\
+\midrule
+\tabinput{results/tables/reveal_rows.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Change time: test mode versus SR mode}
+\label{sec:changetime}
+
+\input{paper_parts/results_changetime.tex}
+
+\subsection{Ablations}
+\label{sec:ablation}
+
+\input{paper_parts/results_ablation.tex}
+
+\subsection{Real data}
+\label{sec:real}
+
+\input{paper_parts/results_real.tex}

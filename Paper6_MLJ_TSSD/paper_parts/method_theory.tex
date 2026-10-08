@@ -1,0 +1,114 @@
+\section{Problem formulation: action-typed monitoring}
+\label{sec:problem}
+
+Let the source law be $P$ on $\mathcal X\times\{1,\dots,K\}$ with class prior $\pi$. A probabilistic classifier $g$ with output $p_g(x)\in\Delta^{K-1}$ is fitted on source data and frozen. At step $t=1,2,\dots$ the operator receives a target input $X_t$, a reveal bit $R_t\in\{0,1\}$ and, when $R_t=1$, the label $Y_t$. The monitor also draws one \emph{single-use} source reference $(X'_t,Y'_t)$. $\mathcal F_{t-1}$ denotes everything observed before step $t$ together with all quantities computed from it.
+
+The three textbook shift types matter because they call for different actions. Under covariate shift the source posterior remains correct and the model can usually be kept; under label shift the posterior changes only through the class prior and is repaired by a prior correction \citep{saerens2002,lipton2018,alexandari2020}; under concept shift no prior correction repairs the posterior and retraining or abstention is required. We therefore define the monitoring targets through a nested family of hypotheses on the conditional law of the target label,
+\begin{align*}
+H^{\mathrm{glob}}&:\ (X_t,Y_t)\sim P \text{ for all } t,\\
+H^{C}&:\ \Prob(Y_t=\cdot\mid X_t,\mathcal F_{t-1})=\eta_{\theta_t}(\cdot\mid X_t),\quad \theta_t\in\Theta \text{ piecewise constant with at most one change,}
+\end{align*}
+where the \emph{prior-correctable family} is
+\begin{equation}
+\eta_{\theta}(y\mid x)=\frac{(q_y/\pi_y)\,p_g(y\mid x)^{\beta}}{\sum_{k}(q_k/\pi_k)\,p_g(k\mid x)^{\beta}},\qquad \theta=(q,\beta),\ q\in\Delta^{K-1}_{\circ},\ \beta\in B.
+\label{eq:family}
+\end{equation}
+Here $q$ is a target class prior (with $|\log(q_k/q_1)|\le 8$) and $\beta$ ranges over a small tempering grid $B=\{0.7,1,1.4\}$ that absorbs moderate miscalibration of $g$, in the spirit of bias-corrected calibration for label shift \citep{alexandari2020}. $H^{C}$ places \emph{no restriction on the input process}: $X_t$ may follow any covariate shift and may even be chosen adaptively from the past. It contains $H^{\mathrm{glob}}$ (with $\theta=(\pi,1)$ when $g$ is calibrated), every covariate shift that preserves the source posterior, and every label shift occurring at an unknown time. Its complement, a target posterior that is not repaired by any prior and tempering correction, is what we call \emph{concept shift} in the action-typed sense; it includes concept changes in the classical sense and harmful covariate shifts under which the frozen posterior extrapolates poorly.
+
+The monitor outputs an alarm time and an online active set $\mathcal A_t\subseteq\{X,L,C\}$ of witnesses whose evidence has crossed. The reported action type is
+\[
+\mathrm{type}(\mathcal A_t)=\begin{cases}
+\text{concept (retrain/abstain)} & C\in\mathcal A_t,\\
+\text{label (prior correction)} & C\notin\mathcal A_t,\ L\in\mathcal A_t,\\
+\text{covariate (keep, monitor)} & \mathcal A_t=\{X\},\\
+\text{none} & \mathcal A_t=\varnothing.
+\end{cases}
+\]
+The guarantees we seek are (i) control of false alarms under $H^{\mathrm{glob}}$, both in the ``ever alarm'' sense and in the change-detection sense of average run length (ARL); and (ii) a \emph{certified concept claim}: under $H^C$ the probability of ever reporting ``concept'' is at most $\alpha_C$, irrespective of covariate or label shift. We do not claim a guarantee for the covariate-versus-label distinction; Section~\ref{sec:theory} explains why and Section~\ref{sec:results} measures it.
+
+\section{TSSD: witnesses and evidence}
+\label{sec:method}
+
+\subsection{Paired witnesses for inputs and prevalence}
+The covariate and label witnesses are paired, source-referenced e-processes and are only summarised here (full formulas are in Appendix~\ref{app:witness}). Each scores the current target and the current reference with the \emph{same} $\mathcal F_{t-1}$-measurable function, clips each score to $[-1,1]$ with a constant calibrated once on disjoint source-only streams, and forms the paired increment $D_t=\mathrm{clip}((s_t-s'_t)/2,-1,1)$. Under $H^{\mathrm{glob}}$ the target and reference are exchangeable given $\mathcal F_{t-1}$, so $D_t$ is conditionally symmetric, bounded and mean zero.
+
+\emph{Covariate witness $X$.} The score is a windowed kernel mean-embedding contrast between the last 50 targets and references, from which the directions spanned by the classifier's class-ratio features $v(x)=(p_g(x)_j/\pi_j-1)_{j<K}$ are projected out (with a frozen Gram matrix). The projection is meant to make the witness insensitive to pure prevalence changes, which also move the input marginal.
+
+\emph{Label witness $L$.} With a predictable class-prior estimate $q_{t-1}$ obtained by Saerens--EM \citep{saerens2002} on the last 200 target cases, the score is $\log\{(q_{t-1}/\pi)^\top p_g(x)\}$ for unlabelled steps and $\log(q_{t-1,y}/\pi_y)$ for labelled steps. A \emph{predictable gate} suspends the label bets while past covariate evidence is large (Section~\ref{sec:modes}); skipped steps are identity updates.
+
+\subsection{Posterior-validity witness $C$}
+A concept witness could also be built as a paired, clipped score, in the same way as $X$ and $L$. We report such a witness as an ablation (``paired $C$). Clipping caps the evidence that a single surprising label can carry, which makes it slow, and its null is only $H^{\mathrm{glob}}$. TSSD replaces it by a likelihood-ratio e-process built on universal inference \citep{wasserman2020} that uses revealed labels only and tests the composite null $H^C$ directly.
+
+\emph{Alternative.} Before $Y_t$ is seen, the monitor forms a predictable predictive distribution $a_{t-1}(\cdot\mid X_t)=\sum_{j=1}^{3}w_{t-1,j}\,e_{t-1,j}(\cdot\mid X_t)$ that mixes three experts:
+(i) the label-shift plug-in $e_1=\eta_{(q_{t-1},1)}$, which uses the EM prior estimate of the label witness;
+(ii) a confusion remap $e_2=M_{t-1}^\top p_g(X_t)$, where $M_{t-1}$ is a row-normalised, exponentially discounted (factor $0.85$) matrix of soft counts between model classes and revealed labels, with prior mass $1/K$ per cell; it can represent label permutations and other conditional changes that no prior correction expresses;
+(iii) a refit expert $e_3=\mathrm{softmax}(W_{t-1}^\top\phi(X_t))$ with features $\phi(x)=(x,\log\max\{p_g(x),10^{-4}\},1)$, fitted by ridge-penalised maximum likelihood on the 50 most recent revealed labels and shrunk towards the frozen logits ($\|W-W_0\|^2$ penalty, weight 1).
+The weights follow a fixed-share Bayesian mixture \citep{herbster1998}: after each revealed label, $w_{t,j}\propto w_{t-1,j}\,e_{t-1,j}(Y_t\mid X_t)$, mixed with the uniform vector at rate $0.01$ so that the mixture can switch after a change. Under the null the mixture loses at most $\log3$ plus the switching cost relative to its best expert. Every component is $\mathcal F_{t-1}$-measurable, which is all that validity requires; the experts only determine power.
+
+\emph{E-process.} Let $i_1<i_2<\dots$ be the labelled times and $\ell_\theta(u{:}v)=\sum_{i_u\le i\le i_v}\log\eta_\theta(Y_i\mid X_i)$. For a start index $m$ and current index $n$ define the change-robust null maximum
+\[
+S^\star(m{:}n)=\max\Big\{\sup_{\theta}\ell_\theta(m{:}n),\ \max_{m<c\le n}\big[\sup_\theta\ell_\theta(m{:}c-1)+\sup_\theta\ell_\theta(c{:}n)\big]\Big\}
+\]
+and
+\begin{equation}
+\log E^{(m)}_n=\sum_{u=m}^{n}\log a_{i_u-1}(Y_{i_u}\mid X_{i_u})-S^\star(m{:}n).
+\label{eq:ui}
+\end{equation}
+All suffix suprema $\sup_\theta\ell_\theta(c{:}n)$ are concave maximisations in $\log q$ for each $\beta\in B$ and are cached, so the split maximisation costs $O(n)$ additions per start. The test-mode concept evidence is $E^{(1)}$. Dividing by the change-robust maximum, rather than by the likelihood of a fixed $\theta$, costs power: the numerator has to beat a null fitted with hindsight. This is the price of a claim that survives a label shift at an unknown time.
+
+\subsection{Two evidence modes}
+\label{sec:modes}
+For a paired witness with bets $\Lambda$ (covariate $\{0.5,1\}$, label $\{0.01,0.05,0.1,0.25,0.5,1\}$), each signed component $c=(s,\lambda)$ updates by $f^c_t=1+s\lambda D_t$.
+
+\emph{Test mode} uses the products $M^c_t=\prod_{i\le t}f^c_i$, averaged over components; a witness crosses when $\log E_t\ge\log(3/\alpha)$. It controls the probability of \emph{ever} alarming under $H^{\mathrm{glob}}$.
+
+\emph{Shiryaev--Roberts (SR) mode} uses the e-detector recursion \citep{shin2024edetectors}
+\[
+R^c_t=f^c_t\,(R^c_{t-1}+1),\qquad R^c_0=0,
+\]
+that is, $R^c_t=\sum_{j\le t}\prod_{i=j}^{t}f^c_i$, a sum of test martingales started at every past time. For the posterior-validity witness, $R^C_t=\sum_{j\le t}E^{(m(j))}_t$, where $m(j)$ is the first labelled index at or after $j$ (starts after the last label contribute $1$ each); to bound cost we keep the 40 most recent label-starts plus the first, and dropping summands can only decrease $R^C_t$. A witness crosses when $R_t\ge A$, with $A=3m/\alpha$ for a design window $m$ (we use $m$ equal to the evaluation horizon: $m=400$ for the Gaussian study). In SR mode the label gate is open when $\log(R^X_{t-1}/(t-1))<3$; in test mode when $\max_{s<t}\log E^X_s<2$. Both gates are $\mathcal F_{t-1}$-measurable.
+
+The SR mode removes a structural weakness of test-mode monitoring for change detection: a product martingale has negative log-drift under the null, so the wealth with which it meets a late change is small and the detection delay grows with the change time. The SR statistic restarts implicitly and has a delay that does not depend on how long the null regime lasted (Section~\ref{sec:changetime}).
+
+\begin{algorithm}[t]
+\caption{One TSSD step (both modes share all scores).}
+\label{alg:tssd}
+\begin{algorithmic}[1]
+\Require $\mathcal F_{t-1}$; target $(X_t,R_t,Y_t)$; single-use reference $(X'_t,Y'_t)$
+\State Compute covariate and label scores of target and reference from $\mathcal F_{t-1}$; form $D^X_t$, $D^L_t$
+\State Read both label gates from evidence at $t-1$
+\State Update $X$ in test and SR mode; update $L$ in each mode only if that mode's gate is open
+\If{$R_t=1$}
+  \State Form $a_{t-1}(\cdot\mid X_t)$; observe $Y_t$; update suffix suprema and $E^{(m)}$ for kept starts
+\EndIf
+\State Record crossings; update the online active set and reported action type
+\State Store $X_t$ for the kernel windows; update $q_t$ by windowed EM; if $R_t=1$ update $M_t$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Guarantees}
+\label{sec:theory}
+
+Proofs are in Appendix~\ref{app:proofs}. Throughout, (A1) labels are revealed at random: $R_t$ is independent of $(Y_t,Y'_t)$ given $(\mathcal F_{t-1},X_t,X'_t)$; (A2) every quantity used to score or gate step $t$, including clip constants and the label gate, is $\mathcal F_{t-1}$-measurable; (A3) for statements about the $C$ witness under $H^{\mathrm{glob}}$, the source posterior lies in the family \eqref{eq:family}, i.e.\ $P(Y\mid X)=\eta_{\theta_0}$ for some $\theta_0\in\Theta$.
+
+\begin{theorem}[Global null, test mode]
+\label{thm:test}
+Under $H^{\mathrm{glob}}$ with (A1)--(A3) and a single-use reference drawn from $P$ independently of the target, $\Pr(\exists t:\max_kE^k_t\ge 3/\alpha)\le\alpha$.
+\end{theorem}
+
+\begin{theorem}[Global null, SR mode: average run length and finite window]
+\label{thm:sr}
+Under the conditions of Theorem~\ref{thm:test}, let $\tau=\inf\{t:\max_kR^k_t\ge A\}$. Then $\E[\tau]\ge A/3$ and, for every $m\ge1$, $\Pr(\tau\le m)\le 3m/A$. With $A=3m/\alpha$ the TSSD SR alarm has $\Pr(\tau\le m)\le\alpha$ and $\E[\tau]\ge m/\alpha$.
+\end{theorem}
+
+\begin{theorem}[Certified concept claim]
+\label{thm:concept}
+Assume (A1)--(A2) and $H^C$. The input process $(X_t)$, the reference stream and the paired witnesses may behave arbitrarily. Then $\Pr(\exists t: E^{(1)}_t\ge1/\alpha_C)\le\alpha_C$; and for $\tau_C=\inf\{t:R^C_t\ge A_C\}$, $\E[\tau_C]\ge A_C$ and $\Pr(\tau_C\le m)\le m/A_C$.
+\end{theorem}
+
+\begin{proposition}[Finite source pools]
+\label{prop:pool}
+Let the references be drawn uniformly \emph{without replacement} from a pool of $N\ge T$ points sampled i.i.d.\ from $P$ independently of the target stream. Then the reference sequence is i.i.d.\ $P$ and independent of the targets, so Theorems~\ref{thm:test}--\ref{thm:sr} hold exactly up to horizon $T$. Drawing with replacement only guarantees validity for the empirical pool law.
+\end{proposition}
+
+Two remarks delimit the guarantees. First, Theorem~\ref{thm:concept} is the typed guarantee: a reported ``concept'' state is a false claim only if the target posterior is prior-correctable, and that event has probability at most $\alpha_C=\alpha/3$ \emph{even under arbitrary covariate shift and a label shift at an unknown time}. It requires (A1); under informative label reveal (e.g.\ labels obtained preferentially for errors) the claim is not protected. Second, no analogous guarantee is offered for ``label'' versus ``covariate''. A pure covariate shift generally changes the class prevalence (labels follow the source posterior on shifted inputs), so the hypothesis ``no label shift'' is not identifiable from the input marginal without a model of $P(X\mid Y)$. TSSD handles this distinction heuristically, through orthogonalisation and the predictable gate, and we measure its error rates rather than claim them.

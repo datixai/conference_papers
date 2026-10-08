@@ -1,0 +1,256 @@
+[
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "covariate",
+  "n": 100,
+  "detected": 100,
+  "correct": 100,
+  "types": {
+   "covariate": 100
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "label",
+  "n": 100,
+  "detected": 4,
+  "correct": 4,
+  "types": {
+   "label": 4
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "concept",
+  "n": 100,
+  "detected": 13,
+  "correct": 12,
+  "types": {
+   "concept": 12,
+   "covariate": 1
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "covariate_label",
+  "n": 100,
+  "detected": 99,
+  "correct": 99,
+  "types": {
+   "covariate": 99
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "covariate_concept",
+  "n": 100,
+  "detected": 98,
+  "correct": 29,
+  "types": {
+   "concept": 29,
+   "covariate": 69
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "label_concept",
+  "n": 100,
+  "detected": 17,
+  "correct": 15,
+  "types": {
+   "concept": 15,
+   "label": 2
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "covariate",
+  "n": 100,
+  "detected": 100,
+  "correct": 100,
+  "types": {
+   "covariate": 100
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "label",
+  "n": 100,
+  "detected": 53,
+  "correct": 53,
+  "types": {
+   "label": 53
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "concept",
+  "n": 100,
+  "detected": 12,
+  "correct": 12,
+  "types": {
+   "concept": 12
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "covariate_label",
+  "n": 100,
+  "detected": 100,
+  "correct": 100,
+  "types": {
+   "covariate": 100
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "covariate_concept",
+  "n": 100,
+  "detected": 100,
+  "correct": 31,
+  "types": {
+   "concept": 31,
+   "covariate": 69
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "label_concept",
+  "n": 100,
+  "detected": 42,
+  "correct": 15,
+  "types": {
+   "label": 27,
+   "concept": 15
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "covariate",
+  "n": 100,
+  "detected": 100,
+  "correct": 100,
+  "types": {
+   "covariate": 100
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "label",
+  "n": 100,
+  "detected": 14,
+  "correct": 14,
+  "types": {
+   "label": 14
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "concept",
+  "n": 100,
+  "detected": 15,
+  "correct": 13,
+  "types": {
+   "concept": 13,
+   "covariate": 1,
+   "label": 1
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "covariate_label",
+  "n": 100,
+  "detected": 98,
+  "correct": 98,
+  "types": {
+   "covariate": 98
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "covariate_concept",
+  "n": 100,
+  "detected": 98,
+  "correct": 37,
+  "types": {
+   "concept": 37,
+   "covariate": 61
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "label_concept",
+  "n": 100,
+  "detected": 26,
+  "correct": 16,
+  "types": {
+   "concept": 16,
+   "label": 9,
+   "covariate": 1
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "covariate",
+  "n": 100,
+  "detected": 99,
+  "correct": 94,
+  "types": {
+   "covariate": 94,
+   "concept": 4,
+   "label": 1
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "label",
+  "n": 100,
+  "detected": 98,
+  "correct": 98,
+  "types": {
+   "label": 98
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "concept",
+  "n": 100,
+  "detected": 98,
+  "correct": 98,
+  "types": {
+   "concept": 98
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "covariate_label",
+  "n": 100,
+  "detected": 99,
+  "correct": 96,
+  "types": {
+   "label": 94,
+   "concept": 3,
+   "covariate": 2
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "covariate_concept",
+  "n": 100,
+  "detected": 97,
+  "correct": 97,
+  "types": {
+   "concept": 97
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "label_concept",
+  "n": 100,
+  "detected": 99,
+  "correct": 99,
+  "types": {
+   "concept": 99
+  }
+ }
+]

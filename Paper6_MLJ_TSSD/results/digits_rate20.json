@@ -1,0 +1,151 @@
+[
+ {
+  "cond": "null",
+  "n": 100,
+  "post_labels": 29.0,
+  "test_det": 3,
+  "test_typed": 0,
+  "test_concept": 0,
+  "test_types": {
+   "covariate": 3
+  },
+  "sr_det": 2,
+  "sr_typed": 0,
+  "sr_concept": 0,
+  "sr_types": {
+   "covariate": 2
+  },
+  "CTM_det": 2,
+  "WATCH_det": 2,
+  "RiskTrack_det": 0,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "covariate",
+  "n": 100,
+  "post_labels": 30.0,
+  "test_det": 99,
+  "test_typed": 99,
+  "test_concept": 0,
+  "test_types": {
+   "covariate": 99
+  },
+  "sr_det": 100,
+  "sr_typed": 100,
+  "sr_concept": 0,
+  "sr_types": {
+   "covariate": 100
+  },
+  "CTM_det": 0,
+  "WATCH_det": 0,
+  "RiskTrack_det": 0,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "label",
+  "n": 100,
+  "post_labels": 29.0,
+  "test_det": 4,
+  "test_typed": 3,
+  "test_concept": 0,
+  "test_types": {
+   "label": 3,
+   "covariate": 1
+  },
+  "sr_det": 45,
+  "sr_typed": 44,
+  "sr_concept": 0,
+  "sr_types": {
+   "label": 44,
+   "covariate": 1
+  },
+  "CTM_det": 0,
+  "WATCH_det": 0,
+  "RiskTrack_det": 0,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "concept",
+  "n": 100,
+  "post_labels": 30.0,
+  "test_det": 98,
+  "test_typed": 98,
+  "test_concept": 100,
+  "test_types": {
+   "concept": 98
+  },
+  "sr_det": 100,
+  "sr_typed": 100,
+  "sr_concept": 100,
+  "sr_types": {
+   "concept": 100
+  },
+  "CTM_det": 100,
+  "WATCH_det": 99,
+  "RiskTrack_det": 100,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "covariate_concept",
+  "n": 100,
+  "post_labels": 30.0,
+  "test_det": 99,
+  "test_typed": 99,
+  "test_concept": 100,
+  "test_types": {
+   "concept": 99
+  },
+  "sr_det": 100,
+  "sr_typed": 100,
+  "sr_concept": 100,
+  "sr_types": {
+   "concept": 100
+  },
+  "CTM_det": 99,
+  "WATCH_det": 98,
+  "RiskTrack_det": 100,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "label_concept",
+  "n": 100,
+  "post_labels": 30.0,
+  "test_det": 98,
+  "test_typed": 98,
+  "test_concept": 100,
+  "test_types": {
+   "concept": 98
+  },
+  "sr_det": 100,
+  "sr_typed": 100,
+  "sr_concept": 100,
+  "sr_types": {
+   "concept": 100
+  },
+  "CTM_det": 100,
+  "WATCH_det": 99,
+  "RiskTrack_det": 100,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "covariate_label",
+  "n": 100,
+  "post_labels": 30.0,
+  "test_det": 99,
+  "test_typed": 99,
+  "test_concept": 0,
+  "test_types": {
+   "covariate": 99
+  },
+  "sr_det": 100,
+  "sr_typed": 100,
+  "sr_concept": 0,
+  "sr_types": {
+   "covariate": 100
+  },
+  "CTM_det": 1,
+  "WATCH_det": 1,
+  "RiskTrack_det": 0,
+  "Kernel2ST_det": 0
+ }
+]

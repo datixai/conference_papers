@@ -1,0 +1,42 @@
+\section{Related work and positioning}
+\label{sec:related}
+
+\paragraph{Shift taxonomies and offline identification.} Covariate, label and concept shift are standard categories \citep{quinonero2009,moreno2012}, and concept-drift surveys cover adaptation after drift \citep{gama2014,lu2019}. Black-box shift detection \citep[BBSD;][]{rabanser2019} applies two-sample tests to classifier outputs. Label-shift estimation and correction use EM \citep{saerens2002}, confusion-matrix inversion \citep{lipton2018}, unified moment views \citep{garg2020} and bias-corrected calibration \citep{alexandari2020}. Closest in spirit to typing is the work of \citet{roschewitz2025}, who identify prevalence, covariate and mixed shift in medical imaging from batches. Their method is batch-based and has no sequential error guarantee.
+
+\paragraph{Sequential and anytime-valid monitoring.} Classical change detection (CUSUM, Page--Hinkley \citep{page1954}, Shiryaev--Roberts) and stream-mining detectors such as DDM \citep{gama2004ddm} and ADWIN \citep{bifet2007adwin} monitor a single error signal. Test martingales and e-processes \citep{ville1939,howard2020,vovk2021,ramdas2023,waudbysmith2024} support inference under optional stopping. E-detectors \citep{shin2024edetectors} turn them into nonparametric change detectors with ARL control; our SR mode is an instance. On the shift side, \citet{podkopaev2022} track the risk of a deployed model with labels and detect \emph{harmful} shifts; \citet{amoukou2024} remove the need for labels through an error estimator; and \citet{zhang2026ppr} combine sparse true labels with synthetic labels through prediction-powered inference. Sequential two-sample tests by betting detect input shift with kernel witnesses \citep{shekhar2023} or online classifiers \citep{jang2022}. Conformal test martingales detect departures from exchangeability \citep{vovk2021retrain}, and \citet{vovk2020concept} decomposes them into concept and label components. WATCH \citep{prinster2025watch} weights conformal martingales to tolerate benign covariate shift while flagging harmful shifts. \citet{bar2024poem} and M-FISHER \citep{khan2025mfisher} couple martingale detection with test-time adaptation, and \citet{schirmer2025} monitor risk during test-time adaptation. Finally, \citet{choi2026confirm} gives an anytime-valid \emph{confirmation} of a prespecified label-shift correction through a predictive likelihood ratio, a special case of the factors used in our posterior-validity witness.
+
+\paragraph{Positioning.} Table~\ref{tab:position} compares 17 methods on six properties. To our knowledge, no existing monitor combines the following: (a) sparse random labels together with unlabelled inputs; (b) a single anytime-valid budget for the alarm, with both ``ever'' and ARL control; and (c) a \emph{typed} claim with its own guarantee under the alternatives of the other types. The posterior-validity witness provides (c) for the decision that matters most operationally, retraining versus prior correction. It does so by testing a composite null that contains every covariate shift and a label shift at an unknown time, using universal inference \citep{wasserman2020}. Unlike WATCH, it does not need a density-ratio estimate to tolerate covariate shift. Unlike risk tracking, it detects posterior changes that leave the error rate unchanged (for example, label permutations at constant accuracy are not prior-correctable). TSSD does \emph{not} attempt adaptation, and its covariate-versus-label distinction carries no guarantee.
+
+\begin{table}[t]
+\centering
+\caption{Positioning against recent and classical work. Seq.: online stopping rule; AV: anytime-valid false-alarm guarantee (E = ever-alarm/Ville, A = ARL); Lab.: uses revealed labels (S = sparse); Typed: separates shift types; T.\,guar.: guarantee for a typed claim under the other shift types; Adapt.: performs adaptation. A dash means absent.}
+\label{tab:position}
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lccccccl@{}}
+\toprule
+Method & Year & Seq. & AV & Lab. & Typed & T.\,guar. & Monitored signal \\
+\midrule
+DDM \citep{gama2004ddm} / ADWIN \citep{bifet2007adwin} & 2004/07 & \checkmark & -- & \checkmark & -- & -- & error rate \\
+BBSD \citep{rabanser2019} & 2019 & -- & -- & -- & -- & -- & output distribution \\
+Concept-shift CTM \citep{vovk2020concept} & 2020 & \checkmark & E & \checkmark & concept/label & -- & conformal p-values \\
+Retrain-or-not CTM \citep{vovk2021retrain} & 2021 & \checkmark & E & \checkmark & -- & -- & conformal p-values \\
+Risk tracking \citep{podkopaev2022} & 2022 & \checkmark & E & \checkmark & harmful & -- & risk \\
+Seq.\ classifier 2ST \citep{jang2022} & 2022 & \checkmark & E & -- & -- & -- & input discriminator \\
+Kernel 2ST by betting \citep{shekhar2023} & 2023 & \checkmark & E & -- & -- & -- & MMD witness \\
+E-detectors \citep{shin2024edetectors} & 2024 & \checkmark & A & -- & -- & -- & generic \\
+Classifier-CUSUM \citep{evans2024} & 2024 & \checkmark & -- & -- & label & -- & label-shift LR \\
+Harmful shift w/o labels \citep{amoukou2024} & 2024 & \checkmark & E & -- & harmful & -- & estimated error \\
+POEM \citep{bar2024poem} & 2024 & \checkmark & E & -- & -- & -- & entropy \\
+WATCH \citep{prinster2025watch} & 2025 & \checkmark & E & \checkmark & cov./harmful & -- & weighted conformal \\
+Shift identification \citep{roschewitz2025} & 2025 & -- & -- & -- & prev./cov./mixed & -- & batch tests \\
+M-FISHER \citep{khan2025mfisher} & 2025 & \checkmark & E & -- & -- & -- & non-conformity \\
+TTA risk monitoring \citep{schirmer2025} & 2025 & \checkmark & E & S & -- & -- & risk under TTA \\
+PPRM \citep{zhang2026ppr} & 2026 & \checkmark & E & S & harmful & -- & PPI risk bound \\
+Label-shift confirmation \citep{choi2026confirm} & 2026 & \checkmark & E & \checkmark & label & -- & prespecified correction \\
+\midrule
+\textbf{TSSD (this paper)} & -- & \checkmark & E\,+\,A & S & cov./label/concept & concept & paired + UI witnesses \\
+\bottomrule
+\end{tabular}}
+\end{table}

@@ -1,0 +1,22 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm},
+  width=0.46\textwidth, height=0.32\textwidth, tick label style={font=\scriptsize},
+  xlabel style={font=\small}, ylabel style={font=\small}, title style={font=\small},
+  every axis plot/.append style={thick, mark size=1.6pt}]
+\nextgroupplot[title={(a) Concept arms vs.\ label rate}, xlabel={label reveal rate $\rho$}, ylabel={fraction of 200 streams},
+  xmode=log, xtick={0.02,0.05,0.1,0.2}, xticklabels={2\%,5\%,10\%,20\%}, ymin=-0.02, ymax=1.02,
+  legend style={font=\scriptsize, at={(0.98,0.03)}, anchor=south east, draw=none, fill=white, fill opacity=0.8, text opacity=1}]
+\addplot[black, mark=*] table[x=rate,y=con_s]{figures/reveal.dat}; \addlegendentry{TSSD SR (typed)}
+\addplot[black, dashed, mark=o] table[x=rate,y=con_t]{figures/reveal.dat}; \addlegendentry{TSSD test (typed)}
+\addplot[gray, mark=square] table[x=rate,y=con_p]{figures/reveal.dat}; \addlegendentry{paired $C$ ablation}
+\addplot[violet, mark=x] table[x=rate,y=con_ctm]{figures/reveal.dat}; \addlegendentry{conformal TM (untyped)}
+\nextgroupplot[title={(b) Example label+concept stream}, xlabel={step $t$}, ylabel={log evidence (test mode)},
+  ymin=-2, ymax=30, xmin=0, xmax=400,
+  legend style={font=\scriptsize, at={(0.02,0.98)}, anchor=north west, draw=none, fill=white, fill opacity=0.8, text opacity=1}]
+\addplot[blue, no marks] table[x=t,y=X]{figures/trace.dat}; \addlegendentry{$X$}
+\addplot[orange, no marks] table[x=t,y=L]{figures/trace.dat}; \addlegendentry{$L$}
+\addplot[red!70!black, no marks, very thick] table[x=t,y=C]{figures/trace.dat}; \addlegendentry{$C$ (certified)}
+\addplot[black, dotted, no marks, domain=0:400] {ln(60)}; \addlegendentry{$\log(3/\alpha)$}
+\draw[gray, dashed] (axis cs:200,-2) -- (axis cs:200,30);
+\end{groupplot}
+\end{tikzpicture}

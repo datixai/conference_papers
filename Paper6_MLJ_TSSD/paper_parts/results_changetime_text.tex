@@ -1,0 +1,21 @@
+Table~\ref{tab:changetime} moves the change point from step 100 to step 2000 (100 streams per cell, horizon $t_0+300$). The test-mode delay grows with the length of the null period, from 35 to 147 steps for covariate shift and from 108 to 186 for label shift. The test martingale's wealth decays under the null, so a late change finds it far below its starting point. The SR delay is flat: about 23 steps for covariate shift and about 75 for label shift, whatever the change time.
+
+The concept witness is almost unaffected in either mode. Before the change its alternative tracks the null closely, so its evidence barely decays.
+
+The price of restarting is a higher alarm rate over long null stretches. On 200 null streams of 2300 steps, SR mode raises 23 alarms and test mode 8. Both are consistent with their guarantees: an ARL of at least $m/\alpha=8000$ steps for SR, and at most 5\% ever for test mode. Within the 400-step design window each mode raises 3. These pre-change alarms are the main reason SR detection falls from 99--100 to 90--94 streams at $t_0=2000$. For long deployments, $A$ can be set from the desired ARL rather than from a fixed window. Across all 1000 change-time streams with a prior-correctable posterior, no concept claim was made.
+
+\begin{table}[t]
+\centering
+\caption{Change time (Gaussian, 100 streams per cell). Typed-correct detections with median delay in parentheses, test mode versus SR mode.}
+\label{tab:changetime}
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{Covariate} & \multicolumn{2}{c}{Label} & \multicolumn{2}{c}{Concept} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+$t_0$ & test & SR & test & SR & test & SR \\
+\midrule
+\tabinput{results/tables/changetime_rows.tex}
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,78 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{False alarms and detection on controlled streams}
+\label{sec:detection}
+
+Table~\ref{tab:gauss} reports detection on the Gaussian study. At the theoretical thresholds, TSSD alarms on 1.5\% (test mode) and 1.3\% (SR mode) of the 1000 evaluation nulls. Both rates are well inside their guarantees ($\le5\%$ ever, and $\le5\%$ within 400 steps). Pre-change alarms on shifted streams occur at the same rate.
+
+Two patterns stand out. First, every comparator is a specialist. Output and input detectors (BBSD, CUSUM, the kernel and classifier two-sample tests) find covariate and label shifts but essentially never concept shifts, because a label permutation leaves the input and output marginals unchanged. Label-based detectors (Page--Hinkley, DDM, ADWIN, risk tracking, the conformal and WATCH-style martingales) find concept shifts but essentially never covariate or label shifts. TSSD in SR mode is the only single method that detects all six alternatives at a high rate: 180--200 of 200 streams, at a 1.3\% null alarm rate. Second, on the concept alternatives TSSD is slower than the best label-based specialists: its median delay is 98 steps against 15 for Page--Hinkley at a matched false-alarm rate. This is the price of the certified claim discussed in Section~\ref{sec:discuss}. The specialist ensemble detects as broadly as TSSD and faster, so the case for TSSD rests on the reliability of its types, which we examine next.
+
+The SR mode dominates the test mode on every alternative, for example 198 against 177 label detections with a delay of 82 against 120. At matched false-alarm rates the gap persists. The posterior-validity witness detects 180 concept streams, against 130 for a clipped paired concept witness built like $X$ and $L$ (ablation), with a median delay of 98 against 143 steps.
+
+\begin{table}[t]
+\centering
+\caption{Gaussian study (200 streams per shift; 1000 evaluation nulls). Entries are post-change detections out of 200, with the median delay in parentheses; ``FA\%'' is the null alarm rate within 400 steps. ``Matched'' thresholds are calibrated to a 5\% horizon false-alarm rate on 1000 disjoint nulls; ``native'' uses each method's own guarantee. Shift abbreviations: Cov = covariate, Lab = label, Con = concept; C+L, C+C and L+C are the mixtures covariate+label, covariate+concept and label+concept.}
+\label{tab:gauss}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Method & FA\% & Cov & Lab & Con & C+L & C+C & L+C \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{TSSD (theory thresholds)}}\\
+TSSD, SR mode & 1.3 & 199 (22) & 198 (82) & 180 (98) & 199 (22) & 200 (22) & 200 (70) \\
+TSSD, test mode & 1.5 & 198 (39) & 177 (120) & 177 (99) & 199 (40) & 197 (38) & 195 (87) \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{Matched 5\% horizon false-alarm rate}}\\
+TSSD, SR mode & 5.0 & 197 (18) & 197 (67) & 184 (93) & 196 (18) & 197 (17) & 199 (57) \\
+TSSD, test mode & 5.7 & 192 (34) & 178 (107) & 174 (92) & 191 (34) & 193 (32) & 187 (77) \\
+Specialist ensemble & 6.5 & 194 (34) & 198 (28) & 195 (17) & 197 (18) & 199 (19) & 197 (15) \\
+BBSD-KS \citep{rabanser2019} & 5.2 & 191 (49) & 200 (49) & 4 (74) & 194 (49) & 199 (49) & 199 (49) \\
+Classifier-CUSUM \citep{evans2024} & 7.2 & 192 (29) & 197 (25) & 9 (100) & 196 (17) & 197 (30) & 194 (26) \\
+Page--Hinkley \citep{page1954} & 4.8 & 13 (127) & 3 (122) & 197 (15) & 129 (62) & 199 (18) & 199 (16) \\
+DDM \citep{gama2004ddm} & 4.1 & 22 (97) & 4 (135) & 188 (41) & 64 (96) & 180 (38) & 187 (37) \\
+ADWIN \citep{bifet2007adwin} & 4.4 & 16 (96) & 3 (133) & 198 (37) & 48 (102) & 197 (42) & 199 (39) \\
+Risk tracking \citep{podkopaev2022} & 3.4 & 15 (129) & 4 (68) & 199 (45) & 55 (116) & 198 (50) & 197 (44) \\
+Kernel 2ST betting \citep{shekhar2023} & 5.6 & 197 (17) & 192 (68) & 6 (92) & 197 (16) & 195 (17) & 193 (68) \\
+Seq.\ classifier 2ST \citep{jang2022} & 7.3 & 190 (19) & 188 (98) & 3 (74) & 193 (17) & 193 (20) & 191 (90) \\
+Conformal TM \citep{vovk2021retrain} & 4.7 & 7 (129) & 0 (--) & 196 (39) & 32 (80) & 191 (42) & 195 (39) \\
+WATCH-style WCTM \citep{prinster2025watch} & 4.2 & 7 (129) & 2 (130) & 196 (42) & 12 (82) & 187 (58) & 194 (39) \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{Native anytime-valid thresholds}}\\
+Risk tracking & 0.0 & 0 (--) & 0 (--) & 134 (144) & 0 (--) & 122 (152) & 132 (139) \\
+Kernel 2ST betting & 0.0 & 200 (49) & 2 (188) & 0 (--) & 200 (46) & 200 (48) & 0 (--) \\
+Seq.\ classifier 2ST & 0.0 & 200 (32) & 157 (150) & 0 (--) & 200 (31) & 200 (33) & 169 (148) \\
+Conformal TM & 1.2 & 1 (149) & 0 (--) & 199 (51) & 19 (123) & 197 (55) & 199 (49) \\
+WATCH-style WCTM & 1.9 & 2 (110) & 0 (--) & 198 (46) & 4 (94) & 184 (67) & 198 (48) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Reliability of the reported type}
+\label{sec:typing}
+
+Table~\ref{tab:typing} counts the streams that are both detected and reported with an action type from the correct set. The correct sets are: covariate for Cov; label for Lab; concept for Con, C+C and L+C; and covariate or label, but never concept, for C+L.
+
+TSSD in SR mode types 199/200 covariate, 198/200 label and 199/200 covariate+label streams correctly, and reports concept on 180--189 of the three concept alternatives. Among streams it detects, the wrong types are almost entirely ``covariate'' for C+C (11 streams whose concept evidence had not yet crossed at the horizon) and ``label'' for L+C (13 streams).
+
+The specialist ensemble detects broadly but types badly. None of the 194 detected covariate shifts is typed correctly: 192 are reported as label shifts, because the covariate shift changes prevalence and the label-shift CUSUM fires first, and 2 as concept shifts. Under covariate+label shift, 110 of 197 detected streams are reported as concept, which would trigger an unnecessary retraining in more than half of the deployments. In total, the ensemble's concept detector fires on 149 of the 1600 streams whose posterior is prior-correctable (30 of them nulls).
+
+The \emph{certified} concept claim made no false claims anywhere: it did not fire on any of the 2000 null streams, on any covariate, label or covariate+label stream, or (Section~\ref{sec:real}) on any real-data stream whose posterior is prior-correctable. This holds in both modes.
+
+\begin{table}[t]
+\centering
+\caption{Typed-correct detections out of 200 (Gaussian study). ``False concept'' counts streams with a concept claim at any time where the posterior is prior-correctable: 1000 evaluation nulls plus the Cov, Lab and C+L arms, 1600 streams in all.}
+\label{tab:typing}
+\small
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Method & Cov & Lab & Con & C+L & C+C & L+C & False concept \\
+\midrule
+TSSD, SR mode & 199 & 198 & 180 & 199 & 189 & 187 & 0 \\
+TSSD, test mode & 198 & 177 & 177 & 199 & 185 & 182 & 0 \\
+TSSD, test mode (matched) & 191 & 177 & 174 & 191 & 181 & 177 & -- \\
+Specialist ensemble (matched) & 0 & 195 & 195 & 87 & 199 & 197 & 149 \\
+\bottomrule
+\end{tabular}
+\end{table}

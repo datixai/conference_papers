@@ -1,0 +1,130 @@
+[
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "area1",
+  "n": 100,
+  "detected": 98,
+  "correct": 0,
+  "types": {
+   "covariate": 56,
+   "label": 42
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "area2",
+  "n": 100,
+  "detected": 96,
+  "correct": 0,
+  "types": {
+   "covariate": 96
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "area3",
+  "n": 100,
+  "detected": 99,
+  "correct": 0,
+  "types": {
+   "covariate": 95,
+   "label": 4
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "area1",
+  "n": 100,
+  "detected": 100,
+  "correct": 0,
+  "types": {
+   "covariate": 52,
+   "label": 48
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "area2",
+  "n": 100,
+  "detected": 98,
+  "correct": 0,
+  "types": {
+   "covariate": 98
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "area3",
+  "n": 100,
+  "detected": 98,
+  "correct": 0,
+  "types": {
+   "covariate": 83,
+   "label": 15
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "area1",
+  "n": 100,
+  "detected": 94,
+  "correct": 0,
+  "types": {
+   "covariate": 48,
+   "label": 46
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "area2",
+  "n": 100,
+  "detected": 95,
+  "correct": 0,
+  "types": {
+   "covariate": 95
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "area3",
+  "n": 100,
+  "detected": 97,
+  "correct": 0,
+  "types": {
+   "covariate": 87,
+   "label": 10
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "area1",
+  "n": 100,
+  "detected": 100,
+  "correct": 18,
+  "types": {
+   "label": 82,
+   "concept": 18
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "area2",
+  "n": 100,
+  "detected": 96,
+  "correct": 92,
+  "types": {
+   "concept": 92,
+   "covariate": 4
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "area3",
+  "n": 100,
+  "detected": 97,
+  "correct": 97,
+  "types": {
+   "concept": 97
+  }
+ }
+]

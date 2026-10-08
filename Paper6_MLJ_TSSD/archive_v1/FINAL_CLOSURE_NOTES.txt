@@ -1,0 +1,23 @@
+TSSD FINAL CLOSURE PASS
+
+Scientific additions/fixes completed:
+1. Concept e-process changed to a fixed two-sided lambda_C=1 capital bet, preserving the martingale proof.
+2. Primary 5% concept result rerun from the full monitor: 127/200 valid detections, 127 singleton-correct, median delay 150; one pre-change alarm.
+3. No new concept crossings on 200 null, 200 pure-covariate, or 200 pure-label primary streams.
+4. Concept-label-budget sensitivity: 128/200 concept-witness crossings at 5%, 198/200 at 10%, 198/200 at 20% reveal.
+5. Digits rerun: concept detection/correct singleton 21/50; covariate and label results retained.
+6. Added chronological Mauna Loa weekly CO2 deployment-style case study with no manufactured change point.
+7. Added run_shift_study.py, which had previously been omitted despite being imported by the primary runner.
+8. Rebuilt the external-comparison figure with the final TSSD concept rate.
+9. Rebuilt a clean structured reproducibility archive with exact environment versions and final CSV outputs.
+10. Updated manuscript, Contribution Information Sheet, declarations/data-availability text, and references.
+
+Validation:
+- main.pdf: 15 pages, openable, unencrypted, text-based.
+- contribution sheet: 2 pages.
+- abstract: 213 words.
+- no unresolved LaTeX references/citations and no overfull/underfull box warnings on final compile.
+- all 15 manuscript pages and both contribution-sheet pages rendered successfully for visual inspection.
+- all packaged Python scripts pass py_compile.
+
+Author-only factual attestations (competing interests, funding, final CRediT roles, and prior-publication overlap) must still be confirmed by the authors and must not be invented computationally.

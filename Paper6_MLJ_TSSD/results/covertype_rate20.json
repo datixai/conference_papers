@@ -1,0 +1,91 @@
+[
+ {
+  "cond": "area0_heldout",
+  "n": 30,
+  "post_labels": 82.5,
+  "test_det": 0,
+  "test_typed": 0,
+  "test_concept": 0,
+  "test_types": {},
+  "sr_det": 1,
+  "sr_typed": 0,
+  "sr_concept": 0,
+  "sr_types": {
+   "covariate": 1
+  },
+  "CTM_det": 1,
+  "WATCH_det": 1,
+  "RiskTrack_det": 1,
+  "Kernel2ST_det": 0
+ },
+ {
+  "cond": "area1",
+  "n": 30,
+  "post_labels": 76.5,
+  "test_det": 30,
+  "test_typed": 0,
+  "test_concept": 0,
+  "test_types": {
+   "covariate": 24,
+   "label": 6
+  },
+  "sr_det": 30,
+  "sr_typed": 0,
+  "sr_concept": 0,
+  "sr_types": {
+   "covariate": 21,
+   "label": 9
+  },
+  "CTM_det": 15,
+  "WATCH_det": 13,
+  "RiskTrack_det": 13,
+  "Kernel2ST_det": 30
+ },
+ {
+  "cond": "area2",
+  "n": 30,
+  "post_labels": 81.5,
+  "test_det": 30,
+  "test_typed": 1,
+  "test_concept": 1,
+  "test_types": {
+   "covariate": 29,
+   "concept": 1
+  },
+  "sr_det": 30,
+  "sr_typed": 3,
+  "sr_concept": 3,
+  "sr_types": {
+   "covariate": 27,
+   "concept": 3
+  },
+  "CTM_det": 27,
+  "WATCH_det": 30,
+  "RiskTrack_det": 12,
+  "Kernel2ST_det": 30
+ },
+ {
+  "cond": "area3",
+  "n": 30,
+  "post_labels": 77.5,
+  "test_det": 30,
+  "test_typed": 0,
+  "test_concept": 0,
+  "test_types": {
+   "covariate": 24,
+   "label": 6
+  },
+  "sr_det": 30,
+  "sr_typed": 4,
+  "sr_concept": 4,
+  "sr_types": {
+   "covariate": 22,
+   "label": 4,
+   "concept": 4
+  },
+  "CTM_det": 30,
+  "WATCH_det": 30,
+  "RiskTrack_det": 30,
+  "Kernel2ST_det": 30
+ }
+]

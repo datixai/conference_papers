@@ -1,0 +1,95 @@
+[
+ {
+  "method": "TSSD-2 C (test)",
+  "null": [
+   0,
+   100
+  ],
+  "covariate": [
+   0,
+   100
+  ],
+  "label": [
+   0,
+   100
+  ],
+  "concept": [
+   100,
+   100
+  ],
+  "covariate_concept": [
+   100,
+   100
+  ],
+  "label_concept": [
+   100,
+   100
+  ],
+  "covariate_label": [
+   0,
+   100
+  ]
+ },
+ {
+  "method": "TSSD-2 C (SR)",
+  "null": [
+   0,
+   100
+  ],
+  "covariate": [
+   0,
+   100
+  ],
+  "label": [
+   0,
+   100
+  ],
+  "concept": [
+   100,
+   100
+  ],
+  "covariate_concept": [
+   100,
+   100
+  ],
+  "label_concept": [
+   100,
+   100
+  ],
+  "covariate_label": [
+   0,
+   100
+  ]
+ },
+ {
+  "method": "TSSD-1 paired C",
+  "null": [
+   0,
+   100
+  ],
+  "covariate": [
+   0,
+   100
+  ],
+  "label": [
+   0,
+   100
+  ],
+  "concept": [
+   99,
+   100
+  ],
+  "covariate_concept": [
+   99,
+   100
+  ],
+  "label_concept": [
+   99,
+   100
+  ],
+  "covariate_label": [
+   0,
+   100
+  ]
+ }
+]

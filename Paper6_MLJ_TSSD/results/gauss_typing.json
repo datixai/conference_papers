@@ -1,0 +1,257 @@
+[
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "covariate",
+  "n": 200,
+  "detected": 198,
+  "correct": 198,
+  "types": {
+   "covariate": 198
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "label",
+  "n": 200,
+  "detected": 177,
+  "correct": 177,
+  "types": {
+   "label": 177
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "concept",
+  "n": 200,
+  "detected": 177,
+  "correct": 177,
+  "types": {
+   "concept": 177
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "covariate_label",
+  "n": 200,
+  "detected": 199,
+  "correct": 199,
+  "types": {
+   "covariate": 194,
+   "label": 5
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "covariate_concept",
+  "n": 200,
+  "detected": 197,
+  "correct": 185,
+  "types": {
+   "covariate": 12,
+   "concept": 185
+  }
+ },
+ {
+  "method": "TSSD-2 (test)",
+  "cond": "label_concept",
+  "n": 200,
+  "detected": 195,
+  "correct": 182,
+  "types": {
+   "concept": 182,
+   "label": 13
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "covariate",
+  "n": 200,
+  "detected": 199,
+  "correct": 199,
+  "types": {
+   "covariate": 199
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "label",
+  "n": 200,
+  "detected": 198,
+  "correct": 198,
+  "types": {
+   "label": 198
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "concept",
+  "n": 200,
+  "detected": 180,
+  "correct": 180,
+  "types": {
+   "concept": 180
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "covariate_label",
+  "n": 200,
+  "detected": 199,
+  "correct": 199,
+  "types": {
+   "covariate": 199
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "covariate_concept",
+  "n": 200,
+  "detected": 200,
+  "correct": 189,
+  "types": {
+   "covariate": 11,
+   "concept": 189
+  }
+ },
+ {
+  "method": "TSSD-2 (SR)",
+  "cond": "label_concept",
+  "n": 200,
+  "detected": 200,
+  "correct": 187,
+  "types": {
+   "concept": 187,
+   "label": 13
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "covariate",
+  "n": 200,
+  "detected": 192,
+  "correct": 191,
+  "types": {
+   "covariate": 191,
+   "label": 1
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "label",
+  "n": 200,
+  "detected": 178,
+  "correct": 177,
+  "types": {
+   "label": 177,
+   "covariate": 1
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "concept",
+  "n": 200,
+  "detected": 174,
+  "correct": 174,
+  "types": {
+   "concept": 174
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "covariate_label",
+  "n": 200,
+  "detected": 191,
+  "correct": 191,
+  "types": {
+   "covariate": 186,
+   "label": 5
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "covariate_concept",
+  "n": 200,
+  "detected": 193,
+  "correct": 181,
+  "types": {
+   "covariate": 11,
+   "concept": 181,
+   "label": 1
+  }
+ },
+ {
+  "method": "TSSD-2 (test, matched)",
+  "cond": "label_concept",
+  "n": 200,
+  "detected": 187,
+  "correct": 177,
+  "types": {
+   "concept": 177,
+   "covariate": 1,
+   "label": 9
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "covariate",
+  "n": 200,
+  "detected": 194,
+  "correct": 0,
+  "types": {
+   "label": 192,
+   "concept": 2
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "label",
+  "n": 200,
+  "detected": 198,
+  "correct": 195,
+  "types": {
+   "label": 195,
+   "concept": 3
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "concept",
+  "n": 200,
+  "detected": 195,
+  "correct": 195,
+  "types": {
+   "concept": 195
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "covariate_label",
+  "n": 200,
+  "detected": 197,
+  "correct": 87,
+  "types": {
+   "concept": 110,
+   "label": 87
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "covariate_concept",
+  "n": 200,
+  "detected": 199,
+  "correct": 199,
+  "types": {
+   "concept": 199
+  }
+ },
+ {
+  "method": "Specialist ensemble (matched)",
+  "cond": "label_concept",
+  "n": 200,
+  "detected": 197,
+  "correct": 197,
+  "types": {
+   "concept": 197
+  }
+ }
+]
