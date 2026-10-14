@@ -1,0 +1,398 @@
+\documentclass[journal,10pt,twocolumn]{IEEEtran}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx,array}
+\usepackage{algorithm,algorithmic}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newcommand{\R}{\mathbb{R}}
+\title{Windowed Interval Type-2 TOPSIS for Fleet Condition Monitoring: Corrected Urgency Memberships, Incremental Window Statistics and Uncertainty Flags}
+\author{Muhammad~Saeed~Raja,
+        Asher~Mehfooz,
+        Naveed~Yaqoob,
+        and~Ahmed~Ali%
+\thanks{Corresponding author: M.~S.~Raja.}%
+\thanks{M.~S.~Raja is with the Department of Mathematics, University of Kotli Azad Jammu and Kashmir, Kotli, Pakistan (e-mail: saeedzar67@gmail.com).}%
+\thanks{A.~Mehfooz and A.~Ali are with the Department of Data Science, University of Kotli Azad Jammu and Kashmir, Kotli, Pakistan (e-mail: asherzaki960@gmail.com; rajaahmedalikhan97@gmail.com). A.~Ali ORCID: \href{https://orcid.org/0009-0000-1885-9225}{0009-0000-1885-9225}.}%
+\thanks{N.~Yaqoob is with the Department of Mathematics and Statistics, Riphah International University, I-14 Campus, Islamabad, Pakistan (e-mail: naveed.yaqoob@riphah.edu.pk).}}
+\begin{document}
+\maketitle
+\begin{abstract}
+Maintenance planners rank a fleet of assets by urgency from windows of noisy multivariate telemetry, and they need to know how certain each part of that ranking is. We study a windowed interval type-2 (IT2) TOPSIS operator in which every asset and sensor receives an interval urgency membership $[\underline{\mu},\overline{\mu}]$ built from the window mean and the detrended window spread, and the width of that interval (the footprint of uncertainty, FOU) is reported next to the rank. We correct the lower membership so that it is the distance from zero to the standardised interval (a formula that ignores intervals containing zero mis-states 34\% of the cells on C-MAPSS FD001), use a per-asset healthy reference, and give an $O(m)$-per-record sliding update of the mean, the spread and the detrended spread that reproduces batch statistics to $10^{-14}$. We prove a Lipschitz bound for the closeness coefficient that accounts for moving ideal solutions and turn it into a bound on rank motion under delayed windows, which holds in every batch but is 13 to 18 times looser than the observed motion. On the FD001 training trajectories (18 cycle batches) the operator reaches Spearman $\rho=0.846$ against true remaining useful life, significantly above type-1 TOPSIS ($+0.030$, 95\% engine-bootstrap interval $[0.009,0.061]$), level with interval TOPSIS, Hotelling $T^2$ and Isolation Forest, and below the mean absolute $z$-score ($-0.049$, $[-0.098,-0.014]$). On the 100 held-out test engines all strong unsupervised rankers, the IT2 operator and a supervised ridge health index lie between $\rho=0.85$ and $0.86$. Under injected sensor faults at a calibrated 1\% false-alarm rate, the FOU flag detects noise bursts twice as often as a rolling variance ratio (0.37 versus 0.17) but misses most bias steps once the window is detrended. The operator therefore adds calibrated, per-channel uncertainty to a competitive ranking rather than a more accurate ranking.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Interval type-2 fuzzy sets, interval-valued fuzzy sets, TOPSIS, footprint of uncertainty, condition monitoring, data streams, C-MAPSS.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Fleet operators of engines, pumps or vehicles rank assets by maintenance urgency several times a day. The inputs are windows of telemetry: each sensor is noisy, some packets are lost, and readings drift as the asset wears. A planner needs two things from such a ranking: an order that puts the assets closest to failure first, and a statement of which parts of the evidence are uncertain, so that a suspicious sensor can be checked before an asset is pulled.
+
+Fuzzy multi-criteria ranking methods such as TOPSIS~\cite{hwang1981,chen2000} produce an order with an explicit closeness score, and their interval type-2 (IT2) forms~\cite{chen2010it2,celik2015} carry an interval of membership for every criterion. They are usually applied to a static decision matrix scored once. Statistical monitoring (Hotelling $T^2$, PCA residuals~\cite{macgregor1995}) and anomaly detectors such as Isolation Forest~\cite{liu2008iforest} produce a single score per asset and do not, by default, say which channel is unreliable.
+
+This paper asks a narrow question: if a windowed IT2-TOPSIS operator is built carefully, is its ranking competitive with standard monitoring scores on a public run-to-failure benchmark, and does its interval output carry useful information? The answer we find is yes to the first part with clear limits, and a qualified yes to the second.
+
+Contributions:
+\begin{enumerate}
+\item A windowed IT2 urgency model with a corrected lower membership (distance from zero to the standardised interval), a per-asset healthy reference, and an FOU built from the detrended window spread (Section~\ref{sec:model}).
+\item An $O(m)$-per-record sliding update of window mean, spread and detrended spread, and the per-cycle cross-sectional reduction that yields the ideal solutions (Section~\ref{sec:stream}). A replay of FD001 record by record reproduces the batch statistics exactly.
+\item A Lipschitz bound for the IT2 closeness coefficient that accounts for the ideals moving with the data, and its use to bound rank motion when windows arrive late (Section~\ref{sec:theory}); both are checked numerically.
+\item An evaluation on C-MAPSS FD001~\cite{saxena2008} with a held-out test set, eleven rankers, a supervised reference, engine-level block bootstrap, sensitivity analysis, fault injection and packet loss (Section~\ref{sec:exp}).
+\end{enumerate}
+We do not claim better accuracy than simple scores: the mean absolute $z$-score is the strongest ranker on the training trajectories. We do not claim a multi-node deployment.
+
+\section{Related work}
+\subsection{Type-2 and interval-valued fuzzy decision models}
+Zadeh introduced type-2 fuzzy sets~\cite{zadeh1975}. Liang and Mendel gave the interval type-2 fuzzy logic system~\cite{liang2000}, and Mendel and John simplified the representation to a lower and an upper membership function~\cite{mendel2002,mendel2006,mendel2017}. Karnik-Mendel iteration~\cite{karnik2001}, the uncertainty bounds of Wu and Mendel~\cite{wu2002} and the Nie-Tan closed form~\cite{nie2008} reduce an IT2 set to a type-1 value. Bustince \emph{et al.} show that interval type-2 sets and interval-valued fuzzy sets coincide when the secondary grades are intervals at each point~\cite{bustince2016}. The model in this paper uses that interval-valued view: for every asset and criterion it carries a membership interval $[\underline{\mu}_{ij},\overline{\mu}_{ij}]$, and no type reduction is needed because TOPSIS works on the endpoints directly.
+
+Chen and Lee's IT2 TOPSIS~\cite{chen2010it2} works with trapezoidal IT2 fuzzy numbers and ranking values; Kahraman \emph{et al.} and \c{C}elik \emph{et al.} review IT2 AHP and IT2 MCDM~\cite{kahraman2014,celik2015}, and Qin and Liu combine ranking values under IT2 information~\cite{qin2015}. Interval TOPSIS for crisp interval data was given by Jahanshahloo \emph{et al.}~\cite{jahanshahloo2006} and Dymova \emph{et al.}~\cite{dymova2013}. Our closeness coefficient differs from Jahanshahloo's only in how the ideals are formed: we take the ideal endpointwise (the largest lower and the largest upper membership), while they take the largest upper and the smallest lower. We include their operator as a baseline and find the two indistinguishable on FD001.
+
+\subsection{Classical and fuzzy MCDM}
+TOPSIS~\cite{hwang1981} and VIKOR~\cite{opricovic2004} are the reference compromise rankers; Behzadian \emph{et al.} survey TOPSIS applications~\cite{behzadian2012}. Linguistic and hesitant extensions such as the hesitant fuzzy linguistic VIKOR of Liao \emph{et al.}~\cite{liao2015} handle qualitative criteria. AHP and fuzzy AHP~\cite{saaty1980,chang1996} elicit weights; we keep uniform weights and treat the sensors as criteria, which is the main simplification of this study.
+
+\subsection{Streams and condition monitoring}
+Data-stream models~\cite{babcock2002,stonebraker2005}, micro-batch and record-at-a-time engines~\cite{zaharia2013,carbone2015,akidau2015}, concept drift~\cite{gama2014,bifet2010} and evolving fuzzy systems~\cite{kasabov2002,angelov2004,lughofer2011} form the systems background. Sliding-window statistics are classically updated with running sums or Welford's method~\cite{welford1962}. On the PHM side, C-MAPSS~\cite{saxena2008} and its realistic successor N-CMAPSS~\cite{arias2021} are the standard benchmarks; similarity-based~\cite{wang2008}, CNN~\cite{babu2016,li2018} and LSTM~\cite{zheng2017} regressors estimate remaining useful life (RUL), and reviews~\cite{lei2018,sikorska2011,ramasso2014} cover the field. Multivariate statistical process control~\cite{macgregor1995} supplies the Hotelling $T^2$ and PCA residual baselines. Uncertainty for any score can also be obtained by resampling~\cite{efron1993} or conformal prediction~\cite{angelopoulos2023}; we use a bootstrap interval as a competing uncertainty signal.
+
+\section{Windowed IT2 urgency model}
+\label{sec:model}
+At cycle $t$ a set $\mathcal{I}_t$ of $n_t$ assets is live, each with $m$ sensors. For asset $i$ and sensor $j$ the window $\mathcal{W}_t(i)$ holds the last $W$ readings. Write $m_{ij}$ for the window mean, $s_{ij}$ for the window standard deviation and $r_{ij}$ for the standard deviation of the residuals after a least-squares line in time is removed. The healthy reference is the mean $\mu_{ij}^{\mathrm h}$ of the first $H$ cycles of asset $i$, and $\sigma_j^{\mathrm h}$ is the pooled within-asset standard deviation of those cycles. The per-asset mean removes manufacturing and initial-wear offsets that a fleet-wide mean would read as urgency.
+
+The standardised interval for cell $(i,j)$ is
+\begin{equation}
+[\underline z_{ij},\overline z_{ij}]=\Bigl[\tfrac{m_{ij}-k r_{ij}-\mu_{ij}^{\mathrm h}}{\sigma_j^{\mathrm h}},\ \tfrac{m_{ij}+k r_{ij}-\mu_{ij}^{\mathrm h}}{\sigma_j^{\mathrm h}}\Bigr],\quad k=1.
+\label{eq:zint}
+\end{equation}
+Using $r_{ij}$ instead of $s_{ij}$ keeps the trend of a degrading sensor out of the interval width, so the width describes noise around the trend rather than the trend itself.
+
+\begin{definition}[IT2 urgency membership]
+For a saturation $z_\star>0$ and an interval $[\underline z,\overline z]$,
+\begin{align}
+\underline{\mu}&=\mathrm{clip}\Bigl(\tfrac{1}{z_\star}\min_{z\in[\underline z,\overline z]}|z|;\,0,1\Bigr),\\
+\overline{\mu}&=\mathrm{clip}\Bigl(\tfrac{1}{z_\star}\max(|\underline z|,|\overline z|);\,0,1\Bigr),
+\end{align}
+where $\min_{z\in[\underline z,\overline z]}|z|=0$ if $\underline z\le 0\le\overline z$ and $\min(|\underline z|,|\overline z|)$ otherwise. The FOU width is $\overline\mu-\underline\mu$.
+\end{definition}
+The lower membership is the most lenient urgency consistent with the interval and the upper membership the most severe. An earlier version of this operator used $\min(|\underline z|,|\overline z|)$ in all cases; that assigns positive lower urgency to a sensor whose interval contains the healthy value, and on FD001 it affects 5\,573 of 16\,406 cells (34.0\%).
+
+With weights $w_j$ ($w_j=1/m$ here), $\underline v_{ij}=w_j\underline\mu_{ij}$ and $\overline v_{ij}=w_j\overline\mu_{ij}$. The ideals are endpointwise extrema over the live set,
+\begin{align}
+v_j^{\ast L}&=\max_i\underline v_{ij},\quad v_j^{\ast U}=\max_i\overline v_{ij},\label{eq:ideals}\\
+v_j^{\circ L}&=\min_i\underline v_{ij},\quad v_j^{\circ U}=\min_i\overline v_{ij},\nonumber
+\end{align}
+the distances are
+\begin{equation}
+d_i^{\ast}=\Bigl(\tfrac12\sum_{j}\bigl[(\underline v_{ij}-v_j^{\ast L})^2+(\overline v_{ij}-v_j^{\ast U})^2\bigr]\Bigr)^{1/2}
+\label{eq:dplus}
+\end{equation}
+and $d_i^{\circ}$ likewise with $v^{\circ}$, and the closeness is $C_i=d_i^{\circ}/(d_i^{\ast}+d_i^{\circ}+\varepsilon)$ with $\varepsilon=10^{-12}$. Assets are ranked by decreasing $C_i$. If every interval has zero width the operator is ordinary TOPSIS on the type-1 ramp $\mathrm{clip}(|z|/z_\star;0,1)$.
+
+Each cycle emits the rank and the intervals. A channel flag is raised when $\overline\mu_{ij}-\underline\mu_{ij}$ exceeds a threshold calibrated to a target false-alarm rate on clean data from assets that are not used for evaluation (Section~\ref{sec:fault}).
+
+\section{Incremental computation}
+\label{sec:stream}
+\begin{algorithm}[t]
+\caption{Windowed IT2-TOPSIS on a record stream}
+\label{alg:main}
+\begin{algorithmic}[1]
+\REQUIRE records $(i,t,x)$ in cycle order; $W$, $H$, $z_\star$, $k$, $w$, flag threshold $\theta$
+\FOR{each record $(i,t,x)$}
+\STATE update sums $S_1,S_2,S_J$ of asset $i$ by \eqref{eq:upd} \COMMENT{$O(m)$}
+\STATE if $t\le H$, add $x$ to the healthy sums of asset $i$
+\ENDFOR
+\STATE at the end of cycle $t$: for each live $i$ with a full window, get $m_{ij},s_{ij},r_{ij}$ from the sums \eqref{eq:stats} and form $[\underline\mu_{ij},\overline\mu_{ij}]$
+\STATE reduce the four ideal vectors \eqref{eq:ideals} by $\max$ and $\min$
+\STATE compute $C_i$, sort, emit rank, intervals and flags $\mathbf 1\{\overline\mu_{ij}-\underline\mu_{ij}>\theta\}$
+\end{algorithmic}
+\end{algorithm}
+For each asset keep a ring buffer of the last $W$ readings and three $m$-vectors: $S_1=\sum_\ell x_\ell$, $S_2=\sum_\ell x_\ell^2$ and $S_J=\sum_\ell \ell\,x_\ell$, where $\ell=0,\dots,W-1$ indexes the window from oldest to newest. When $x_{\mathrm{new}}$ arrives and $x_{\mathrm{old}}$ leaves,
+\begin{align}
+S_J&\leftarrow S_J-(S_1-x_{\mathrm{old}})+(W-1)x_{\mathrm{new}},\label{eq:upd}\\
+S_1&\leftarrow S_1-x_{\mathrm{old}}+x_{\mathrm{new}},\nonumber
+\end{align}
+and $S_2$ is updated like $S_1$. With $\bar\ell=(W-1)/2$, $S_{\ell\ell}=W(W^2-1)/12$, $S_{xx}=S_2-S_1^2/W$ and $S_{x\ell}=S_J-\bar\ell S_1$,
+\begin{equation}
+m=\tfrac{S_1}{W},\quad s^2=\tfrac{S_{xx}}{W},\quad r^2=\tfrac{1}{W}\Bigl(S_{xx}-\tfrac{S_{x\ell}^2}{S_{\ell\ell}}\Bigr).
+\label{eq:stats}
+\end{equation}
+Readings are centred by a fixed constant before accumulation to limit cancellation. Each record costs $O(m)$, and each cycle costs $O(n_t m)$ for memberships, ideals and distances plus $O(n_t\log n_t)$ for sorting.
+
+The ideals \eqref{eq:ideals} are reductions over the assets live at one cycle, not over time, so no deletion from a running maximum is needed when a window expires: the cross-section is rebuilt each cycle from the current window statistics. Because $\max$ and $\min$ are associative and commutative, the same reduction can be split over workers holding disjoint asset sets; this is a property of every TOPSIS variant and we do not count it as a contribution.
+
+\section{Stability of the closeness coefficient}
+\label{sec:theory}
+\begin{proposition}[Lipschitz closeness]
+\label{p:lip}
+Let $(\underline V,\overline V)$ and $(\underline V',\overline V')$ be two weighted IT2 matrices on the same assets with $|\underline v_{ij}-\underline v'_{ij}|\le\delta$ and $|\overline v_{ij}-\overline v'_{ij}|\le\delta$ for all $i,j$. Let $S_i=d_i^{\ast}+d_i^{\circ}$ and $S_i'$ be the corresponding sums for the second matrix, with $S_i'\ge\gamma>0$. Then
+\begin{equation}
+|C_i-C_i'|\le\frac{2\sqrt m\,\delta}{\gamma}.
+\end{equation}
+\end{proposition}
+\begin{IEEEproof}
+Componentwise $\max$ and $\min$ are 1-Lipschitz in the sup norm, so every ideal entry moves by at most $\delta$ and every residual $\underline v_{ij}-v_j^{\ast L}$ (and the three others) moves by at most $2\delta$. By \eqref{eq:dplus}, $d_i^{\ast}=\|\rho_i\|_2/\sqrt2$ for a residual vector $\rho_i$ of length $2m$, so the triangle inequality gives $|d_i^{\ast}-d_i^{\ast\prime}|\le\sqrt{2m}\,2\delta/\sqrt2=2\sqrt m\,\delta$, and the same for $d_i^{\circ}$. Ignoring $\varepsilon$,
+\[
+C_i-C_i'=\frac{d_i^{\circ}(d_i^{\ast\prime}-d_i^{\ast})+d_i^{\ast}(d_i^{\circ}-d_i^{\circ\prime})}{S_iS_i'},
+\]
+so $|C_i-C_i'|\le (d_i^{\circ}+d_i^{\ast})\,2\sqrt m\,\delta/(S_iS_i')=2\sqrt m\,\delta/S_i'$. Adding $\varepsilon$ to both denominators only lowers the bound, because $(d_i^{\circ}+d_i^{\ast})/(S_i+\varepsilon)\le1$.
+\end{IEEEproof}
+
+\begin{proposition}[Delayed windows]
+\label{p:delay}
+Suppose that, for a delay of $\tau$ cycles, the window statistics of every cell change by at most $|m_{ij}(t)-m_{ij}(t-\tau)|\le D^m_j(\tau)$ and $|r_{ij}(t)-r_{ij}(t-\tau)|\le D^r_j(\tau)$. Then every membership endpoint changes by at most $(D^m_j+kD^r_j)/(\sigma_j^{\mathrm h}z_\star)$, and with $\delta=\max_j w_j(D^m_j+kD^r_j)/(\sigma_j^{\mathrm h}z_\star)$ the bound of Proposition~\ref{p:lip} applies to $|C_i(t)-C_i(t-\tau)|$.
+\end{proposition}
+\begin{IEEEproof}
+Each $z$-endpoint in \eqref{eq:zint} moves by at most $(D^m_j+kD^r_j)/\sigma_j^{\mathrm h}$. The maps $[\underline z,\overline z]\mapsto\min_{z}|z|$ and $[\underline z,\overline z]\mapsto\max(|\underline z|,|\overline z|)$ are 1-Lipschitz in the sup norm of the endpoints, and clipping and division by $z_\star$ keep the constant at most $1/z_\star$. Multiplying by $w_j$ and applying Proposition~\ref{p:lip} completes the proof.
+\end{IEEEproof}
+Unlike a Lipschitz assumption on raw sensor paths, which fails for noisy measurements, $D^m$ and $D^r$ are properties of window statistics and can be measured. Reordering of records inside a window leaves $m$ and $s$ unchanged and changes $r$ only through the time index, so the relevant case is a whole window that is $\tau$ cycles old. Section~\ref{sec:delay} measures how tight the bound is.
+
+\begin{remark}
+Proposition~\ref{p:lip} with $\underline V=\overline V$ and the fact that $C_i\in[0,1]$ are elementary; we state them only because the flags and the rank are both functions of quantities covered by the bound.
+\end{remark}
+
+\section{Experiments}
+\label{sec:exp}
+\subsection{Data, protocol and baselines}
+C-MAPSS FD001~\cite{saxena2008} has one operating condition and one fault mode. We use the 14 sensors that vary on FD001 (T24, T30, T50, P30, Nf, Nc, Ps30, phi, NRf, NRc, BPR, htBleed, W31, W32). \emph{Training set:} 100 run-to-failure engines, 20\,631 rows; at cycles $t=80,90,\dots,250$ (18 batches, 100 down to 17 engines) we rank the engines alive at $t$ and compare with true RUL. \emph{Test set:} the 100 test engines are ranked once at their last observed cycle, the standard C-MAPSS setting, against the RUL values supplied with the data; $\sigma^{\mathrm h}$ and all fitted baselines come from the training engines only. Defaults: $W=20$, $H=30$, $z_\star=3$, $k=1$, $w_j=1/14$.
+
+Metrics: Spearman $\rho$ between score and negative RUL; Precision@10 for RUL $\le30$, averaged only over batches that contain at least one such engine (16 of 18 on training; the two earliest batches have none, so no method can score there) and reported with the chance level (the share of positives); NDCG@10 with gain $1/(1+\mathrm{RUL})$. Differences in mean $\rho$ use a paired block bootstrap that resamples engines (300 replicates) so that overlapping windows of the same engine stay together~\cite{efron1993}.
+
+Baselines on the same windows: IT2 ablations (directional map using the sign of each sensor's trend, FOU from raw $s$ instead of $r$, fleet-pooled reference, and the earlier membership formula); interval TOPSIS~\cite{jahanshahloo2006} on the same intervals; type-1 TOPSIS on $\mathrm{clip}(|z|/z_\star;0,1)$; mean $|z|$ and mean directional $z$; Hotelling $T^2$ and PCA squared prediction error (90\% variance) fitted on healthy window means~\cite{macgregor1995}; Isolation Forest (200 trees) fitted on healthy readings~\cite{liu2008iforest}. On the test set we add a supervised ridge health index trained on training windows to predict RUL capped at 125.
+
+\subsection{Ranking on the training trajectories}
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{FD001 training set, 18 batches. Mean $\pm$ s.d. over batches. $\Delta\rho$: ours minus method, with 95\% engine-bootstrap interval; positive means ours is higher. Precision@10 chance level on the same 16 batches: 0.33.}
+\label{tab:rank}
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{lcccc}
+\toprule
+Method & $\rho$ & P@10 & NDCG & $\Delta\rho$ [95\% CI] \\
+\midrule
+IT2-TOPSIS (ours) & $.846\pm.104$ & $.800$ & $.752$ & \\
+\ \ directional map & $.813\pm.104$ & $.762$ & $.711$ & $+.033\,[.001,.065]$ \\
+\ \ FOU from raw $s$ & $.849\pm.096$ & $.800$ & $.763$ & $-.004\,[-.013,.001]$ \\
+\ \ earlier membership & $.834\pm.110$ & $.806$ & $.757$ & $+.011\,[-.001,.023]$ \\
+\ \ pooled reference & $.686\pm.271$ & $.787$ & $.778$ & not run \\
+Interval TOPSIS & $.842\pm.099$ & $.800$ & $.752$ & $+.002\,[-.006,.012]$ \\
+Type-1 TOPSIS & $.816\pm.126$ & $.756$ & $.721$ & $+.030\,[.009,.061]$ \\
+Mean $|z|$ & $.893\pm.048$ & $.825$ & $.772$ & $-.049\,[-.098,-.014]$ \\
+Mean direct.\ $z$ & $.885\pm.046$ & $.819$ & $.766$ & $-.041\,[-.086,-.002]$ \\
+Hotelling $T^2$ & $.838\pm.040$ & $.744$ & $.708$ & $+.008\,[-.053,.071]$ \\
+PCA-SPE & $.721\pm.172$ & $.763$ & $.646$ & $+.124\,[.055,.190]$ \\
+Isolation Forest & $.830\pm.106$ & $.788$ & $.753$ & $+.015\,[-.001,.038]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+Table~\ref{tab:rank} gives the main comparison. Three findings stand out. First, the healthy reference matters more than any fuzzy modelling choice: replacing the per-engine reference by a fleet-pooled one lowers $\rho$ from 0.846 to 0.686, which is the level the earlier, pooled version of this operator reported (0.683). Second, among the TOPSIS family the IT2 operator is significantly better than type-1 TOPSIS and indistinguishable from interval TOPSIS; the corrected membership gives a small gain over the earlier formula, whose interval just includes zero. Third, the simplest score, the mean absolute $z$, is the best ranker, by 0.049 with an interval that excludes zero. On a simulator whose degradation is close to monotone in $|z|$, aggregating the same evidence through ideal solutions loses a little ordering information. The directional map, which ignores movement against the degradation direction, is worse than the absolute map, so on FD001 movement in either direction carries signal.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Training set split by batch mean RUL: early ($>80$, 5 batches) and late ($\le80$, 13 batches). The first row is the earlier pooled-reference pipeline.}
+\label{tab:split}
+\begin{tabular}{lccc}
+\toprule
+Method & $\rho$ early & $\rho$ late & P@10 late \\
+\midrule
+Earlier pooled pipeline & $.298$ & $.831$ & $.90$ \\
+IT2-TOPSIS (ours) & $.878$ & $.833$ & $.90$ \\
+Interval TOPSIS & $.878$ & $.829$ & $.90$ \\
+Type-1 TOPSIS & $.881$ & $.790$ & $.85$ \\
+Mean $|z|$ & $.876$ & $.900$ & $.93$ \\
+Hotelling $T^2$ & $.845$ & $.836$ & $.83$ \\
+PCA-SPE & $.501$ & $.805$ & $.86$ \\
+Isolation Forest & $.867$ & $.816$ & $.89$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+Table~\ref{tab:split} shows that the weak early-life ranking reported for the pooled pipeline ($\rho\approx0.30$) was caused by between-engine offsets, not by a lack of early degradation signal: with a per-engine reference all methods except PCA-SPE reach $\rho\approx0.85$ to $0.88$ in early life. Fig.~\ref{fig:rho} shows $\rho$ per batch.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs/fig_rho_vs_t_v2.pdf}
+\caption{Spearman $\rho$ per training batch. The dotted line uses the earlier membership formula within the new pipeline.}
+\label{fig:rho}
+\end{figure}
+
+\subsection{Held-out test engines}
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{FD001 test set, 100 engines ranked at their last cycle. 95\% bootstrap interval for $\rho$. P@10 chance level: 0.25.}
+\label{tab:test}
+\begin{tabular}{lccc}
+\toprule
+Method & $\rho$ [95\% CI] & P@10 & NDCG@10 \\
+\midrule
+IT2-TOPSIS (ours) & $.859\,[.77,.91]$ & 1.0 & .926 \\
+Interval TOPSIS & $.859\,[.77,.91]$ & 1.0 & .926 \\
+Type-1 TOPSIS & $.859\,[.78,.91]$ & 1.0 & .870 \\
+Mean $|z|$ & $.861\,[.78,.91]$ & 1.0 & .845 \\
+Hotelling $T^2$ & $.852\,[.77,.89]$ & 1.0 & .648 \\
+PCA-SPE & $.808\,[.71,.87]$ & 1.0 & .713 \\
+Isolation Forest & $.858\,[.77,.91]$ & 1.0 & .921 \\
+Ridge health index (sup.) & $.860\,[.77,.91]$ & 1.0 & .931 \\
+\bottomrule
+\end{tabular}
+\end{table}
+On the held-out engines (Table~\ref{tab:test}) every strong unsupervised ranker and the supervised health index fall between $\rho=0.85$ and $0.86$ with overlapping intervals, and all of them place ten engines with RUL $\le30$ in the top ten. The IT2 operator has one of the highest NDCG@10 values (0.926, next to the supervised index at 0.931), meaning that its top positions hold the engines closest to failure, but with 100 engines this difference is not established statistically. We read Table~\ref{tab:test} as showing that the operator is competitive, not superior.
+
+\subsection{Sensitivity}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs/fig_sensitivity_v2.pdf}
+\caption{Mean training $\rho$ of IT2-TOPSIS when one parameter is varied and the others are at default.}
+\label{fig:sens}
+\end{figure}
+Varying one parameter at a time (Fig.~\ref{fig:sens}) moves mean $\rho$ between 0.827 and 0.857: $W\in\{10,20,30\}$ gives 0.841, 0.846, 0.850; $H\in\{20,30,40\}$ gives 0.840, 0.846, 0.853; $z_\star\in\{2,3,4\}$ gives 0.827, 0.846, 0.857; $k\in\{0.5,1,2\}$ gives 0.830, 0.846, 0.849. A larger $z_\star$ helps because fewer upper memberships saturate at 1. The defaults were fixed before this sweep and were not tuned on it.
+
+\subsection{Do the FOU flags mean anything?}
+\label{sec:fault}
+FD001 contains no labelled sensor faults, so we inject them. Engines 1 to 50 provide clean cells to set each detector's threshold at a 1\% false-alarm rate. For engines 51 to 100, in every training batch one random sensor per engine receives one of three faults in the raw window: a noise burst ($N(0,(2\sigma^{\mathrm h})^2)$ on the last 10 readings), a bias step ($\pm3\sigma^{\mathrm h}$ on the last 10 readings) or a single spike ($\pm8\sigma^{\mathrm h}$). Table~\ref{tab:fault} compares the FOU width with a rolling standard deviation ratio $s/\sigma^{\mathrm h}$ and a 95\% bootstrap interval width of the window mean.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Injected sensor faults: detection rate at a threshold set for 1\% false alarms on engines 1 to 50; false-alarm rate on clean cells of engines 51 to 100 (all, and late life).}
+\label{tab:fault}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccccc}
+\toprule
+Detector & Noise & Bias & Spike & FA & FA late \\
+\midrule
+FOU width, detrended (ours) & .37 & .11 & .59 & .013 & .015 \\
+FOU width, raw $s$ & .35 & .46 & .58 & .014 & .017 \\
+Rolling std ratio & .17 & .19 & .53 & .007 & .013 \\
+Bootstrap CI width & .17 & .27 & .38 & .007 & .014 \\
+\bottomrule
+\end{tabular}
+\end{table}
+The FOU width is not a plain variance statistic: because the lower membership drops to zero when the interval reaches the healthy value and the upper membership saturates at 1, the width is largest for channels that are both spread out and near the decision region. At a matched calibration it detects noise bursts about twice as often as the variance ratio or the bootstrap width (0.37 versus 0.17) and spikes slightly more often. The detrended FOU misses most bias steps (0.11), because a step in the last half of the window is largely absorbed by the fitted line; the raw-spread FOU detects them (0.46). Detrending lowers late-life false alarms only slightly (0.015 versus 0.017). A practical configuration therefore reports both widths: the detrended width for ranking and noise flags, and the raw width as a step detector. False-alarm rates on unseen engines stay close to the 1\% target.
+
+\subsection{Packet loss and noise}
+We drop each record independently with probability $p$, add $N(0,(0.1\sigma^{\mathrm h})^2)$ to the remaining readings, and require at least $W/2$ readings per window (three seeds, all 18 batches). For $p=0.1,0.2,0.3$ the Kendall $\tau$ between the IT2 rank and the clean rank is 0.967, 0.947 and 0.934, and $\rho$ against RUL stays at 0.846, 0.844 and 0.842; at most 1.8\% of engines lose their window. Mean directional $z$ (0.972, 0.957, 0.946) and Hotelling $T^2$ (0.975, 0.960, 0.950) are slightly more stable, and Isolation Forest slightly less (0.957, 0.939, 0.929).
+
+\subsection{Tightness of the delay bound}
+\label{sec:delay}
+For each training batch we rank with all windows delayed by $\tau$ cycles, measure $\delta$ from the change of the membership endpoints and $\gamma$ as the smallest $S_i$ over both rankings, and compare the bound of Proposition~\ref{p:lip} with the largest observed $|C_i(t)-C_i(t-\tau)|$. Averaged over batches, for $\tau=1,2,5$ the observed change is 0.025, 0.036 and 0.069 and the bound is 0.45, 0.51 and 0.80. The bound holds in every batch but is 13 to 18 times larger than the observed change, because it assumes that all $2m$ endpoints move adversarially at once. It is a safe worst case for choosing a watermark, not a forecast.
+
+\subsection{Streaming replay and cost}
+We replay the 20\,631 training rows record by record in cycle order with the sliding update of Section~\ref{sec:stream} and rank the live engines at the end of each cycle. On one CPU core in Python with NumPy, the replay processes about 43\,000 records per second, the per-cycle ranking takes 1.00\,ms at the median and 1.54\,ms at the 99th percentile (312 cycles), and the incremental detrended spread matches a batch recomputation to $1.2\times10^{-14}$. The vectorised ranking kernel takes 0.23\,ms, 4.7\,ms and 69\,ms for $10^3$, $10^4$ and $10^5$ assets with $m=14$. At fleet sizes of this order a single process suffices; a distributed engine would matter for window construction over many more assets or much higher record rates, which we did not test.
+
+\section{Discussion and limitations}
+The results support a modest claim. A carefully built windowed IT2-TOPSIS ranks engines as well as interval TOPSIS, Hotelling $T^2$, Isolation Forest and a supervised health index on held-out FD001 engines, and better than type-1 TOPSIS on the training trajectories, but not better than the mean absolute $z$-score. What it adds is a per-channel interval whose width, once calibrated on separate assets, flags noise bursts and spikes at a known false-alarm rate. The largest single improvement in this study came from the per-engine healthy reference, a choice that applies to every method.
+
+Limitations:
+\begin{itemize}
+\item One simulated subset with a single condition and fault mode. FD002 to FD004 (six operating conditions) and N-CMAPSS~\cite{arias2021} require condition-wise normalisation and were not run.
+\item Sensors are used as criteria with equal weights; a real cost, safety and throughput trade-off would need elicited weights and criteria beyond raw sensors.
+\item Faults are injected synthetically and of three simple types; field fault labels would be a stronger test.
+\item The healthy reference is frozen after $H$ cycles; slow drift of the healthy state is not tracked.
+\item The delay bound is loose by an order of magnitude.
+\item The streaming replay runs in one process; no Spark or Flink deployment was measured.
+\end{itemize}
+
+\section{Conclusion}
+We corrected and evaluated a windowed IT2-TOPSIS operator for fleet condition monitoring. With a lower membership defined as the distance from zero to the standardised interval, a per-asset healthy reference and a detrended FOU, the operator is competitive with standard monitoring scores on C-MAPSS FD001, significantly better than type-1 TOPSIS, and weaker than the mean absolute $z$-score on the training trajectories. Its intervals provide calibrated channel flags, it runs incrementally at $O(m)$ per record, and its closeness coefficient obeys a verified, if conservative, Lipschitz bound under delayed windows.
+
+\section*{Declarations}
+\textbf{Data.} NASA C-MAPSS FD001 (\texttt{train\_FD001.txt}, \texttt{test\_FD001.txt}, \texttt{RUL\_FD001.txt}), public~\cite{saxena2008}. \textbf{Code.} \texttt{code/it2\_stream\_v2.py} produces every number, table and figure in this version (\texttt{results/metrics\_v2.json}, about 35\,s on one core); seeds 0, 7, 11, 23, 41 and 2026. The scripts of the earlier version are kept for comparison. \textbf{Author contributions.} M.S.R.\ and N.Y.: formulation and proofs. A.M.\ and A.A.: software, experiments, figures. All authors reviewed the manuscript. \textbf{Conflict of interest.} None. \textbf{Funding.} None reported.
+
+\begin{thebibliography}{50}
+\bibitem{hwang1981}
+C.-L. Hwang and K. Yoon, \emph{Multiple Attribute Decision Making: Methods and Applications}. Berlin, Germany: Springer, 1981.
+\bibitem{chen2000}
+C.-T. Chen, ``Extensions of the TOPSIS for group decision-making under fuzzy environment,'' \emph{Fuzzy Sets Syst.}, vol.\ 114, no.\ 1, pp.\ 1-9, 2000.
+\bibitem{chen2010it2}
+S.-M. Chen and L.-W. Lee, ``Fuzzy multiple attributes group decision-making based on the interval type-2 TOPSIS method,'' \emph{Expert Syst. Appl.}, vol.\ 37, no.\ 4, pp.\ 2790-2798, 2010.
+\bibitem{celik2015}
+E. \c{C}elik, M. Gul, N. Aydin, A.~T. Gumus, and A.~F. Guneri, ``A comprehensive review of multi criteria decision making approaches based on interval type-2 fuzzy sets,'' \emph{Knowl.-Based Syst.}, vol.\ 85, pp.\ 329-341, 2015.
+\bibitem{macgregor1995}
+J.~F. MacGregor and T. Kourti, ``Statistical process control of multivariate processes,'' \emph{Control Eng. Pract.}, vol.\ 3, no.\ 3, pp.\ 403-414, 1995.
+\bibitem{liu2008iforest}
+F.~T. Liu, K.~M. Ting, and Z.-H. Zhou, ``Isolation forest,'' in \emph{Proc. IEEE ICDM}, 2008, pp.\ 413-422.
+\bibitem{saxena2008}
+A. Saxena, K. Goebel, D. Simon, and N. Eklund, ``Damage propagation modeling for aircraft engine run-to-failure simulation,'' in \emph{Proc. Int. Conf. Prognostics Health Manage. (PHM)}, Denver, CO, USA, 2008.
+\bibitem{zadeh1975}
+L.~A. Zadeh, ``The concept of a linguistic variable and its application to approximate reasoning, I,'' \emph{Inf. Sci.}, vol.\ 8, no.\ 3, pp.\ 199-249, 1975.
+\bibitem{liang2000}
+Q. Liang and J.~M. Mendel, ``Interval type-2 fuzzy logic systems: Theory and design,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 8, no.\ 5, pp.\ 535-550, Oct. 2000.
+\bibitem{mendel2002}
+J.~M. Mendel and R.~I. John, ``Type-2 fuzzy sets made simple,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 10, no.\ 2, pp.\ 117-127, Apr. 2002.
+\bibitem{mendel2006}
+J.~M. Mendel, R.~I. John, and F. Liu, ``Interval type-2 fuzzy logic systems made simple,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 14, no.\ 6, pp.\ 808-821, Dec. 2006.
+\bibitem{mendel2017}
+J.~M. Mendel, \emph{Uncertain Rule-Based Fuzzy Systems: Introduction and New Directions}, 2nd ed. Cham, Switzerland: Springer, 2017.
+\bibitem{karnik2001}
+N.~N. Karnik and J.~M. Mendel, ``Centroid of a type-2 fuzzy set,'' \emph{Inf. Sci.}, vol.\ 132, no.\ 1-4, pp.\ 195-220, 2001.
+\bibitem{wu2002}
+H. Wu and J.~M. Mendel, ``Uncertainty bounds and their use in the design of interval type-2 fuzzy logic systems,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 10, no.\ 5, pp.\ 622-639, Oct. 2002.
+\bibitem{nie2008}
+M. Nie and W.~W. Tan, ``Towards an efficient type-reduction method for interval type-2 fuzzy logic systems,'' in \emph{Proc. IEEE Int. Conf. Fuzzy Syst. (FUZZ-IEEE)}, 2008, pp.\ 1425-1432.
+\bibitem{bustince2016}
+H. Bustince \emph{et al.}, ``A historical account of types of fuzzy sets and their relationships,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 24, no.\ 1, pp.\ 179-194, Feb. 2016.
+\bibitem{kahraman2014}
+C. Kahraman, B. \"Oztay\c{s}i, \.{I}. U\c{c}al Sari, and E. Turano\u{g}lu, ``Fuzzy analytic hierarchy process with interval type-2 fuzzy sets,'' \emph{Knowl.-Based Syst.}, vol.\ 59, pp.\ 48-57, 2014.
+\bibitem{qin2015}
+J. Qin and X. Liu, ``Multi-attribute group decision making using combined ranking value under interval type-2 fuzzy environment,'' \emph{Inf. Sci.}, vol.\ 297, pp.\ 293-315, 2015.
+\bibitem{jahanshahloo2006}
+G.~R. Jahanshahloo, F. Hosseinzadeh Lotfi, and M. Izadikhah, ``An algorithmic method to extend TOPSIS for decision-making problems with interval data,'' \emph{Appl. Math. Comput.}, vol.\ 175, no.\ 2, pp.\ 1375-1384, 2006.
+\bibitem{dymova2013}
+L. Dymova, P. Sevastjanov, and A. Tikhonenko, ``A direct interval extension of TOPSIS method,'' \emph{Expert Syst. Appl.}, vol.\ 40, no.\ 12, pp.\ 4841-4847, 2013.
+\bibitem{opricovic2004}
+S. Opricovic and G.-H. Tzeng, ``Compromise solution by MCDM methods: A comparative analysis of VIKOR and TOPSIS,'' \emph{Eur. J. Oper. Res.}, vol.\ 156, no.\ 2, pp.\ 445-455, 2004.
+\bibitem{behzadian2012}
+M. Behzadian, S. Khanmohammadi Otaghsara, M. Yazdani, and J. Ignatius, ``A state-of-the-art survey of TOPSIS applications,'' \emph{Expert Syst. Appl.}, vol.\ 39, no.\ 17, pp.\ 13051-13069, 2012.
+\bibitem{liao2015}
+H. Liao, Z. Xu, and X.-J. Zeng, ``Hesitant fuzzy linguistic VIKOR method and its application in qualitative multiple criteria decision making,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 23, no.\ 5, pp.\ 1343-1355, 2015.
+\bibitem{saaty1980}
+T.~L. Saaty, \emph{The Analytic Hierarchy Process}. New York, NY, USA: McGraw-Hill, 1980.
+\bibitem{chang1996}
+D.-Y. Chang, ``Applications of the extent analysis method on fuzzy AHP,'' \emph{Eur. J. Oper. Res.}, vol.\ 95, no.\ 3, pp.\ 649-655, 1996.
+\bibitem{babcock2002}
+B. Babcock, S. Babu, M. Datar, R. Motwani, and J. Widom, ``Models and issues in data stream systems,'' in \emph{Proc. PODS}, 2002, pp.\ 1-16.
+\bibitem{stonebraker2005}
+M. Stonebraker, U. \c{C}etintemel, and S. Zdonik, ``The 8 requirements of real-time stream processing,'' \emph{SIGMOD Rec.}, vol.\ 34, no.\ 4, pp.\ 42-47, 2005.
+\bibitem{zaharia2013}
+M. Zaharia \emph{et al.}, ``Discretized streams: Fault-tolerant streaming computation at scale,'' in \emph{Proc. SOSP}, 2013, pp.\ 423-438.
+\bibitem{carbone2015}
+P. Carbone \emph{et al.}, ``Apache Flink: Stream and batch processing in a single engine,'' \emph{IEEE Data Eng. Bull.}, vol.\ 38, no.\ 4, pp.\ 28-38, 2015.
+\bibitem{akidau2015}
+T. Akidau \emph{et al.}, ``The dataflow model: A practical approach to balancing correctness, latency, and cost in massive-scale, unbounded, out-of-order data processing,'' \emph{Proc. VLDB Endow.}, vol.\ 8, no.\ 12, pp.\ 1792-1803, 2015.
+\bibitem{gama2014}
+J. Gama, I. Zliobaite, A. Bifet, M. Pechenizkiy, and A. Bouchachia, ``A survey on concept drift adaptation,'' \emph{ACM Comput. Surv.}, vol.\ 46, no.\ 4, 2014, Art.\ no.\ 44.
+\bibitem{bifet2010}
+A. Bifet, G. Holmes, R. Kirkby, and B. Pfahringer, ``MOA: Massive online analysis,'' \emph{J. Mach. Learn. Res.}, vol.\ 11, pp.\ 1601-1604, 2010.
+\bibitem{kasabov2002}
+N. Kasabov and Q. Song, ``DENFIS: Dynamic evolving neural-fuzzy inference system and its application for time-series prediction,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 10, no.\ 2, pp.\ 144-154, Apr. 2002.
+\bibitem{angelov2004}
+P. Angelov and D. Filev, ``An approach to online identification of Takagi-Sugeno fuzzy models,'' \emph{IEEE Trans. Syst., Man, Cybern. B}, vol.\ 34, no.\ 1, pp.\ 484-498, Feb. 2004.
+\bibitem{lughofer2011}
+E. Lughofer, \emph{Evolving Fuzzy Systems: Methodologies, Advanced Concepts and Applications}. Berlin, Germany: Springer, 2011.
+\bibitem{welford1962}
+B.~P. Welford, ``Note on a method for calculating corrected sums of squares and products,'' \emph{Technometrics}, vol.\ 4, no.\ 3, pp.\ 419-420, 1962.
+\bibitem{arias2021}
+M. Arias Chao, C. Kulkarni, K. Goebel, and O. Fink, ``Aircraft engine run-to-failure dataset under real flight conditions for prognostics and diagnostics,'' \emph{Data}, vol.\ 6, no.\ 1, Art.\ no.\ 5, 2021.
+\bibitem{wang2008}
+T. Wang, J. Yu, D. Siegel, and J. Lee, ``A similarity-based prognostics approach for remaining useful life estimation of engineered systems,'' in \emph{Proc. Int. Conf. Prognostics Health Manage.}, 2008.
+\bibitem{babu2016}
+G.~S. Babu, P. Zhao, and X.-L. Li, ``Deep convolutional neural network based regression approach for estimation of remaining useful life,'' in \emph{Proc. DASFAA}, 2016, pp.\ 214-228.
+\bibitem{li2018}
+X. Li, Q. Ding, and J.-Q. Sun, ``Remaining useful life estimation in prognostics using deep convolution neural networks,'' \emph{Reliab. Eng. Syst. Saf.}, vol.\ 172, pp.\ 1-11, 2018.
+\bibitem{zheng2017}
+S. Zheng, K. Ristovski, A. Farahat, and C. Gupta, ``Long short-term memory network for remaining useful life estimation,'' in \emph{Proc. IEEE ICPHM}, 2017, pp.\ 88-95.
+\bibitem{lei2018}
+Y. Lei, N. Li, L. Guo, N. Li, T. Yan, and J. Lin, ``Machinery health prognostics: A systematic review from data acquisition to RUL prediction,'' \emph{Mech. Syst. Signal Process.}, vol.\ 104, pp.\ 799-834, 2018.
+\bibitem{sikorska2011}
+J.~Z. Sikorska, M. Hodkiewicz, and L. Ma, ``Prognostic modelling options for remaining useful life estimation by industry,'' \emph{Mech. Syst. Signal Process.}, vol.\ 25, no.\ 5, pp.\ 1803-1836, 2011.
+\bibitem{ramasso2014}
+E. Ramasso and A. Saxena, ``Performance benchmarking and analysis of prognostic methods for CMAPSS datasets,'' \emph{Int. J. Prognostics Health Manage.}, vol.\ 5, no.\ 2, 2014.
+\bibitem{efron1993}
+B. Efron and R.~J. Tibshirani, \emph{An Introduction to the Bootstrap}. New York, NY, USA: Chapman \& Hall, 1993.
+\bibitem{angelopoulos2023}
+A.~N. Angelopoulos and S. Bates, ``Conformal prediction: A gentle introduction,'' \emph{Found. Trends Mach. Learn.}, vol.\ 16, no.\ 4, pp.\ 494-591, 2023.
+\end{thebibliography}
+\end{document}

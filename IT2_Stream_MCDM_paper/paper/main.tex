@@ -9,7 +9,7 @@
 \newtheorem{remark}{Remark}
 \newtheorem{definition}{Definition}
 \newcommand{\R}{\mathbb{R}}
-\title{Windowed Interval Type-2 TOPSIS for Fleet Condition Monitoring: Corrected Urgency Memberships, Incremental Window Statistics and Uncertainty Flags}
+\title{Windowed Interval Type-2 TOPSIS for Fleet Condition Monitoring: Corrected Memberships, Incremental Statistics and an Evaluation on Four C-MAPSS Subsets}
 \author{Muhammad~Saeed~Raja,
         Asher~Mehfooz,
         Naveed~Yaqoob,
@@ -21,7 +21,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Maintenance planners rank a fleet of assets by urgency from windows of noisy multivariate telemetry, and they need to know how certain each part of that ranking is. We study a windowed interval type-2 (IT2) TOPSIS operator in which every asset and sensor receives an interval urgency membership $[\underline{\mu},\overline{\mu}]$ built from the window mean and the detrended window spread, and the width of that interval (the footprint of uncertainty, FOU) is reported next to the rank. We correct the lower membership so that it is the distance from zero to the standardised interval (a formula that ignores intervals containing zero mis-states 34\% of the cells on C-MAPSS FD001), use a per-asset healthy reference, and give an $O(m)$-per-record sliding update of the mean, the spread and the detrended spread that reproduces batch statistics to $10^{-14}$. We prove a Lipschitz bound for the closeness coefficient that accounts for moving ideal solutions and turn it into a bound on rank motion under delayed windows, which holds in every batch but is 13 to 18 times looser than the observed motion. On the FD001 training trajectories (18 cycle batches) the operator reaches Spearman $\rho=0.846$ against true remaining useful life, significantly above type-1 TOPSIS ($+0.030$, 95\% engine-bootstrap interval $[0.009,0.061]$), level with interval TOPSIS, Hotelling $T^2$ and Isolation Forest, and below the mean absolute $z$-score ($-0.049$, $[-0.098,-0.014]$). On the 100 held-out test engines all strong unsupervised rankers, the IT2 operator and a supervised ridge health index lie between $\rho=0.85$ and $0.86$. Under injected sensor faults at a calibrated 1\% false-alarm rate, the FOU flag detects noise bursts twice as often as a rolling variance ratio (0.37 versus 0.17) but misses most bias steps once the window is detrended. The operator therefore adds calibrated, per-channel uncertainty to a competitive ranking rather than a more accurate ranking.
+Maintenance planners rank a fleet of assets by urgency from windows of noisy multivariate telemetry and need to know which parts of that ranking are uncertain. We study a windowed interval type-2 (IT2) TOPSIS operator in which every asset and sensor receives an interval urgency membership built from the window mean and the detrended window spread, with the width of the interval (the footprint of uncertainty, FOU) reported beside the rank. We correct the lower membership to the distance from zero to the standardised interval (an earlier formula mis-states 34\% of the cells), use a per-asset healthy reference, give an exact $O(m)$-per-record sliding update of mean, spread and detrended spread, and prove a Lipschitz bound for the closeness coefficient under delayed windows. We evaluate on all four C-MAPSS subsets (FD002 and FD004 normalised per operating condition), against eleven unsupervised rankers and a supervised ridge health index, with a 2\,000-replicate engine bootstrap and Holm correction. The per-asset reference and the corrected membership give the largest gains (Spearman $\rho$ up by 0.10 to 0.16 and 0.03 to 0.06, significant on every subset where they matter). With them, IT2-TOPSIS reaches $\rho=0.78$ to $0.85$ on the training trajectories and $0.78$ to $0.88$ on held-out test engines, within 0.05 of the best unsupervised ranker on every subset but never the best, and clearly below the supervised index on the multi-fault subsets FD003 and FD004. In a fault-injection study the FOU width is not a better fault detector than a plain detrended spread ratio (mean area under the ROC curve 0.78 versus 0.94), and mean-shift detectors detect almost nothing, so the FOU's value lies in placing spread and urgency on one interpretable scale rather than in detection power. The delay bound holds in every batch but is 11 to 24 times looser than observed rank motion. We report these results as evidence that the operator is a sound and transparent ranker, not a more accurate one.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -33,16 +33,16 @@ Fleet operators of engines, pumps or vehicles rank assets by maintenance urgency
 
 Fuzzy multi-criteria ranking methods such as TOPSIS~\cite{hwang1981,chen2000} produce an order with an explicit closeness score, and their interval type-2 (IT2) forms~\cite{chen2010it2,celik2015} carry an interval of membership for every criterion. They are usually applied to a static decision matrix scored once. Statistical monitoring (Hotelling $T^2$, PCA residuals~\cite{macgregor1995}) and anomaly detectors such as Isolation Forest~\cite{liu2008iforest} produce a single score per asset and do not, by default, say which channel is unreliable.
 
-This paper asks a narrow question: if a windowed IT2-TOPSIS operator is built carefully, is its ranking competitive with standard monitoring scores on a public run-to-failure benchmark, and does its interval output carry useful information? The answer we find is yes to the first part with clear limits, and a qualified yes to the second.
+This paper asks a narrow question: if a windowed IT2-TOPSIS operator is built carefully, is its ranking competitive with standard monitoring scores on a public run-to-failure benchmark, and does its interval output carry useful information? The answer we find is yes to the first part, with no consistent advantage over simpler scores, and a limited yes to the second: the interval is an interpretable display of spread, but not a better fault detector than the spread itself.
 
 Contributions:
 \begin{enumerate}
 \item A windowed IT2 urgency model with a corrected lower membership (distance from zero to the standardised interval), a per-asset healthy reference, and an FOU built from the detrended window spread (Section~\ref{sec:model}).
 \item An $O(m)$-per-record sliding update of window mean, spread and detrended spread, and the per-cycle cross-sectional reduction that yields the ideal solutions (Section~\ref{sec:stream}). A replay of FD001 record by record reproduces the batch statistics exactly.
 \item A Lipschitz bound for the IT2 closeness coefficient that accounts for the ideals moving with the data, and its use to bound rank motion when windows arrive late (Section~\ref{sec:theory}); both are checked numerically.
-\item An evaluation on C-MAPSS FD001~\cite{saxena2008} with a held-out test set, eleven rankers, a supervised reference, engine-level block bootstrap, sensitivity analysis, fault injection and packet loss (Section~\ref{sec:exp}).
+\item An evaluation on all four C-MAPSS subsets~\cite{saxena2008} with held-out test engines, eleven unsupervised rankers, a supervised and an age-only reference, a Holm-corrected engine-level bootstrap, sensitivity analysis, fault injection against spread-based detectors, and packet loss (Section~\ref{sec:exp}).
 \end{enumerate}
-We do not claim better accuracy than simple scores: the mean absolute $z$-score is the strongest ranker on the training trajectories. We do not claim a multi-node deployment.
+We do not claim better accuracy than simple scores, a better fault detector than a spread statistic, or a multi-node deployment; the experiments show none of these.
 
 \section{Related work}
 \subsection{Type-2 and interval-valued fuzzy decision models}
@@ -89,7 +89,7 @@ d_i^{\ast}=\Bigl(\tfrac12\sum_{j}\bigl[(\underline v_{ij}-v_j^{\ast L})^2+(\over
 \end{equation}
 and $d_i^{\circ}$ likewise with $v^{\circ}$, and the closeness is $C_i=d_i^{\circ}/(d_i^{\ast}+d_i^{\circ}+\varepsilon)$ with $\varepsilon=10^{-12}$. Assets are ranked by decreasing $C_i$. If every interval has zero width the operator is ordinary TOPSIS on the type-1 ramp $\mathrm{clip}(|z|/z_\star;0,1)$.
 
-Each cycle emits the rank and the intervals. A channel flag is raised when $\overline\mu_{ij}-\underline\mu_{ij}$ exceeds a threshold calibrated to a target false-alarm rate on clean data from assets that are not used for evaluation (Section~\ref{sec:fault}).
+Each cycle emits the rank and the intervals. The width $\overline\mu_{ij}-\underline\mu_{ij}$ can be thresholded into a channel flag calibrated on assets not used for evaluation; Section~\ref{sec:fault} shows that a plain detrended spread ratio is the better flag, so we recommend the FOU as a display and the spread ratio as the alarm.
 
 \section{Incremental computation}
 \label{sec:stream}
@@ -154,66 +154,73 @@ Proposition~\ref{p:lip} with $\underline V=\overline V$ and the fact that $C_i\i
 \section{Experiments}
 \label{sec:exp}
 \subsection{Data, protocol and baselines}
-C-MAPSS FD001~\cite{saxena2008} has one operating condition and one fault mode. We use the 14 sensors that vary on FD001 (T24, T30, T50, P30, Nf, Nc, Ps30, phi, NRf, NRc, BPR, htBleed, W31, W32). \emph{Training set:} 100 run-to-failure engines, 20\,631 rows; at cycles $t=80,90,\dots,250$ (18 batches, 100 down to 17 engines) we rank the engines alive at $t$ and compare with true RUL. \emph{Test set:} the 100 test engines are ranked once at their last observed cycle, the standard C-MAPSS setting, against the RUL values supplied with the data; $\sigma^{\mathrm h}$ and all fitted baselines come from the training engines only. Defaults: $W=20$, $H=30$, $z_\star=3$, $k=1$, $w_j=1/14$.
+C-MAPSS~\cite{saxena2008} has four subsets: FD001 (one operating condition, one fault mode, 100 training and 100 test engines), FD002 (six conditions, one fault mode, 260 and 259), FD003 (one condition, two fault modes, 100 and 100) and FD004 (six conditions, two fault modes, 249 and 248). For FD002 and FD004 we cluster the three operating settings of the training file into six conditions with $k$-means and standardise every sensor within its condition using training statistics; test rows are assigned to the nearest training cluster. We use the 14 sensors T24, T30, T50, P30, Nf, Nc, Ps30, phi, NRf, NRc, BPR, htBleed, W31 and W32.
 
-Metrics: Spearman $\rho$ between score and negative RUL; Precision@10 for RUL $\le30$, averaged only over batches that contain at least one such engine (16 of 18 on training; the two earliest batches have none, so no method can score there) and reported with the chance level (the share of positives); NDCG@10 with gain $1/(1+\mathrm{RUL})$. Differences in mean $\rho$ use a paired block bootstrap that resamples engines (300 replicates) so that overlapping windows of the same engine stay together~\cite{efron1993}.
+\emph{Training trajectories:} at cycles $t=80,90,\dots$ while at least 15 engines are alive (18, 22, 25 and 30 batches) we rank the live engines and compare with true RUL. \emph{Test engines:} each test engine is ranked once at its last observed cycle against the RUL supplied with the data (engines with fewer than $W$ cycles are skipped: 0, 0, 0 and 2); $\sigma^{\mathrm h}$ and every fitted baseline come from the training engines. Defaults, fixed before any experiment: $W=20$, $H=30$, $z_\star=3$, $k=1$, $w_j=1/14$. The absolute $|z|$ map was pre-specified as the primary model because it is the earlier map with the lower membership corrected; the directional map is an ablation.
 
-Baselines on the same windows: IT2 ablations (directional map using the sign of each sensor's trend, FOU from raw $s$ instead of $r$, fleet-pooled reference, and the earlier membership formula); interval TOPSIS~\cite{jahanshahloo2006} on the same intervals; type-1 TOPSIS on $\mathrm{clip}(|z|/z_\star;0,1)$; mean $|z|$ and mean directional $z$; Hotelling $T^2$ and PCA squared prediction error (90\% variance) fitted on healthy window means~\cite{macgregor1995}; Isolation Forest (200 trees) fitted on healthy readings~\cite{liu2008iforest}. On the test set we add a supervised ridge health index trained on training windows to predict RUL capped at 125.
+Metrics: Spearman $\rho$ between score and negative RUL; on training batches, Precision@10 for RUL $\le30$ over batches with at least one such engine, with the chance level; on test engines, R-precision (precision at $k$ equal to the number of engines with RUL $\le30$), because Precision@10 saturates at 1.0 for most methods on FD001; NDCG@10 with gain $1/(1+\mathrm{RUL})$. Differences in mean training $\rho$ use a paired block bootstrap over engines with 2\,000 replicates~\cite{efron1993}, so that overlapping windows of one engine stay together, and two-sided bootstrap $p$-values are Holm-adjusted over the 11 comparisons in each subset.
 
-\subsection{Ranking on the training trajectories}
+Baselines on the same windows: IT2 ablations (directional map, FOU from raw $s$ instead of $r$, earlier membership formula, fleet-pooled reference); interval TOPSIS~\cite{jahanshahloo2006}; type-1 TOPSIS on $\mathrm{clip}(|z|/z_\star;0,1)$; mean $|z|$ and mean directional $z$; Hotelling $T^2$ and PCA squared prediction error (90\% variance) on healthy window means~\cite{macgregor1995}; Isolation Forest (200 trees) on healthy readings~\cite{liu2008iforest}. On test engines we add a supervised ridge health index trained on training windows to predict RUL capped at 125, and an age-only ranker (number of cycles observed).
+
+\subsection{Ranking on FD001 in detail}
 \begin{table}[t]
 \centering
 \footnotesize
-\caption{FD001 training set, 18 batches. Mean $\pm$ s.d. over batches. $\Delta\rho$: ours minus method, with 95\% engine-bootstrap interval; positive means ours is higher. Precision@10 chance level on the same 16 batches: 0.33.}
+\caption{FD001 training trajectories, 18 batches. $\Delta\rho$: ours minus method with 95\% engine-bootstrap interval (2\,000 replicates); $p_{\mathrm H}$: Holm-adjusted $p$. P@10 chance level on the same 16 batches: 0.33.}
 \label{tab:rank}
-\setlength{\tabcolsep}{2pt}
+\setlength{\tabcolsep}{1.6pt}
 \begin{tabular}{lcccc}
 \toprule
-Method & $\rho$ & P@10 & NDCG & $\Delta\rho$ [95\% CI] \\
+Method & $\rho$ & P@10 & $\Delta\rho$ [95\% CI] & $p_{\mathrm H}$ \\
 \midrule
-IT2-TOPSIS (ours) & $.846\pm.104$ & $.800$ & $.752$ & \\
-\ \ directional map & $.813\pm.104$ & $.762$ & $.711$ & $+.033\,[.001,.065]$ \\
-\ \ FOU from raw $s$ & $.849\pm.096$ & $.800$ & $.763$ & $-.004\,[-.013,.001]$ \\
-\ \ earlier membership & $.834\pm.110$ & $.806$ & $.757$ & $+.011\,[-.001,.023]$ \\
-\ \ pooled reference & $.686\pm.271$ & $.787$ & $.778$ & not run \\
-Interval TOPSIS & $.842\pm.099$ & $.800$ & $.752$ & $+.002\,[-.006,.012]$ \\
-Type-1 TOPSIS & $.816\pm.126$ & $.756$ & $.721$ & $+.030\,[.009,.061]$ \\
-Mean $|z|$ & $.893\pm.048$ & $.825$ & $.772$ & $-.049\,[-.098,-.014]$ \\
-Mean direct.\ $z$ & $.885\pm.046$ & $.819$ & $.766$ & $-.041\,[-.086,-.002]$ \\
-Hotelling $T^2$ & $.838\pm.040$ & $.744$ & $.708$ & $+.008\,[-.053,.071]$ \\
-PCA-SPE & $.721\pm.172$ & $.763$ & $.646$ & $+.124\,[.055,.190]$ \\
-Isolation Forest & $.830\pm.106$ & $.788$ & $.753$ & $+.015\,[-.001,.038]$ \\
+IT2-TOPSIS (ours) & $.846\pm.104$ & $.800$ & & \\
+\ \ directional map & $.813\pm.104$ & $.762$ & $+.032\,[-.001,.069]$ & .34 \\
+\ \ FOU from raw $s$ & $.849\pm.096$ & $.800$ & $-.004\,[-.012,.001]$ & .53 \\
+\ \ earlier membership & $.834\pm.110$ & $.806$ & $+.011\,[-.002,.023]$ & .38 \\
+\ \ pooled reference & $.686\pm.271$ & $.787$ & $+.160\,[.073,.243]$ & .02 \\
+Interval TOPSIS & $.842\pm.099$ & $.800$ & $+.003\,[-.007,.013]$ & 1.0 \\
+Type-1 TOPSIS & $.816\pm.126$ & $.756$ & $+.030\,[.009,.060]$ & .06 \\
+Mean $|z|$ & $.893\pm.048$ & $.825$ & $-.049\,[-.102,-.013]$ & .02 \\
+Mean direct.\ $z$ & $.885\pm.046$ & $.819$ & $-.041\,[-.094,-.003]$ & .18 \\
+Hotelling $T^2$ & $.838\pm.040$ & $.744$ & $+.007\,[-.058,.065]$ & 1.0 \\
+PCA-SPE & $.721\pm.172$ & $.763$ & $+.124\,[.050,.193]$ & .02 \\
+Isolation Forest & $.830\pm.106$ & $.788$ & $+.015\,[-.002,.038]$ & .38 \\
 \bottomrule
 \end{tabular}
 \end{table}
-Table~\ref{tab:rank} gives the main comparison. Three findings stand out. First, the healthy reference matters more than any fuzzy modelling choice: replacing the per-engine reference by a fleet-pooled one lowers $\rho$ from 0.846 to 0.686, which is the level the earlier, pooled version of this operator reported (0.683). Second, among the TOPSIS family the IT2 operator is significantly better than type-1 TOPSIS and indistinguishable from interval TOPSIS; the corrected membership gives a small gain over the earlier formula, whose interval just includes zero. Third, the simplest score, the mean absolute $z$, is the best ranker, by 0.049 with an interval that excludes zero. On a simulator whose degradation is close to monotone in $|z|$, aggregating the same evidence through ideal solutions loses a little ordering information. The directional map, which ignores movement against the degradation direction, is worse than the absolute map, so on FD001 movement in either direction carries signal.
+Table~\ref{tab:rank} gives the full comparison on FD001. After Holm correction three differences remain significant: the per-engine reference beats the pooled one by 0.160, the IT2 operator beats PCA-SPE, and the mean absolute $z$ beats the IT2 operator by 0.049. The advantage over type-1 TOPSIS ($+0.030$) has an interval that excludes zero but does not survive the multiplicity correction ($p_{\mathrm H}=0.06$). The weak early-life ranking of the earlier, pooled pipeline is explained by between-engine offsets: in the five early batches $\rho$ is 0.296 with the pooled reference and 0.878 with the per-engine reference.
 
+\subsection{All four subsets}
 \begin{table}[t]
 \centering
 \footnotesize
-\caption{Training set split by batch mean RUL: early ($>80$, 5 batches) and late ($\le80$, 13 batches). The first row is the earlier pooled-reference pipeline.}
-\label{tab:split}
-\begin{tabular}{lccc}
+\caption{Mean Spearman $\rho$ on training trajectories. $^{\ast}$: differs from IT2-TOPSIS (ours) with Holm-adjusted $p<0.05$. Bold: best unsupervised ranker per subset.}
+\label{tab:all}
+\begin{tabular}{lcccc}
 \toprule
-Method & $\rho$ early & $\rho$ late & P@10 late \\
+Method & FD001 & FD002 & FD003 & FD004 \\
 \midrule
-Earlier pooled pipeline & $.298$ & $.831$ & $.90$ \\
-IT2-TOPSIS (ours) & $.878$ & $.833$ & $.90$ \\
-Interval TOPSIS & $.878$ & $.829$ & $.90$ \\
-Type-1 TOPSIS & $.881$ & $.790$ & $.85$ \\
-Mean $|z|$ & $.876$ & $.900$ & $.93$ \\
-Hotelling $T^2$ & $.845$ & $.836$ & $.83$ \\
-PCA-SPE & $.501$ & $.805$ & $.86$ \\
-Isolation Forest & $.867$ & $.816$ & $.89$ \\
+IT2-TOPSIS (ours) & .846 & .783 & .837 & .791 \\
+\ \ earlier membership & .834 & .750$^{\ast}$ & .782$^{\ast}$ & .756$^{\ast}$ \\
+\ \ pooled reference & .686$^{\ast}$ & .688$^{\ast}$ & .696$^{\ast}$ & .663$^{\ast}$ \\
+\ \ directional map & .813 & .719$^{\ast}$ & .516$^{\ast}$ & .573$^{\ast}$ \\
+Interval TOPSIS & .842 & .805$^{\ast}$ & .849$^{\ast}$ & .800 \\
+Type-1 TOPSIS & .816 & .798 & \textbf{.879} & .819$^{\ast}$ \\
+Mean $|z|$ & \textbf{.893}$^{\ast}$ & .772 & .865 & .818$^{\ast}$ \\
+Hotelling $T^2$ & .838 & .712$^{\ast}$ & .874 & \textbf{.843}$^{\ast}$ \\
+Isolation Forest & .830 & \textbf{.829}$^{\ast}$ & .859 & .804 \\
+PCA-SPE & .721$^{\ast}$ & .355$^{\ast}$ & .629$^{\ast}$ & .434$^{\ast}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
-Table~\ref{tab:split} shows that the weak early-life ranking reported for the pooled pipeline ($\rho\approx0.30$) was caused by between-engine offsets, not by a lack of early degradation signal: with a per-engine reference all methods except PCA-SPE reach $\rho\approx0.85$ to $0.88$ in early life. Fig.~\ref{fig:rho} shows $\rho$ per batch.
+Table~\ref{tab:all} extends the comparison. Three patterns hold on every subset. First, the per-engine reference is the most important design choice (gains of 0.10 to 0.16). Second, the corrected lower membership is significantly better than the earlier formula on FD002, FD003 and FD004 (0.03 to 0.06), where more intervals straddle zero. Third, the directional map collapses on the two-fault subsets (0.52 and 0.57): the two fault modes move some sensors in opposite directions, so a fixed sign is wrong for one of them, while the absolute map is indifferent to direction.
+
+Against the other rankers the picture is mixed. A different method is best on each subset (mean $|z|$, Isolation Forest, type-1 TOPSIS, Hotelling $T^2$), and IT2-TOPSIS is within 0.05 of the best on every subset but never the best. Interval TOPSIS is marginally but significantly better than our endpointwise ideal on FD002 and FD003 (by 0.022 and 0.012). We conclude that the IT2 operator is a competitive ranker with no consistent accuracy advantage. Fig.~\ref{fig:rho} shows $\rho$ per batch.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figs/fig_rho_vs_t_v2.pdf}
-\caption{Spearman $\rho$ per training batch. The dotted line uses the earlier membership formula within the new pipeline.}
+\includegraphics[width=\columnwidth]{figs/fig_rho_vs_t_v3.pdf}
+\caption{Spearman $\rho$ per training batch on the four subsets. ``IT2, earlier membership'' is the earlier lower-membership formula inside the new pipeline.}
 \label{fig:rho}
 \end{figure}
 
@@ -221,85 +228,89 @@ Table~\ref{tab:split} shows that the weak early-life ranking reported for the po
 \begin{table}[t]
 \centering
 \footnotesize
-\caption{FD001 test set, 100 engines ranked at their last cycle. 95\% bootstrap interval for $\rho$. P@10 chance level: 0.25.}
+\caption{Test engines ranked at their last cycle: Spearman $\rho$ (R-precision in brackets for three methods). 95\% bootstrap intervals for IT2-TOPSIS: FD001 [.78,.91], FD002 [.85,.90], FD003 [.66,.85], FD004 [.74,.83].}
 \label{tab:test}
-\begin{tabular}{lccc}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
 \toprule
-Method & $\rho$ [95\% CI] & P@10 & NDCG@10 \\
+Method & FD001 & FD002 & FD003 & FD004 \\
 \midrule
-IT2-TOPSIS (ours) & $.859\,[.77,.91]$ & 1.0 & .926 \\
-Interval TOPSIS & $.859\,[.77,.91]$ & 1.0 & .926 \\
-Type-1 TOPSIS & $.859\,[.78,.91]$ & 1.0 & .870 \\
-Mean $|z|$ & $.861\,[.78,.91]$ & 1.0 & .845 \\
-Hotelling $T^2$ & $.852\,[.77,.89]$ & 1.0 & .648 \\
-PCA-SPE & $.808\,[.71,.87]$ & 1.0 & .713 \\
-Isolation Forest & $.858\,[.77,.91]$ & 1.0 & .921 \\
-Ridge health index (sup.) & $.860\,[.77,.91]$ & 1.0 & .931 \\
+IT2-TOPSIS (ours) & .859 (.84) & .879 (.84) & .776 (.75) & .792 (.57) \\
+Interval TOPSIS & .859 & .882 & .780 & .799 \\
+Type-1 TOPSIS & .859 & .873 & .780 & .793 \\
+Mean $|z|$ & .861 & .868 & .754 & .793 \\
+Hotelling $T^2$ & .852 & .854 & .772 & .809 \\
+Isolation Forest & .858 & .879 & .772 & .782 \\
+PCA-SPE & .808 & .671 & .715 & .629 \\
+Ridge index (sup.) & .860 (.88) & .907 (.89) & .895 (.85) & .886 (.85) \\
+Age only & .601 (.48) & .702 (.46) & .551 (.50) & .452 (.30) \\
 \bottomrule
 \end{tabular}
 \end{table}
-On the held-out engines (Table~\ref{tab:test}) every strong unsupervised ranker and the supervised health index fall between $\rho=0.85$ and $0.86$ with overlapping intervals, and all of them place ten engines with RUL $\le30$ in the top ten. The IT2 operator has one of the highest NDCG@10 values (0.926, next to the supervised index at 0.931), meaning that its top positions hold the engines closest to failure, but with 100 engines this difference is not established statistically. We read Table~\ref{tab:test} as showing that the operator is competitive, not superior.
+On the test engines (Table~\ref{tab:test}) all unsupervised rankers except PCA-SPE lie within about 0.03 of each other on every subset, and all are far above the age-only ranker (0.45 to 0.70), so their skill does not come from how long an engine has been observed. The supervised ridge index matches them on FD001 but is clearly better on FD002 to FD004 ($\rho$ 0.89 to 0.91, R-precision 0.85 to 0.89 against 0.57 to 0.84 for IT2-TOPSIS), most of all on the two-fault subsets. Where run-to-failure labels exist, a supervised health index is the stronger ranker; the unsupervised operators are useful when such labels are not available. A short test trajectory overlaps the per-engine reference period and therefore looks healthy; this usually ranks it correctly, because short trajectories tend to have high RUL, and it affects all per-engine methods equally.
 
 \subsection{Sensitivity}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figs/fig_sensitivity_v2.pdf}
-\caption{Mean training $\rho$ of IT2-TOPSIS when one parameter is varied and the others are at default.}
+\includegraphics[width=\columnwidth]{figs/fig_sensitivity_v3.pdf}
+\caption{FD001: mean training $\rho$ of IT2-TOPSIS when one parameter is varied and the others are at default.}
 \label{fig:sens}
 \end{figure}
-Varying one parameter at a time (Fig.~\ref{fig:sens}) moves mean $\rho$ between 0.827 and 0.857: $W\in\{10,20,30\}$ gives 0.841, 0.846, 0.850; $H\in\{20,30,40\}$ gives 0.840, 0.846, 0.853; $z_\star\in\{2,3,4\}$ gives 0.827, 0.846, 0.857; $k\in\{0.5,1,2\}$ gives 0.830, 0.846, 0.849. A larger $z_\star$ helps because fewer upper memberships saturate at 1. The defaults were fixed before this sweep and were not tuned on it.
+On FD001, varying one parameter at a time (Fig.~\ref{fig:sens}) moves mean $\rho$ between 0.827 and 0.857: $W\in\{10,20,30\}$ gives 0.841, 0.846, 0.850; $H\in\{20,30,40\}$ gives 0.840, 0.846, 0.853; $z_\star\in\{2,3,4\}$ gives 0.827, 0.846, 0.857; $k\in\{0.5,1,2\}$ gives 0.830, 0.846, 0.849. A larger $z_\star$ helps because fewer upper memberships saturate at 1.
 
-\subsection{Do the FOU flags mean anything?}
+\subsection{What the FOU width detects}
 \label{sec:fault}
-FD001 contains no labelled sensor faults, so we inject them. Engines 1 to 50 provide clean cells to set each detector's threshold at a 1\% false-alarm rate. For engines 51 to 100, in every training batch one random sensor per engine receives one of three faults in the raw window: a noise burst ($N(0,(2\sigma^{\mathrm h})^2)$ on the last 10 readings), a bias step ($\pm3\sigma^{\mathrm h}$ on the last 10 readings) or a single spike ($\pm8\sigma^{\mathrm h}$). Table~\ref{tab:fault} compares the FOU width with a rolling standard deviation ratio $s/\sigma^{\mathrm h}$ and a 95\% bootstrap interval width of the window mean.
+No subset contains labelled sensor faults, so we inject them. Engines in the first half of each training set provide clean cells for a threshold at a 1\% false-alarm rate. For the other engines, in every batch one random sensor per engine receives one of four faults in the raw window: a noise burst ($N(0,(2\sigma^{\mathrm h})^2)$ on the last 10 readings), a bias step ($\pm3\sigma^{\mathrm h}$ on the last 10), a spike ($\pm8\sigma^{\mathrm h}$ on one reading) or a zero-mean variance increase ($N(0,(1.5\sigma^{\mathrm h})^2)$ over the whole window with its sample mean removed, so the window mean is unchanged). We compare the FOU width with the upper membership alone, a mean-plus-spread score $|z|+k\,s/\sigma^{\mathrm h}$, the rolling spread ratio $s/\sigma^{\mathrm h}$, the detrended spread ratio $r/\sigma^{\mathrm h}$ and a bootstrap interval width of the window mean. Table~\ref{tab:fault} reports the area under the ROC curve (AUC), the standardised partial AUC for false-alarm rates up to 5\%, and the detection rate at a threshold set for a realised 1\% false-alarm rate on the evaluated engines, averaged over the four subsets and four fault types.
 
 \begin{table}[t]
 \centering
 \footnotesize
-\caption{Injected sensor faults: detection rate at a threshold set for 1\% false alarms on engines 1 to 50; false-alarm rate on clean cells of engines 51 to 100 (all, and late life).}
+\caption{Injected sensor faults, averaged over four subsets and four fault types. TPR@1\%: detection rate at 1\% realised false alarms. Last two columns: TPR@1\% for bias steps and zero-mean variance faults.}
 \label{tab:fault}
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{lccccc}
 \toprule
-Detector & Noise & Bias & Spike & FA & FA late \\
+Detector & AUC & pAUC & TPR@1\% & Bias & Var. \\
 \midrule
-FOU width, detrended (ours) & .37 & .11 & .59 & .013 & .015 \\
-FOU width, raw $s$ & .35 & .46 & .58 & .014 & .017 \\
-Rolling std ratio & .17 & .19 & .53 & .007 & .013 \\
-Bootstrap CI width & .17 & .27 & .38 & .007 & .014 \\
+FOU width, detrended (ours) & .78 & .67 & .27 & .07 & .31 \\
+FOU width, raw $s$ & .81 & .70 & .34 & .38 & .31 \\
+Upper membership & .70 & .51 & .00 & .00 & .00 \\
+Mean plus spread & .72 & .50 & .01 & .01 & .01 \\
+Rolling spread ratio & .97 & .75 & .18 & .16 & .15 \\
+Detrended spread ratio & .94 & .79 & .39 & .07 & .42 \\
+Bootstrap CI width & .96 & .74 & .17 & .15 & .15 \\
 \bottomrule
 \end{tabular}
 \end{table}
-The FOU width is not a plain variance statistic: because the lower membership drops to zero when the interval reaches the healthy value and the upper membership saturates at 1, the width is largest for channels that are both spread out and near the decision region. At a matched calibration it detects noise bursts about twice as often as the variance ratio or the bootstrap width (0.37 versus 0.17) and spikes slightly more often. The detrended FOU misses most bias steps (0.11), because a step in the last half of the window is largely absorbed by the fitted line; the raw-spread FOU detects them (0.46). Detrending lowers late-life false alarms only slightly (0.015 versus 0.017). A practical configuration therefore reports both widths: the detrended width for ranking and noise flags, and the raw width as a step detector. False-alarm rates on unseen engines stay close to the 1\% target.
+Three conclusions follow. First, detectors driven by the window mean (upper membership, mean plus spread) detect almost nothing at a 1\% false-alarm rate, because degraded engines already produce large mean deviations; the FOU signal therefore does not come from mean shift. Second, the FOU width is not a better detector than the spread statistic it is built from: the detrended spread ratio has higher AUC (0.94 against 0.78), higher partial AUC and a higher detection rate at 1\% false alarms. The clipping and the zero floor of the membership map discard part of the spread information. Third, detrending trades bias steps for noise: it removes most of a step in the second half of the window, so the raw-spread FOU detects bias steps (0.38) where the detrended statistics do not. In practice a monitoring layer should flag channels with the detrended spread ratio, use the raw spread for steps, and use the FOU for what it does well: showing the operator, on the same $[0,1]$ urgency scale as the ranking, how wide the plausible urgency of each channel is.
 
 \subsection{Packet loss and noise}
-We drop each record independently with probability $p$, add $N(0,(0.1\sigma^{\mathrm h})^2)$ to the remaining readings, and require at least $W/2$ readings per window (three seeds, all 18 batches). For $p=0.1,0.2,0.3$ the Kendall $\tau$ between the IT2 rank and the clean rank is 0.967, 0.947 and 0.934, and $\rho$ against RUL stays at 0.846, 0.844 and 0.842; at most 1.8\% of engines lose their window. Mean directional $z$ (0.972, 0.957, 0.946) and Hotelling $T^2$ (0.975, 0.960, 0.950) are slightly more stable, and Isolation Forest slightly less (0.957, 0.939, 0.929).
+On FD001 we drop each record independently with probability $p$, add $N(0,(0.1\sigma^{\mathrm h})^2)$ to the remaining readings, and require at least $W/2$ readings per window (three seeds, all batches). For $p=0.1,0.2,0.3$ the Kendall $\tau$ between the IT2 rank and the clean rank is 0.967, 0.947 and 0.934, and $\rho$ against RUL stays at 0.846, 0.844 and 0.842; at most 1.8\% of engines lose their window. Mean directional $z$ and Hotelling $T^2$ are slightly more stable ($\tau$ 0.946 and 0.950 at $p=0.3$) and Isolation Forest slightly less (0.929).
 
-\subsection{Tightness of the delay bound}
+\subsection{Tightness of the delay bounds}
 \label{sec:delay}
-For each training batch we rank with all windows delayed by $\tau$ cycles, measure $\delta$ from the change of the membership endpoints and $\gamma$ as the smallest $S_i$ over both rankings, and compare the bound of Proposition~\ref{p:lip} with the largest observed $|C_i(t)-C_i(t-\tau)|$. Averaged over batches, for $\tau=1,2,5$ the observed change is 0.025, 0.036 and 0.069 and the bound is 0.45, 0.51 and 0.80. The bound holds in every batch but is 13 to 18 times larger than the observed change, because it assumes that all $2m$ endpoints move adversarially at once. It is a safe worst case for choosing a watermark, not a forecast.
+For each training batch we rank with all windows delayed by $\tau$ cycles and compare the largest observed $|C_i(t)-C_i(t-\tau)|$ with two bounds: Proposition~\ref{p:lip} with $\delta$ measured from the membership endpoints, and Proposition~\ref{p:delay} with $D^m_j$ and $D^r_j$ measured as the largest change of the window mean and detrended spread. Both bounds hold in every batch of every subset. For $\tau\in\{1,2,5\}$ the first is 11 to 24 times the observed change (FD001: 0.44, 0.51 and 0.79 against 0.025, 0.036 and 0.069) and the second 26 to 43 times. The bounds assume that all $2m$ endpoints move adversarially at once; they are safe worst cases for choosing a watermark, not forecasts.
 
 \subsection{Streaming replay and cost}
-We replay the 20\,631 training rows record by record in cycle order with the sliding update of Section~\ref{sec:stream} and rank the live engines at the end of each cycle. On one CPU core in Python with NumPy, the replay processes about 43\,000 records per second, the per-cycle ranking takes 1.00\,ms at the median and 1.54\,ms at the 99th percentile (312 cycles), and the incremental detrended spread matches a batch recomputation to $1.2\times10^{-14}$. The vectorised ranking kernel takes 0.23\,ms, 4.7\,ms and 69\,ms for $10^3$, $10^4$ and $10^5$ assets with $m=14$. At fleet sizes of this order a single process suffices; a distributed engine would matter for window construction over many more assets or much higher record rates, which we did not test.
+We replay the 20\,631 FD001 training rows record by record in cycle order with the sliding update of Section~\ref{sec:stream} and rank the live engines at the end of each cycle. In Python with NumPy on one core the replay processes about 36\,000 records per second; the per-cycle ranking takes 1.2\,ms at the median and 2.4\,ms at the 99th percentile (312 cycles); and the incremental detrended spread matches a batch recomputation to $1.2\times10^{-14}$. The vectorised ranking kernel takes 0.27\,ms, 6.2\,ms and 82\,ms for $10^3$, $10^4$ and $10^5$ assets with $m=14$. At these fleet sizes one process suffices.
 
 \section{Discussion and limitations}
-The results support a modest claim. A carefully built windowed IT2-TOPSIS ranks engines as well as interval TOPSIS, Hotelling $T^2$, Isolation Forest and a supervised health index on held-out FD001 engines, and better than type-1 TOPSIS on the training trajectories, but not better than the mean absolute $z$-score. What it adds is a per-channel interval whose width, once calibrated on separate assets, flags noise bursts and spikes at a known false-alarm rate. The largest single improvement in this study came from the per-engine healthy reference, a choice that applies to every method.
+Across all four C-MAPSS subsets the evidence supports a narrow claim. A carefully built windowed IT2-TOPSIS operator is a sound, reproducible and competitive unsupervised ranker. It is within 0.05 of the best unsupervised method on every subset, but no unsupervised method wins consistently, and a supervised health index is clearly better where labels exist. Its distinctive output, the FOU interval, is an interpretable presentation of spread on the urgency scale, not a superior fault detector: a detrended spread ratio flags faults better. The two choices that mattered most, a per-asset healthy reference and a correct lower membership, are cheap and transfer to any method.
 
 Limitations:
 \begin{itemize}
-\item One simulated subset with a single condition and fault mode. FD002 to FD004 (six operating conditions) and N-CMAPSS~\cite{arias2021} require condition-wise normalisation and were not run.
+\item All data are simulated; faults are injected synthetically and of four simple types. N-CMAPSS~\cite{arias2021} and field data with labelled sensor faults would be stronger tests.
 \item Sensors are used as criteria with equal weights; a real cost, safety and throughput trade-off would need elicited weights and criteria beyond raw sensors.
-\item Faults are injected synthetically and of three simple types; field fault labels would be a stronger test.
-\item The healthy reference is frozen after $H$ cycles; slow drift of the healthy state is not tracked.
-\item The delay bound is loose by an order of magnitude.
+\item The healthy reference is frozen after $H$ cycles, and operating conditions are handled by a fixed clustering of the training settings.
+\item The delay bounds are loose by one to two orders of magnitude.
 \item The streaming replay runs in one process; no Spark or Flink deployment was measured.
 \end{itemize}
 
 \section{Conclusion}
-We corrected and evaluated a windowed IT2-TOPSIS operator for fleet condition monitoring. With a lower membership defined as the distance from zero to the standardised interval, a per-asset healthy reference and a detrended FOU, the operator is competitive with standard monitoring scores on C-MAPSS FD001, significantly better than type-1 TOPSIS, and weaker than the mean absolute $z$-score on the training trajectories. Its intervals provide calibrated channel flags, it runs incrementally at $O(m)$ per record, and its closeness coefficient obeys a verified, if conservative, Lipschitz bound under delayed windows.
+We corrected and evaluated a windowed IT2-TOPSIS operator for fleet condition monitoring on all four C-MAPSS subsets. A lower membership defined as the distance from zero to the standardised interval and a per-asset healthy reference give significant, consistent gains over the earlier operator. With them the operator ranks engines about as well as interval TOPSIS, type-1 TOPSIS, Hotelling $T^2$, Isolation Forest and the mean absolute $z$-score, never best and never far behind, and below a supervised health index on the harder subsets. Its FOU interval places channel spread on the urgency scale for the operator, but a plain detrended spread ratio is the better fault flag. The operator runs incrementally at $O(m)$ per record and its closeness coefficient obeys verified, if conservative, stability bounds.
 
 \section*{Declarations}
-\textbf{Data.} NASA C-MAPSS FD001 (\texttt{train\_FD001.txt}, \texttt{test\_FD001.txt}, \texttt{RUL\_FD001.txt}), public~\cite{saxena2008}. \textbf{Code.} \texttt{code/it2\_stream\_v2.py} produces every number, table and figure in this version (\texttt{results/metrics\_v2.json}, about 35\,s on one core); seeds 0, 7, 11, 23, 41 and 2026. The scripts of the earlier version are kept for comparison. \textbf{Author contributions.} M.S.R.\ and N.Y.: formulation and proofs. A.M.\ and A.A.: software, experiments, figures. All authors reviewed the manuscript. \textbf{Conflict of interest.} None. \textbf{Funding.} None reported.
+\textbf{Data.} NASA C-MAPSS FD001 to FD004 (training, test and RUL files), public~\cite{saxena2008}. \textbf{Code.} \texttt{code/it2\_stream\_v3.py} (which imports the model from \texttt{it2\_stream\_v2.py}) produces every number, table and figure in this version (\texttt{results/metrics\_v3.json}, about 6 minutes on one core); seeds 0, 7, 11, 23, 41 and 2026. Scripts of earlier versions are kept for comparison. \textbf{Author contributions.} M.S.R.\ and N.Y.: formulation and proofs. A.M.\ and A.A.: software, experiments, figures. All authors reviewed the manuscript. \textbf{Conflict of interest.} None. \textbf{Funding.} None reported.
 
 \begin{thebibliography}{50}
 \bibitem{hwang1981}
