@@ -1,0 +1,141 @@
+{
+  "rows": 2827677,
+  "timestamp_examples": [
+    "4/7/2017 1:28",
+    "5/7/2017 10:17",
+    "6/7/2017 9:33",
+    "4/7/2017 2:44",
+    "03/07/2017 01:37:02"
+  ],
+  "raw_hour_counts": {
+    "1": 236314,
+    "2": 433906,
+    "3": 396592,
+    "4": 394129,
+    "5": 9554,
+    "8": 16552,
+    "9": 330426,
+    "10": 561726,
+    "11": 314974,
+    "12": 133504
+  },
+  "unparsed": 0,
+  "attack_schedule": [
+    {
+      "day": "Tue 04 Jul",
+      "label": "FTP-Patator",
+      "start": "09:17",
+      "end": "10:30",
+      "flows": 7935
+    },
+    {
+      "day": "Tue 04 Jul",
+      "label": "SSH-Patator",
+      "start": "14:09",
+      "end": "15:11",
+      "flows": 5897
+    },
+    {
+      "day": "Wed 05 Jul",
+      "label": "DoS slowloris",
+      "start": "09:01",
+      "end": "14:25",
+      "flows": 5796
+    },
+    {
+      "day": "Wed 05 Jul",
+      "label": "DoS Slowhttptest",
+      "start": "10:15",
+      "end": "10:37",
+      "flows": 5499
+    },
+    {
+      "day": "Wed 05 Jul",
+      "label": "DoS Hulk",
+      "start": "10:43",
+      "end": "11:07",
+      "flows": 230123
+    },
+    {
+      "day": "Wed 05 Jul",
+      "label": "DoS GoldenEye",
+      "start": "11:10",
+      "end": "11:19",
+      "flows": 10293
+    },
+    {
+      "day": "Wed 05 Jul",
+      "label": "Heartbleed",
+      "start": "15:12",
+      "end": "15:32",
+      "flows": 11
+    },
+    {
+      "day": "Thu 06 Jul",
+      "label": "Web Attack \u2013 Brute Force",
+      "start": "09:15",
+      "end": "10:00",
+      "flows": 1507
+    },
+    {
+      "day": "Thu 06 Jul",
+      "label": "Web Attack \u2013 XSS",
+      "start": "10:15",
+      "end": "10:35",
+      "flows": 652
+    },
+    {
+      "day": "Thu 06 Jul",
+      "label": "Web Attack \u2013 Sql Injection",
+      "start": "10:40",
+      "end": "10:42",
+      "flows": 21
+    },
+    {
+      "day": "Thu 06 Jul",
+      "label": "Infiltration",
+      "start": "14:19",
+      "end": "15:45",
+      "flows": 36
+    },
+    {
+      "day": "Fri 07 Jul",
+      "label": "Bot",
+      "start": "09:34",
+      "end": "12:59",
+      "flows": 1956
+    },
+    {
+      "day": "Fri 07 Jul",
+      "label": "PortScan",
+      "start": "13:05",
+      "end": "15:23",
+      "flows": 158804
+    },
+    {
+      "day": "Fri 07 Jul",
+      "label": "DDoS",
+      "start": "15:56",
+      "end": "16:16",
+      "flows": 128025
+    }
+  ],
+  "rebuilt_vs_repaired_cache": {
+    "fresh_windows": 2453,
+    "cache_windows": 2454,
+    "common": 2453,
+    "only_cache_edges": [
+      132.0
+    ],
+    "labels_equal_on_common": true,
+    "edges_equal_on_common": 1967,
+    "fresh_pos": 54
+  },
+  "positive_windows_by_label": {
+    "DDoS": 20,
+    "DoS Hulk": 18,
+    "PortScan": 10,
+    "DoS GoldenEye": 5,
+    "DoS Slowhttptest": 1
+  }
+}
