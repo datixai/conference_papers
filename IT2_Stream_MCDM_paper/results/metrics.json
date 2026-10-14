@@ -1,0 +1,128 @@
+{
+  "dataset": "NASA C-MAPSS FD001 train (run-to-failure)",
+  "n_engines": 100,
+  "n_rows": 20631,
+  "sensors": [
+    6,
+    7,
+    8,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17,
+    18,
+    21,
+    24,
+    25
+  ],
+  "window": 20,
+  "healthy_cycles": 30,
+  "alert_rul": 30,
+  "n_eval_batches": 18,
+  "latency_cycle_t": 140,
+  "n_engines_latency_batch": 96,
+  "latency_ms": {
+    "1": {
+      "mean": 7.1854399517178535,
+      "std": 2.8413128287305622,
+      "n": 5
+    },
+    "2": {
+      "mean": 305.4942200426012,
+      "std": 31.66220444681261,
+      "n": 5
+    },
+    "4": {
+      "mean": 381.33384003303945,
+      "std": 32.128457955692205,
+      "n": 5
+    }
+  },
+  "speedup_vs_1": {
+    "1": 1.0,
+    "2": 0.023520706711622374,
+    "4": 0.01884291189865367
+  },
+  "kendall_tau_noise": {
+    "mean": 0.9826023391812866,
+    "std": 0.0044151078568834936,
+    "seeds": [
+      11,
+      23,
+      41
+    ],
+    "sigma": 0.05
+  },
+  "it2": {
+    "spearman": {
+      "mean": 0.6832307139355291,
+      "std": 0.2665063951739076,
+      "n_batches": 18
+    },
+    "prec_at_10": {
+      "mean": 0.7055555555555556,
+      "std": 0.3539229265087199,
+      "n_batches": 18
+    },
+    "ndcg_at_10": {
+      "mean": 0.7565523122122835,
+      "std": 0.14505124291923044,
+      "n_batches": 18
+    }
+  },
+  "t1_topsis": {
+    "spearman": {
+      "mean": 0.6818452434229906,
+      "std": 0.2692377913180571,
+      "n_batches": 18
+    },
+    "prec_at_10": {
+      "mean": 0.7055555555555556,
+      "std": 0.3539229265087199,
+      "n_batches": 18
+    },
+    "ndcg_at_10": {
+      "mean": 0.7493509682385101,
+      "std": 0.1619837115636617,
+      "n_batches": 18
+    }
+  },
+  "iforest": {
+    "spearman": {
+      "mean": 0.7083722950675031,
+      "std": 0.23334903265570336,
+      "n_batches": 18
+    },
+    "prec_at_10": {
+      "mean": 0.7055555555555556,
+      "std": 0.36213780643516524,
+      "n_batches": 18
+    },
+    "ndcg_at_10": {
+      "mean": 0.7667407660262126,
+      "std": 0.16641359904775005,
+      "n_batches": 18
+    }
+  },
+  "mean_abs_z": {
+    "spearman": {
+      "mean": 0.7093212736224216,
+      "std": 0.2908683572188094,
+      "n_batches": 18
+    },
+    "prec_at_10": {
+      "mean": 0.7277777777777779,
+      "std": 0.3642971565915024,
+      "n_batches": 18
+    },
+    "ndcg_at_10": {
+      "mean": 0.8003823324539145,
+      "std": 0.1115863565922428,
+      "n_batches": 18
+    }
+  },
+  "implementation": "CPython process pool on one host; not a Spark cluster",
+  "host": "local workstation, measured wall-clock"
+}

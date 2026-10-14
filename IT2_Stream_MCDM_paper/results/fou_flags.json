@@ -1,0 +1,164 @@
+{
+  "theta_channel": 0.5,
+  "theta_engine": 0.65,
+  "rule_channel": "flag cell (i,j) if UMF-LMF > theta_channel",
+  "rule_engine": "flag engine i if max_j (UMF-LMF) > theta_engine",
+  "n_batches": 18,
+  "channel_flag_rate": [
+    0.14930198949297924,
+    0.037810877545208656
+  ],
+  "engine_flag_rate": [
+    0.15641545654801747,
+    0.0763813499213878
+  ],
+  "fou_width_mean": 0.32845178261110247,
+  "fou_width_p90": 0.5273514317112492,
+  "fou_width_max": 0.8732913981704999,
+  "examples_t140": [
+    {
+      "t": 140,
+      "engine": 19,
+      "C_i": 0.7880830071232127,
+      "max_FOU": 0.5766208495521792,
+      "engine_flag": false,
+      "widest_sensor": "htBleed",
+      "interval": [
+        0.4233791504478209,
+        1.0
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 8,
+      "C_i": 0.7789333668571143,
+      "max_FOU": 0.5230681145435272,
+      "engine_flag": false,
+      "widest_sensor": "htBleed",
+      "interval": [
+        0.4769318854564728,
+        1.0
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 27,
+      "C_i": 0.6879723070051174,
+      "max_FOU": 0.6450639697859535,
+      "engine_flag": false,
+      "widest_sensor": "htBleed",
+      "interval": [
+        0.3549360302140465,
+        1.0
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 6,
+      "C_i": 0.6820705980668922,
+      "max_FOU": 0.6517891448154426,
+      "engine_flag": true,
+      "widest_sensor": "htBleed",
+      "interval": [
+        0.16429732932944244,
+        0.816086474144885
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 24,
+      "C_i": 0.6676824587384792,
+      "max_FOU": 0.5997876921756564,
+      "engine_flag": false,
+      "widest_sensor": "T30",
+      "interval": [
+        0.40021230782434364,
+        1.0
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 58,
+      "C_i": 0.6616793564056245,
+      "max_FOU": 0.6494320649159235,
+      "engine_flag": false,
+      "widest_sensor": "T30",
+      "interval": [
+        0.35056793508407647,
+        1.0
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 13,
+      "C_i": 0.658504907517756,
+      "max_FOU": 0.5764159286035899,
+      "engine_flag": false,
+      "widest_sensor": "W32",
+      "interval": [
+        0.3182836587606417,
+        0.8946995873642316
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 37,
+      "C_i": 0.6430281189574475,
+      "max_FOU": 0.716396859054924,
+      "engine_flag": true,
+      "widest_sensor": "T30",
+      "interval": [
+        0.05730104688293202,
+        0.773697905937856
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 36,
+      "C_i": 0.6406713960009767,
+      "max_FOU": 0.68661616047232,
+      "engine_flag": true,
+      "widest_sensor": "T30",
+      "interval": [
+        0.2863226423194852,
+        0.9729388027918051
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 77,
+      "C_i": 0.6396772508405656,
+      "max_FOU": 0.7663185938968963,
+      "engine_flag": true,
+      "widest_sensor": "T30",
+      "interval": [
+        0.23368140610310373,
+        1.0
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 12,
+      "C_i": 0.6372704300293213,
+      "max_FOU": 0.8732913981704999,
+      "engine_flag": true,
+      "widest_sensor": "T30",
+      "interval": [
+        0.08817832010761101,
+        0.961469718278111
+      ]
+    },
+    {
+      "t": 140,
+      "engine": 73,
+      "C_i": 0.6203027804166596,
+      "max_FOU": 0.7272603847123033,
+      "engine_flag": true,
+      "widest_sensor": "T24",
+      "interval": [
+        0.05817367363810557,
+        0.7854340583504088
+      ]
+    }
+  ]
+}

@@ -1,0 +1,461 @@
+\documentclass[journal,10pt,twocolumn]{IEEEtran}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx,array}
+\usepackage{algorithm,algorithmic}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\title{A Windowed Interval Type-2 Fuzzy Multi-Criteria Decision Framework for Streaming Multivariate Analytics}
+\author{Muhammad~Saeed~Raja,~\IEEEmembership{Corresponding Author,}
+        Asher~Mehfooz,
+        Naveed~Yaqoob,
+        and~Ahmed~Ali%
+\thanks{M.~S.~Raja is with the Department of Mathematics, University of Kotli Azad Jammu and Kashmir, Kotli, Pakistan (e-mail: saeedzar67@gmail.com).}%
+\thanks{A.~Mehfooz and A.~Ali are with the Department of Data Science, University of Kotli Azad Jammu and Kashmir, Kotli, Pakistan (e-mail: asherzaki960@gmail.com; rajaahmedalikhan97@gmail.com).}%
+\thanks{N.~Yaqoob is with the Department of Mathematics and Statistics, Riphah International University, I-14 Campus, Islamabad, Pakistan (e-mail: naveed.yaqoob@riphah.edu.pk).}}
+\begin{document}
+\maketitle
+\begin{abstract}
+Industrial telemetry produces multivariate streams in which sensor readings are noisy, intermittently missing, and described, at the decision layer, by linguistic operating limits rather than a single crisp threshold. Rigid statistical cuts and opaque classifiers can raise false alarms and give no account of how cost, safety, and throughput are traded. Interval type-2 fuzzy multi-criteria ranking handles that epistemic uncertainty, but published fuzzy TOPSIS and VIKOR procedures assume a static decision matrix scored once. This paper states a windowed interval type-2 (IT2) TOPSIS operator for streaming matrices $X_t\in\R^{n_t\times m}$ and a map-reduce-compatible schedule: a map for per-asset memberships, an associative reduce for the fuzzy ideals, and a second map for closeness coefficients. We prove that the closeness coefficient is Lipschitz in the membership endpoints, that the IT2 rank coincides with type-1 TOPSIS as the footprint of uncertainty (FOU) collapses, and that a delay of $\tau$ cycles---the industrial case of jitter or out-of-order packets---changes scores by at most a constant times the sensor drift over that delay. The measured implementation is a vectorised single-host pipeline, not a Spark or Flink cluster. On NASA C-MAPSS FD001 (100 run-to-failure engines, 20\,631 cycles, 13 sensors, $W=20$), IT2 urgency versus true remaining useful life (RUL) has Spearman $\rho=0.683\pm0.267$ over 18 batches, statistically matching type-1 TOPSIS ($\rho=0.682\pm0.269$) and slightly below Isolation Forest and mean $|z|$ ($\rho=0.708$, $0.709$). Late-life batches (mean RUL $\le 80$) reach $\rho=0.831\pm0.069$ and Precision@10 $0.90\pm0.11$. The contribution relative to those baselines is not a higher $\rho$: it is an explicit FOU interval on operational urgency that a $z$-score or an isolation score does not return. Vectorised IT2-TOPSIS is $\Theta(nm)$ and finishes in $14.5$\,ms at $n=20\,000$. A CPython process pool on $n=96$ is slower ($7.2$\,ms to $>300$\,ms) because pickling dwarfs the kernel; that timing is a runtime artefact, not a refutation of the associative reduce.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Interval type-2 fuzzy sets, footprint of uncertainty, TOPSIS, windowed streams, map-reduce-compatible ranking, C-MAPSS.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Modern plants, vehicles, and aircraft write high-rate multivariate records: temperatures, pressures, vibration summaries, and control settings that arrive as a stream rather than as a closed table. Two properties of that stream obstruct a single numeric threshold. First, the same physical quantity is observed with instrument noise, packet loss, and slow calibration drift, so a point membership ``above limit'' is itself uncertain. Second, the operating decision is rarely a binary class. A dispatcher or a maintenance planner ranks assets against several criteria at once---excursion from a healthy envelope, rate of change, and a safety margin---and must explain why one asset was pulled from service before another.
+
+Statistical control charts and black-box classifiers address the first property by replacing the human limit with a fitted cut or a score. They do not, by themselves, expose the second: the trade among criteria remains inside a loss that was never shown to the operator. Fuzzy multi-criteria decision making (MCDM) does the opposite. Type-1 and interval type-2 TOPSIS, VIKOR, and related aggregators encode linguistic criteria and return a ranked list with an explicit closeness or regret score~\cite{hwang1981,chen2000,chen2010it2}. Almost all of those procedures assume a complete $n\times m$ decision matrix that fits in one memory space and is scored once.
+
+That assumption fails for a stream. The set of live alternatives changes with each window; criteria statistics must be updated without a full recompute of history; and any decomposition that later runs on several cores or nodes has to preserve the global fuzzy positive- and negative-ideal solutions (FPIS, FNIS), which are reductions, not independent local ranks. Micro-batch and record-at-a-time engines scale linear algebra and tree ensembles~\cite{zaharia2013,carbone2015}. They do not implement interval type-2 ranking with a proven bound on how much a late or reordered window can move the list.
+
+This paper writes that operator, states it as a map-reduce-compatible schedule, and measures it on a public run-to-failure stream. We do not claim a multi-node deployment.
+
+Contributions:
+\begin{enumerate}
+\item A windowed IT2 decision model: each micro-batch $X_t$ becomes an interval membership pair $(\underline{\mu}_{ij}^{(t)},\overline{\mu}_{ij}^{(t)})$ from a healthy-state $z$-interval and is ranked by a weighted IT2-TOPSIS closeness coefficient. The FOU width $\overline{\mu}-\underline{\mu}$ is retained as an operator-facing risk interval.
+\item A map-reduce-compatible schedule (Algorithm~\ref{alg:main}): a map for memberships, an associative $\min$/$\max$ reduce for FPIS/FNIS, a second map for distances. The schedule is correct on one core and is the form a later Spark or Flink port would have to keep; that port is not in this paper.
+\item Four propositions: work and depth, collapse to type-1 TOPSIS as the FOU width goes to zero, Lipschitz continuity of the closeness coefficient, and a delay bound under a Lipschitz sensor path (out-of-order or jittered telemetry).
+\item A measured evaluation on NASA C-MAPSS FD001~\cite{saxena2008}. IT2 ranking tracks RUL in late life. It does not outperform mean $|z|$ or Isolation Forest on pooled Spearman $\rho$. The justification for IT2 is the FOU and the authorised multi-criteria form, not a higher $\rho$.
+\end{enumerate}
+
+The decision task is ranking, not remaining-life regression. We do not claim that the method replaces LSTM or similarity-based RUL models~\cite{zheng2017,wang2008}.
+
+\section{Related work}
+\subsection{Multivariate stream processing and drift}
+Models and systems for data streams were set out by Babcock \emph{et al.}~\cite{babcock2002} and by Stonebraker \emph{et al.}'s requirements for real-time processing~\cite{stonebraker2005}. Discretized micro-batches (Spark Streaming / Structured Streaming) and record-at-a-time engines with event time and watermarks (Flink, Dataflow) are the two industrial patterns~\cite{zaharia2013,carbone2015,akidau2015}. Both scale when per-record work is independent or the reduction is associative. Componentwise $\min$ and $\max$ on membership endpoints are associative, so fuzzy ideals fit that pattern.
+
+The envelope of a plant stream is not stationary. Gama \emph{et al.} survey concept drift~\cite{gama2014}; MOA and related toolkits implement sliding and decaying statistics~\cite{bifet2010}. Incremental clustering and PCA on evolving streams~\cite{aggarwal2003} can track a healthy cloud. Evolving fuzzy identifiers (DENFIS, eTS, FLEXFIS) adapt rule bases online~\cite{kasabov2002,angelov2004,lughofer2011}. We freeze the healthy prefix so the C-MAPSS numbers reproduce; an adaptive $(\mu_j^{\mathrm{h}},\sigma_j^{\mathrm{h}})$ is left as an extension.
+
+Published stream MCDM still usually rebuilds a type-1 matrix on one node or applies a linguistic VIKOR/TOPSIS score without a global ideal reduce~\cite{liao2015stream}. That is the gap Algorithm~\ref{alg:main} is written to close.
+
+\subsection{Type-2 fuzzy sets and IT2 decision models}
+Zadeh introduced type-2 sets by placing a secondary membership on each primary grade~\cite{zadeh1975}. Liang and Mendel gave the interval type-2 fuzzy logic system~\cite{liang2000}; Mendel and John, then Mendel, John and Liu, simplified the FOU to an LMF/UMF pair~\cite{mendel2002,mendel2006}. Karnik--Mendel iteration type-reduces a general IT2 set to an interval centroid~\cite{karnik2001}; Wu and Mendel bound that centroid without a full inner loop~\cite{wu2007}. Hagras and later Castillo and Melin review type-2 control and computing~\cite{hagras2004,castillo2012}.
+
+IT2 entered MCDM as interval TOPSIS and AHP. Chen and Lee's IT2 TOPSIS~\cite{chen2010it2} is the static-matrix ancestor of our closeness coefficient. Kahraman \emph{et al.} and \c{C}elik \emph{et al.} survey IT2 AHP and hybrid IT2 MCDM~\cite{kahraman2014,celik2015}. Qin and Liu study IT2 combined-weight TOPSIS~\cite{qin2014}. Interval (non-fuzzy) TOPSIS of Jahanshahloo \emph{et al.} and Dymova \emph{et al.} is the crisp-interval cousin~\cite{jahanshahloo2006,dymova2013}. All of those procedures assume a closed $n\times m$ table. None states a Lipschitz delay bound for a sliding window or an associative reduce for the ideals. Type-1 TOPSIS~\cite{chen2000} is the special case $\underline{\mu}_{ij}=\overline{\mu}_{ij}$. On C-MAPSS the ramp $z_\star=3$ is an authorised parameter, not a surveyed term set.
+
+\subsection{Classical and fuzzy MCDM}
+Hwang and Yoon's TOPSIS~\cite{hwang1981} and Opricovic and Tzeng's VIKOR~\cite{opricovic2004} are the two reference rankers; Behzadian \emph{et al.} survey TOPSIS applications~\cite{behzadian2012}. Saaty's AHP~\cite{saaty1980} and Chang's extent-analysis fuzzy AHP~\cite{chang1996} supply weights when criteria are pairwise compared; we do not elicit pairwise $w$ here and keep $w_j=1/m$. Chen's triangular fuzzy TOPSIS~\cite{chen2000} is the type-1 fuzzy baseline we reimplement on the same windows. These methods are $O(nm)$ after the matrix is known. They do not say how $n_t$ changes every cycle or how FPIS/FNIS merge across partitions. Without a global reduce, each worker ranks against a different ideal and the lists are not comparable.
+
+\subsection{PHM streams and C-MAPSS}
+Saxena \emph{et al.} published C-MAPSS as a run-to-failure benchmark~\cite{saxena2008}. Similarity-based RUL~\cite{wang2008}, CNN and LSTM regressors~\cite{babu2016,zheng2017}, and later surveys of data-driven PHM~\cite{lei2018,sikorska2011} treat the stream as a supervised remaining-life problem. Ramasso and Saxena discuss performance metrics for that task~\cite{ramasso2014}. Isolation Forest~\cite{liu2008iforest} is a standard unsupervised anomaly baseline on the same windows. Our task is multi-criteria urgency ranking with an FOU, not RUL regression. We use true RUL only as an evaluation label. We do not claim to replace those regressors.
+
+\section{Streaming problem}
+Let time be discrete cycles $t\in\mathbb{N}$. At cycle $t$ a panel of $n_t$ live alternatives (engines, assets, or production lots) produces $m$ numeric criteria. The observation is
+\begin{equation}
+X_t=\bigl[x_{ij}^{(t)}\bigr]\in\R^{n_t\times m},
+\end{equation}
+where $i$ indexes alternatives and $j$ indexes criteria. A window of length $W$ ending at $t$ is
+\begin{equation}
+\mathcal{W}_t(i)=\bigl\{x_{ij}^{(t-W+1)},\ldots,x_{ij}^{(t)}\bigr\},
+\end{equation}
+defined only if alternative $i$ has $W$ consecutive observations. Write $m_{ij}^{(t)}$ and $s_{ij}^{(t)}$ for the sample mean and standard deviation on $\mathcal{W}_t(i)$. A healthy reference $(\mu_j^{\mathrm{h}},\sigma_j^{\mathrm{h}})$ is estimated once from an authorised prefix (the first $H$ cycles of each training trajectory). Memberships always appear as the pair $(\underline{\mu}_{ij},\overline{\mu}_{ij})$; $\mu_j^{\mathrm{h}}$ is never a membership. The standardised interval for criterion $j$ of alternative $i$ is
+\begin{equation}
+\bigl[\underline{z}_{ij}^{(t)},\overline{z}_{ij}^{(t)}\bigr]
+=\Biggl[\frac{m_{ij}^{(t)}-s_{ij}^{(t)}-\mu_j^{\mathrm{h}}}{\sigma_j^{\mathrm{h}}},
+\frac{m_{ij}^{(t)}+s_{ij}^{(t)}-\mu_j^{\mathrm{h}}}{\sigma_j^{\mathrm{h}}}\Biggr].
+\label{eq:zint}
+\end{equation}
+The decision at $t$ is a ranking $\pi_t$ of the $n_t$ alternatives. Ground truth, when a run-to-failure label exists, is the true remaining useful life $R_i(t)$. A useful ranking is one that places small $R_i(t)$ near the top.
+
+Criteria are treated as benefit criteria after the absolute $z$-map of Section~\ref{sec:it2}: larger membership means more urgent. Weights $w\in\R^m_+$, $\sum_j w_j=1$, are authorised and held fixed in the experiment ($w_j=1/m$).
+
+\section{Interval type-2 model}
+\label{sec:it2}
+\begin{definition}[Interval type-2 urgency]
+Fix a saturation $z_\star=3$. For an interval $[\underline{z},\overline{z}]$ set
+\begin{align}
+\underline{\mu}&=\mathrm{clip}\bigl(\min(|\underline{z}|,|\overline{z}|)/z_\star;\,0,1\bigr),\\
+\overline{\mu}&=\mathrm{clip}\bigl(\max(|\underline{z}|,|\overline{z}|)/z_\star;\,0,1\bigr).
+\end{align}
+The IT2 number is the interval $[\underline{\mu},\overline{\mu}]\subseteq[0,1]$. Its FOU width is $\overline{\mu}-\underline{\mu}$.
+\end{definition}
+The map is monotone in the absolute $z$-interval and equals the type-1 ramp $\mathrm{clip}(|z|/z_\star;0,1)$ when $s_{ij}^{(t)}=0$. It is a modelling choice, not an estimated membership from a survey.
+
+The IT2 decision matrix at $t$ is the pair
+\begin{equation}
+\underline{M}_t=\bigl[\underline{\mu}_{ij}^{(t)}\bigr],\qquad
+\overline{M}_t=\bigl[\overline{\mu}_{ij}^{(t)}\bigr]\in[0,1]^{n_t\times m}.
+\end{equation}
+Weighted matrices are $\underline{V}_t=\underline{M}_t\,\mathrm{diag}(w)$ and $\overline{V}_t=\overline{M}_t\,\mathrm{diag}(w)$. Following Chen and Lee~\cite{chen2010it2}, the FPIS and FNIS are the endpointwise extrema
+\begin{align}
+v_j^{\ast L}&=\max_i \underline{v}_{ij},\quad
+v_j^{\ast U}=\max_i \overline{v}_{ij},\\
+v_j^{\circ L}&=\min_i \underline{v}_{ij},\quad
+v_j^{\circ U}=\min_i \overline{v}_{ij}.
+\label{eq:ideals}
+\end{align}
+Distances use the averaged Euclidean metric on endpoints,
+\begin{align}
+d_i^{\ast}&=\Biggl(\tfrac12\sum_{j=1}^m\Bigl[
+(\underline{v}_{ij}-v_j^{\ast L})^2+(\overline{v}_{ij}-v_j^{\ast U})^2\Bigr]\Biggr)^{1/2},\label{eq:dplus}\\
+d_i^{\circ}&=\Biggl(\tfrac12\sum_{j=1}^m\Bigl[
+(\underline{v}_{ij}-v_j^{\circ L})^2+(\overline{v}_{ij}-v_j^{\circ U})^2\Bigr]\Biggr)^{1/2}.
+\end{align}
+The closeness coefficient is
+\begin{equation}
+C_i=\frac{d_i^{\circ}}{d_i^{\ast}+d_i^{\circ}+\varepsilon},\qquad \varepsilon=10^{-12},
+\label{eq:cc}
+\end{equation}
+and alternatives are ordered by decreasing $C_i$.
+
+Fig.~\ref{fig:flow} is the closed loop. Authorised parameters enter once. Each cycle forms windows, builds the IT2 pair, reduces the ideals, ranks by $C_i$, and writes FOU flags. Algorithm~\ref{alg:main} is the same loop in pseudocode.
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[
+  font=\scriptsize\sffamily,
+  node distance=0.28cm,
+  box/.style={draw, rounded corners=1.2pt, align=center, inner sep=3pt,
+              minimum width=0.92\columnwidth, minimum height=0.58cm},
+  io/.style={box, trapezium, trapezium left angle=75, trapezium right angle=105,
+             trapezium stretches, minimum width=0.82\columnwidth},
+  dec/.style={box, diamond, aspect=2.6, inner sep=1pt, minimum height=0.9cm},
+  arr/.style={-{Stealth}, thick}
+]
+\node[io] (in) {Multivariate stream $X_t=[x_{ij}^{(t)}]$};
+\node[box, below=of in] (win) {Sliding window $\mathcal{W}_t(i)$ of length $W$};
+\node[box, below=of win] (z) {$[\underline{z}_{ij},\overline{z}_{ij}]$ from $(\mu_j^{\mathrm{h}},\sigma_j^{\mathrm{h}})$};
+\node[box, below=of z] (it2) {IT2 map: $[\underline{\mu}_{ij},\overline{\mu}_{ij}]$, FOU $=\overline{\mu}_{ij}-\underline{\mu}_{ij}$};
+\node[box, below=of it2] (map1) {Map: per-asset memberships (workers $1\ldots p$)};
+\node[box, below=of map1] (red) {Reduce: FPIS / FNIS by associative $\min$, $\max$};
+\node[box, below=of red] (map2) {Map: $d_i^{\ast}$, $d_i^{\circ}$, $C_i$};
+\node[dec, below=of map2] (flg) {$\overline{\mu}_{ij}-\underline{\mu}_{ij}>\theta_{\mathrm{ch}}$?};
+\node[box, below=of flg] (out) {Emit rank $\pi_t$, intervals, channel/engine flags};
+\node[io, below=of out] (op) {Operator: inspect flagged channels; next cycle $t\!+\!1$};
+\draw[arr] (in) -- (win);
+\draw[arr] (win) -- (z);
+\draw[arr] (z) -- (it2);
+\draw[arr] (it2) -- (map1);
+\draw[arr] (map1) -- (red);
+\draw[arr] (red) -- (map2);
+\draw[arr] (map2) -- (flg);
+\draw[arr] (flg) -- node[right, font=\scriptsize] {yes/no} (out);
+\draw[arr] (out) -- (op);
+\end{tikzpicture}}
+\caption{Flow of the windowed IT2-TOPSIS stream operator. The diamond is the automated FOU telemetry flag implemented in \texttt{fou\_flags.py}.}
+\label{fig:flow}
+\end{figure}
+
+\section{Map-reduce-compatible schedule}
+\label{sec:mr}
+The arithmetic of Algorithm~\ref{alg:main} is written so that a later partition into $p$ workers is correct, not so that this paper must run those workers. Phase 1 maps each row to $(\underline{\mu}_{i\cdot},\overline{\mu}_{i\cdot})$. Phase 2 reduces the four $m$-vectors in~\eqref{eq:ideals}; the reduction is associative and commutative, so the ideals are independent of the partition. Phase 3 maps each row to $(d_i^{\ast},d_i^{\circ},C_i)$. The driver sorts $C_i$. No worker needs another worker's raw window after Phase 1.
+
+Communication would be $O(pm)$ for the ideals plus $O(n_t)$ for the scores. Compute is $O(n_t m W/p)$ if windows are formed on the workers and $O(n_t m/p)$ if means and standard deviations are pre-aggregated. The measured code is vectorised NumPy on one process (Fig.~\ref{fig:scale}). A CPython process pool on the same $n_t=96$ kernel is reported in Table~\ref{tab:lat} only to document that pickling overhead, not the $\min$/$\max$ reduce, dominates at this size.
+
+\begin{algorithm}[t]
+\caption{Windowed IT2-TOPSIS on a stream (Fig.~\ref{fig:flow})}
+\label{alg:main}
+\begin{algorithmic}[1]
+\REQUIRE stream $\{X_t\}$, window $W$, healthy length $H$, ramp $z_\star$, weights $w$, flags $\theta_{\mathrm{ch}},\theta_{\mathrm{eng}}$
+\ENSURE ranks $\pi_t$, intervals $[\underline{\mu}_{ij},\overline{\mu}_{ij}]$, channel flags $F_{ij}$, engine flags $G_i$
+\STATE Estimate $(\mu_j^{\mathrm{h}},\sigma_j^{\mathrm{h}})$ on the authorised prefix of $H$ cycles
+\FOR{each cycle $t$}
+\STATE $\mathcal{I}_t\leftarrow\{i:$ engine $i$ has $W$ consecutive rows ending at $t\}$
+\FORALL{$i\in\mathcal{I}_t$ \COMMENT{Map}}
+\STATE $m_{ij},s_{ij}\leftarrow$ mean, std of $\mathcal{W}_t(i)$ on criterion $j$
+\STATE $\underline{z}_{ij}\leftarrow(m_{ij}-s_{ij}-\mu_j^{\mathrm{h}})/\sigma_j^{\mathrm{h}}$,\quad $\overline{z}_{ij}\leftarrow(m_{ij}+s_{ij}-\mu_j^{\mathrm{h}})/\sigma_j^{\mathrm{h}}$
+\STATE $\underline{\mu}_{ij}\leftarrow\mathrm{clip}(\min(|\underline{z}_{ij}|,|\overline{z}_{ij}|)/z_\star;0,1)$
+\STATE $\overline{\mu}_{ij}\leftarrow\mathrm{clip}(\max(|\underline{z}_{ij}|,|\overline{z}_{ij}|)/z_\star;0,1)$
+\STATE $\underline{v}_{ij}\leftarrow w_j\underline{\mu}_{ij}$,\quad $\overline{v}_{ij}\leftarrow w_j\overline{\mu}_{ij}$
+\ENDFOR
+\STATE $v_j^{\ast L}\leftarrow\max_i\underline{v}_{ij}$,\ $v_j^{\ast U}\leftarrow\max_i\overline{v}_{ij}$ \COMMENT{associative Reduce}
+\STATE $v_j^{\circ L}\leftarrow\min_i\underline{v}_{ij}$,\ $v_j^{\circ U}\leftarrow\min_i\overline{v}_{ij}$
+\FORALL{$i\in\mathcal{I}_t$ \COMMENT{Map}}
+\STATE compute $d_i^{\ast},d_i^{\circ}$ by~\eqref{eq:dplus}; $C_i\leftarrow d_i^{\circ}/(d_i^{\ast}+d_i^{\circ}+\varepsilon)$
+\STATE $F_{ij}\leftarrow\mathbf{1}\{\overline{\mu}_{ij}-\underline{\mu}_{ij}>\theta_{\mathrm{ch}}\}$
+\STATE $G_i\leftarrow\mathbf{1}\{\max_j(\overline{\mu}_{ij}-\underline{\mu}_{ij})>\theta_{\mathrm{eng}}\}$
+\ENDFOR
+\STATE $\pi_t\leftarrow$ argsort of $C_i$ descending; emit $\pi_t$, $[\underline{\mu}_{ij},\overline{\mu}_{ij}]$, $F$, $G$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\section{Propositions and theorem}
+\begin{proposition}[Work and depth]
+\label{p:work}
+On a batch of $n$ alternatives and $m$ criteria, with windows already aggregated, Algorithm~\ref{alg:main} uses $\Theta(nm)$ arithmetic operations. With $p\le n$ workers and associative $\min$/$\max$ reduction the parallel depth is $O(m\log p)$ for ideals plus $O(nm/p)$ for the maps.
+\end{proposition}
+\begin{IEEEproof}
+Each of $n$ rows writes $2m$ memberships, $2m$ weighted entries, and $O(m)$ distance terms: $\Theta(nm)$ work. Componentwise $\max$ of $p$ vectors of length $m$ is a tree of depth $\lceil\log_2 p\rceil$.
+\end{IEEEproof}
+
+\begin{proposition}[Collapse to type-1]
+\label{p:collapse}
+If $\overline{M}_t=\underline{M}_t=M_t$, then $C_i$ equals the closeness coefficient of crisp TOPSIS on $M_t\,\mathrm{diag}(w)$ with the Euclidean metric.
+\end{proposition}
+\begin{IEEEproof}
+Substitute $\overline{v}_{ij}=\underline{v}_{ij}$ in~\eqref{eq:ideals}--\eqref{eq:dplus}. The factor $\tfrac12$ becomes a square of a single residual, and $d_i^{\ast}$, $d_i^{\circ}$ are the usual Euclidean distances to the weighted max and min rows.
+\end{IEEEproof}
+
+\begin{proposition}[Lipschitz closeness]
+\label{p:lip}
+Let $C$ be computed from $(\underline{V},\overline{V})$ and $C'$ from a perturbation with $\lvert\underline{v}_{ij}-\underline{v}'_{ij}\rvert\le\delta$ and $\lvert\overline{v}_{ij}-\overline{v}'_{ij}\rvert\le\delta$ for all $i,j$, and assume $d_i^{\ast}+d_i^{\circ}\ge \gamma>0$. Then
+\begin{equation}
+\lvert C_i-C_i'\rvert\le \frac{2\sqrt{m}\,\delta}{\gamma}.
+\end{equation}
+\end{proposition}
+\begin{IEEEproof}
+The map $V\mapsto d_i^{\ast}$ is Euclidean and $1$-Lipschitz in the endpoint vector of length $2m$ after the $\tfrac12$ factor, hence $\lvert d_i^{\ast}-d_i^{\ast\prime}\rvert\le \sqrt{m}\,\delta$ (and the same for $d_i^{\circ}$), using $\lVert e\rVert_2\le\sqrt{2m}\cdot\delta/\sqrt{2}=\sqrt{m}\,\delta$. The quotient $u/(u+v)$ has gradient bounded by $1/(u+v)$ in each argument. The assumption $u+v\ge\gamma$ gives the stated bound.
+\end{IEEEproof}
+
+\begin{proposition}[Delayed window]
+\label{p:delay}
+Suppose each sensor path $x_{ij}(\cdot)$ is $L$-Lipschitz in cycle time and $\sigma_j^{\mathrm{h}}\ge\sigma_{\min}>0$. A window delayed by $\tau$ cycles changes every $z$-endpoint by at most $2L\tau/\sigma_{\min}$. Hence $\lvert C_i-C_i^{(\tau)}\rvert\le 4\sqrt{m}\,w_{\max} L\tau/(\sigma_{\min} z_\star\gamma)$ whenever the hypothesis of Proposition~\ref{p:lip} holds after weighting.
+\end{proposition}
+\begin{IEEEproof}
+A delay of $\tau$ shifts every raw sample in $\mathcal{W}_t(i)$ by at most $L\tau$ in absolute value, so the window mean and the mean$\pm$std endpoints move by at most $2L\tau$. Divide by $\sigma_j^{\mathrm{h}}$ and pass through the $1/z_\star$ ramp (Lipschitz constant $1/z_\star$), then through $w_j\le w_{\max}$, and apply Proposition~\ref{p:lip}.
+\end{IEEEproof}
+
+\begin{theorem}[Correctness of Algorithm~\ref{alg:main}]
+\label{thm:main}
+Let a cycle-$t$ window set $\mathcal{I}_t$ be nonempty and $w_j>0$, $\sum_j w_j=1$. Then:
+\begin{enumerate}
+\item[(i)] the FPIS and FNIS in lines 12--13 are independent of any partition of $\mathcal{I}_t$ into $p$ workers;
+\item[(ii)] $C_i\in[0,1]$ and $\pi_t$ is a total order on $\mathcal{I}_t$ up to ties in $C_i$;
+\item[(iii)] $F_{ij}$ and $G_i$ are Boolean functions of the FOU widths alone;
+\item[(iv)] if the sensor paths are $L$-Lipschitz and a watermark of $\tau$ cycles is used, then $\lvert C_i-C_i^{(\tau)}\rvert$ obeys the bound of Proposition~\ref{p:delay}.
+\end{enumerate}
+\end{theorem}
+\begin{IEEEproof}
+(i) Componentwise $\min$ and $\max$ are associative and commutative, so a tree reduce equals the global extrema. (ii) Distances are nonnegative, so $C_i\in[0,1]$; argsort is defined on a finite set. (iii) holds by lines 16--17. (iv) is Proposition~\ref{p:delay}. Fig.~\ref{fig:flow} is this argument drawn as a loop.
+\end{IEEEproof}
+
+\begin{remark}[Jitter, reordering, and watermarks]
+\label{rem:delay}
+Plant buses do not deliver every cycle in order. A packet can sit in a switch queue, a wireless hop can retransmit, and an edge buffer can emit a window whose event time is $\tau$ cycles behind processing time. Stream engines handle that with a watermark: they wait, then close the window. Proposition~\ref{p:delay} is the ranking counterpart of that wait. If each sensor path cannot jump faster than $L$ units per cycle---a bound a commissioning test can set from slew rates---then using the late window instead of the on-time window moves $C_i$ by at most a known multiple of $L\tau$. The operator can then choose $\tau$ (the watermark) so that the closeness shift stays inside a declared tolerance, rather than treating every late batch as an unquantified error. The bound does not remove the need for a watermark; it says how much rank motion a given watermark can still cause. Isolation Forest and mean $|z|$ have no such statement unless one re-proves a Lipschitz property for those scores.
+\end{remark}
+
+\section{Experiments}
+\subsection{Data and task}
+C-MAPSS FD001 is a NASA run-to-failure simulation: 100 training engines, one operating condition, one fault mode (HPC degradation), 26 columns of which 13 sensors vary~\cite{saxena2008}. We use the training file only, because it has a complete life and therefore a true RUL $R_i(t)=T_i-t$ at every cycle. The test file’s RUL is a single end-of-file label and is not used. Rows: 20\,631. Window $W=20$. Healthy prefix $H=30$ cycles, pooled across engines, to form $(\mu_j^{\mathrm{h}},\sigma_j^{\mathrm{h}})$. Evaluation cycles $t=80,90,\ldots$ while at least 15 engines have a full window (18 batches). Alternatives at cycle $t$ are engines that recorded that cycle.
+
+Urgency should rise as $R_i(t)$ falls. Metrics, all computed on the measured ranks:
+\begin{itemize}
+\item Spearman $\rho$ between $C_i$ and $-R_i(t)$.
+\item Precision@10: fraction of the ten highest $C_i$ with $R_i(t)\le 30$.
+\item NDCG@10 with graded gain $1/(1+R_i(t))$.
+\item Kendall $\tau$ between the noiseless rank and a rank after $N(0,0.05\sigma_j^{\mathrm{h}})$ is added to each window mean (seeds 11, 23, 41) on the $t=140$ batch ($n=96$).
+\item FOU flags from \texttt{fou\_flags.py}: channel flag if $\overline{\mu}_{ij}-\underline{\mu}_{ij}>0.50$; engine flag if $\max_j(\overline{\mu}_{ij}-\underline{\mu}_{ij})>0.65$.
+\item Wall-clock milliseconds for that batch with a CPython process pool of size $1,2,4$, five repeats; and vectorised IT2-TOPSIS time versus synthetic $n\in\{100,500,2000,8000,20000\}$.
+\end{itemize}
+Baselines use the same windows: type-1 TOPSIS on $\mathrm{clip}(|z|/3;0,1)$; mean $|z|$ (no TOPSIS); Isolation Forest ($100$ trees, contamination $0.05$, fit on the healthy prefix, score $=-\mathrm{score\_samples}$ on the window mean)~\cite{liu2008iforest}.
+
+The hardware is one workstation. The process pool is not Spark. Isolation Forest is scikit-learn 1.x. Seeds and file hashes are in the accompanying \texttt{results/} directory.
+
+\subsection{Ranking quality and what the FOU is for}
+Table~\ref{tab:rank} reports means and sample standard deviations over the 18 batches. Interval type-2 TOPSIS is statistically indistinguishable from type-1 TOPSIS on this map: the FOU, built from the window standard deviation, rarely changes the order. Mean $|z|$ and Isolation Forest are slightly higher on Spearman and NDCG. A linear $z$-urgency already captures most of the monotone degradation in FD001. We do not present IT2-TOPSIS as a method that buys Spearman points on this simulator.
+
+The FOU is the quantity those two baselines do not emit. Isolation Forest returns one anomaly score per window mean. Mean $|z|$ returns one Euclidean magnitude. Neither tells a plant operator a lower and an upper urgency membership under the noise that produced $s_{ij}^{(t)}$. The pair $[\underline{\mu}_{ij},\overline{\mu}_{ij}]$ is that interval: LMF is the most conservative reading of the window, UMF the most aggressive, and $\overline{\mu}_{ij}-\underline{\mu}_{ij}$ is the authorised width of disagreement.
+
+That width is not only discussed. Algorithm~\ref{alg:main} and \texttt{code/fou\_flags.py} write every $\overline{\mu}_{ij}-\underline{\mu}_{ij}$ and raise an automated telemetry flag: a cell is flagged if the width exceeds $\theta_{\mathrm{ch}}=0.50$ (near the 90th percentile of all cell widths on this run); an engine is flagged if its widest cell exceeds $\theta_{\mathrm{eng}}=0.65$. Over the 18 batches the channel-flag rate is $0.149\pm0.038$ and the engine-flag rate is $0.156\pm0.076$. Mean cell width is $0.328$ (max $0.873$). At cycle $t=140$, engines 27 and 6 have almost the same closeness ($C_{27}=0.688$, $C_6=0.682$) while bleed-temperature urgency sits in $[0.355,1.000]$ versus $[0.164,0.816]$; only engine 6 crosses $\theta_{\mathrm{eng}}$. Engine 19, ranked first, has htBleed $[\underline{\mu},\overline{\mu}]=[0.423,1.000]$ and is not flagged; engine 12 has T30 $[0.088,0.961]$ (width $0.873$) and is flagged. Those intervals are file output, not a worked example invented for the text. Isolation Forest has no such channel flag.
+
+When two engines have similar $C_i$, the wider FOU is the noisy or thin-sample channel. That is a maintenance cue, not a claim that $C_i$ will correlate better with RUL. Type-1 TOPSIS collapses the interval to a point and loses the flag; the near-equality of $\rho$ in Table~\ref{tab:rank} is Proposition~\ref{p:collapse} when the FOU is not large enough to reorder the list.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{C-MAPSS FD001 train, 18 cycle batches. Mean $\pm$ sample s.d. Higher is better.}
+\label{tab:rank}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lccc}
+\toprule
+Method & Spearman $\rho$ & Prec.@10 & NDCG@10 \\
+\midrule
+IT2-TOPSIS (this paper) & $0.683\pm0.267$ & $0.706\pm0.354$ & $0.757\pm0.145$ \\
+Type-1 TOPSIS & $0.682\pm0.269$ & $0.706\pm0.354$ & $0.749\pm0.162$ \\
+Isolation Forest & $0.708\pm0.233$ & $0.706\pm0.362$ & $0.767\pm0.166$ \\
+Mean $|z|$ & $0.709\pm0.291$ & $0.728\pm0.364$ & $0.800\pm0.112$ \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Same IT2 ranks, split by batch-mean RUL.}
+\label{tab:split}
+\begin{tabular}{lccc}
+\toprule
+Split & Batches & $\rho$ & Prec.@10 \\
+\midrule
+Early (mean RUL $>80$) & 5 & $0.298\pm0.175$ & $0.20\pm0.23$ \\
+Late (mean RUL $\le80$) & 13 & $0.831\pm0.069$ & $0.90\pm0.11$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:split} and Fig.~\ref{fig:rank} separate early and late life. Before degradation leaves the healthy envelope the sensors do not identify the engines that will fail first ($\rho\approx0.30$). After mean RUL drops below 80 cycles the same operator is a strong ranker ($\rho=0.831$, Precision@10 $=0.90$). Any claim of ``decision accuracy'' that pools the 18 batches without this split overstates early-life skill.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs/fig_rank_vs_t.pdf}
+\caption{IT2 Spearman correlation and Precision@10 versus cycle on FD001 train. Skill appears only after degradation is visible in the sensors.}
+\label{fig:rank}
+\end{figure}
+
+Kendall $\tau$ under 5\% Gaussian noise on window means is $0.983\pm0.004$ (three seeds). The ranking is stable to small sensor jitter once the window statistics are formed.
+
+\subsection{Latency: CPython pool versus the $\Theta(nm)$ kernel}
+Table~\ref{tab:lat} is a CPython process-pool timing on the $t=140$ batch, 96 engines, five repeats. One process: $7.2\pm2.8$\,ms. Two and four processes: $305$\,ms and $381$\,ms. Those figures are not a test of Algorithm~\ref{alg:main} and not a test of a JVM or native map-reduce engine. CPython must pickle each row into a child process; on a $96\times 13$ kernel that serialisation, plus process start-up, exceeds the arithmetic. The parent process is also constrained by the global interpreter lock for any remaining bytecode. The table records that artefact so it cannot be misread as a scaling law of the operator.
+
+\begin{table}[t]
+\centering
+\caption{CPython process-pool wall-clock on the $t=140$ batch ($n=96$), five repeats, one host. The rise with $p$ is pickling and process start-up, not the $\min$/$\max$ reduce.}
+\label{tab:lat}
+\begin{tabular}{ccc}
+\toprule
+Processes $p$ & Latency (ms) & Speedup vs $p=1$ \\
+\midrule
+1 & $7.2\pm2.8$ & $1.00$ \\
+2 & $305\pm32$ & $0.024$ \\
+4 & $381\pm32$ & $0.019$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The complexity claim is Fig.~\ref{fig:scale}, not Table~\ref{tab:lat}. Vectorised IT2-TOPSIS on random membership matrices (20 repeats, one process, no pickle) matches Proposition~\ref{p:work}: $0.049$\,ms at $n=100$, $0.13$\,ms at $500$, $0.85$\,ms at $2\,000$, $4.35$\,ms at $8\,000$, $14.5$\,ms at $20\,000$. The log--log slope is that of $\Theta(nm)$ with $m=13$. A fleet of tens of thousands of alternatives still fits one core for this operator. A multi-node runtime would become relevant when window construction, disk I/O, or Karnik--Mendel type-reduction per cell dominates. We did not run those workloads.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs/fig_scale.pdf}
+\caption{Vectorised IT2-TOPSIS time versus number of alternatives (log--log), single process, no inter-process serialisation. The slope is $\Theta(nm)$ with $m=13$. This---not the CPython pool---is the measured complexity of the operator.}
+\label{fig:scale}
+\end{figure}
+
+\section{Discussion}
+The operator has two products at each cycle: a rank $\pi_t$ and, for every asset and criterion, an interval $[\underline{\mu}_{ij},\overline{\mu}_{ij}]$. Table~\ref{tab:rank} shows that $\pi_t$ is not sharper than mean $|z|$ or Isolation Forest on FD001 Spearman $\rho$. That is expected on a simulator whose degradation is largely monotone in $|z|$. The interval is the part Isolation Forest and raw $z$-scores omit. A black-box score can say ``engine 19 is more anomalous than engine 12.'' It cannot say ``engine 19's htBleed urgency at $t=140$ is $[\underline{\mu},\overline{\mu}]=[0.423,1.000]$, while engine 12's T30 urgency is $[0.088,0.961]$ and the engine-level FOU flag is raised.'' Those two intervals are rows of \texttt{results/fou\_flags.json}. Linguistic transparency here is not a survey of adjectives. It is the fact that $z_\star$, $w$, $W$, $\theta_{\mathrm{ch}}$, $\theta_{\mathrm{eng}}$, and the healthy prefix are authorised parameters, and that the FOU is a deterministic function of the window standard deviation. Changing $z_\star$ or $w$ is an auditable policy edit, not a retraining of a forest.
+
+Proposition~\ref{p:delay} and Remark~\ref{rem:delay} attach the same interval thinking to time. Out-of-order and jittered packets are ordinary on a plant network. A Lipschitz bound on sensor slew converts a watermark of $\tau$ cycles into a hard cap on how far $C_i$ can move. That is why a windowed operator is mathematically safer than a last-sample threshold when the bus is late: the error is bounded rather than hoped to be small.
+
+The map-reduce schedule in Section~\ref{sec:mr} is a correctness contract for a future port. It is not a measured cluster. Table~\ref{tab:lat} is a CPython pickle cost on 96 rows. Fig.~\ref{fig:scale} is the operator's $\Theta(nm)$ cost without that runtime.
+
+Limitations, all structural:
+\begin{itemize}
+\item FD001 is a simulator with one fault mode and one condition. FD002/FD004 mix six conditions; we did not score them.
+\item The healthy envelope is frozen. A non-stationary campaign needs a tracked $(\mu_j^{\mathrm{h}},\sigma_j^{\mathrm{h}})$.
+\item Weights are uniform. A cost/safety/throughput trade would need authorised, unequal $w$, which we did not elicit.
+\item True RUL is used only as an evaluation label. The operator does not see RUL at decision time.
+\item No Spark or Flink run exists. Table~\ref{tab:lat} must not be cited as cluster scaling.
+\item No missing-value model beyond requiring a full window; incomplete records are dropped.
+\end{itemize}
+
+Extensions that would change the evidence: Karnik--Mendel centroids per cell; VIKOR regret on the same IT2 matrix; an adaptive envelope; FD002--FD004; and a streaming engine with the reduce of~\eqref{eq:ideals} as an associative aggregate. Until those exist, the paper is a specified windowed operator, four propositions, and one public-dataset measurement.
+
+\section{Conclusion}
+We specified a windowed interval type-2 TOPSIS operator for multivariate streams, proved Lipschitz and delay bounds and the type-1 limit, and ran it on NASA C-MAPSS FD001. Late-life ranks follow true RUL; early-life ranks do not; type-2 and type-1 lists nearly coincide; mean $|z|$ and Isolation Forest remain at least as strong on pooled $\rho$. The FOU supplies an interval of operational urgency that those baselines do not. The schedule is map-reduce compatible. The measurements do not include a multi-node deployment, and the CPython pool on 96 rows is a serialisation artefact, not a property of the reduce.
+
+\section*{Declarations}
+\textbf{Data.} NASA C-MAPSS FD001 training trajectories (\texttt{train\_FD001.txt}, 100 engines, 20\,631 rows), public~\cite{saxena2008}. \textbf{Code.} Vectorised NumPy implementation, the process-pool timing script, and \texttt{fou\_flags.py} accompany the manuscript; seeds 11, 23, 41. FOU flags use $\theta_{\mathrm{ch}}=0.50$, $\theta_{\mathrm{eng}}=0.65$. \textbf{Author contributions.} M.S.R.\ and N.Y.: mathematical formulation and proofs. A.M.\ and A.A.: software, experiments, figures. All authors reviewed the manuscript. \textbf{Conflict of interest.} None. \textbf{Funding.} None reported.
+
+\begin{thebibliography}{40}
+\bibitem{hwang1981}
+C.-L. Hwang and K. Yoon, \emph{Multiple Attribute Decision Making: Methods and Applications}. Berlin, Germany: Springer, 1981.
+\bibitem{chen2000}
+C.-T. Chen, ``Extensions of the TOPSIS for group decision-making under fuzzy environment,'' \emph{Fuzzy Sets Syst.}, vol.\ 114, no.\ 1, pp.\ 1--9, 2000.
+\bibitem{chen2010it2}
+S.-M. Chen and L.-W. Lee, ``Fuzzy multiple attributes group decision-making based on the interval type-2 TOPSIS method,'' \emph{Expert Syst. Appl.}, vol.\ 37, no.\ 4, pp.\ 2790--2798, 2010.
+\bibitem{opricovic2004}
+S. Opricovic and G.-H. Tzeng, ``Compromise solution by MCDM methods: A comparative analysis of VIKOR and TOPSIS,'' \emph{Eur. J. Oper. Res.}, vol.\ 156, no.\ 2, pp.\ 445--455, 2004.
+\bibitem{mendel2002}
+J.~M. Mendel and R.~I. John, ``Type-2 fuzzy sets made simple,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 10, no.\ 2, pp.\ 117--127, Apr. 2002.
+\bibitem{mendel2006}
+J.~M. Mendel, R.~I. John, and F. Liu, ``Interval type-2 fuzzy logic systems made simple,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 14, no.\ 6, pp.\ 808--821, Dec. 2006.
+\bibitem{karnik2001}
+N.~N. Karnik and J.~M. Mendel, ``Centroid of a type-2 fuzzy set,'' \emph{Inf. Sci.}, vol.\ 132, no.\ 1--4, pp.\ 195--220, 2001.
+\bibitem{zadeh1975}
+L.~A. Zadeh, ``The concept of a linguistic variable and its application to approximate reasoning---I,'' \emph{Inf. Sci.}, vol.\ 8, no.\ 3, pp.\ 199--249, 1975.
+\bibitem{zaharia2013}
+M. Zaharia \emph{et al.}, ``Discretized streams: Fault-tolerant streaming computation at scale,'' in \emph{Proc. SOSP}, 2013, pp.\ 423--438.
+\bibitem{carbone2015}
+P. Carbone \emph{et al.}, ``Apache Flink: Stream and batch processing in a single engine,'' \emph{IEEE Data Eng. Bull.}, vol.\ 38, no.\ 4, pp.\ 28--38, 2015.
+\bibitem{liao2015stream}
+H. Liao, Z. Xu, and X.-J. Zeng, ``Hesitant fuzzy linguistic VIKOR method and its application in qualitative multiple criteria decision making,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 23, no.\ 5, pp.\ 1343--1355, 2015.
+\bibitem{aggarwal2003}
+C.~C. Aggarwal, J. Han, J. Wang, and P.~S. Yu, ``A framework for clustering evolving data streams,'' in \emph{Proc. VLDB}, 2003, pp.\ 81--92.
+\bibitem{saxena2008}
+A. Saxena, K. Goebel, D. Simon, and N. Eklund, ``Damage propagation modeling for aircraft engine run-to-failure simulation,'' in \emph{Proc. Int. Conf. Prognostics Health Manage. (PHM)}, Denver, CO, USA, 2008.
+\bibitem{zheng2017}
+S. Zheng, K. Ristovski, A. Farahat, and C. Gupta, ``Long short-term memory network for remaining useful life estimation,'' in \emph{Proc. IEEE ICPHM}, 2017, pp.\ 88--95.
+\bibitem{wang2008}
+T. Wang, J. Yu, D. Siegel, and J. Lee, ``A similarity-based prognostics approach for remaining useful life estimation of engineered systems,'' in \emph{Proc. Int. Conf. Prognostics Health Manage.}, 2008.
+\bibitem{liu2008iforest}
+F.~T. Liu, K.~M. Ting, and Z.-H. Zhou, ``Isolation forest,'' in \emph{Proc. IEEE ICDM}, 2008, pp.\ 413--422.
+\bibitem{babcock2002}
+B. Babcock, S. Babu, M. Datar, R. Motwani, and J. Widom, ``Models and issues in data stream systems,'' in \emph{Proc. PODS}, 2002, pp.\ 1--16.
+\bibitem{stonebraker2005}
+M. Stonebraker, U. \c{C}etintemel, and S. Zdonik, ``The 8 requirements of real-time stream processing,'' \emph{SIGMOD Rec.}, vol.\ 34, no.\ 4, pp.\ 42--47, 2005.
+\bibitem{akidau2015}
+T. Akidau \emph{et al.}, ``The dataflow model: A practical approach to balancing correctness, latency, and cost in massive-scale, unbounded, out-of-order data processing,'' \emph{Proc. VLDB Endow.}, vol.\ 8, no.\ 12, pp.\ 1792--1803, 2015.
+\bibitem{gama2014}
+J. Gama, I. Zliobaite, A. Bifet, M. Pechenizkiy, and A. Bouchachia, ``A survey on concept drift adaptation,'' \emph{ACM Comput. Surv.}, vol.\ 46, no.\ 4, 2014, Art.\ no.\ 44.
+\bibitem{bifet2010}
+A. Bifet, G. Holmes, R. Kirkby, and B. Pfahringer, ``MOA: Massive online analysis,'' \emph{J. Mach. Learn. Res.}, vol.\ 11, pp.\ 1601--1604, 2010.
+\bibitem{kasabov2002}
+N. Kasabov and Q. Song, ``DENFIS: Dynamic evolving neural-fuzzy inference system and its application for time-series prediction,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 10, no.\ 2, pp.\ 144--154, Apr. 2002.
+\bibitem{angelov2004}
+P. Angelov and D. Filev, ``An approach to online identification of Takagi--Sugeno fuzzy models,'' \emph{IEEE Trans. Syst., Man, Cybern. B}, vol.\ 34, no.\ 1, pp.\ 484--498, Feb. 2004.
+\bibitem{lughofer2011}
+E. Lughofer, \emph{Evolving Fuzzy Systems---Methodologies, Advanced Concepts and Applications}. Berlin, Germany: Springer, 2011.
+\bibitem{liang2000}
+Q. Liang and J.~M. Mendel, ``Interval type-2 fuzzy logic systems: Theory and design,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 8, no.\ 5, pp.\ 535--550, Oct. 2000.
+\bibitem{wu2007}
+H. Wu and J.~M. Mendel, ``Uncertainty bounds and their use in the design of interval type-2 fuzzy logic systems,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 10, no.\ 5, pp.\ 622--639, Oct. 2002.
+\bibitem{hagras2004}
+H. Hagras, ``A hierarchical type-2 fuzzy logic control architecture for autonomous mobile robots,'' \emph{IEEE Trans. Fuzzy Syst.}, vol.\ 12, no.\ 4, pp.\ 524--539, Aug. 2004.
+\bibitem{castillo2012}
+O. Castillo and P. Melin, ``A review on the design and optimization of interval type-2 fuzzy controllers,'' \emph{Appl. Soft Comput.}, vol.\ 12, no.\ 4, pp.\ 1267--1278, 2012.
+\bibitem{kahraman2014}
+C. Kahraman, B. \"Oztay\c{s}i, \.{I}. U\c{c}al Sari, and E. Turano\u{g}lu, ``Fuzzy analytic hierarchy process with interval type-2 fuzzy sets,'' \emph{Knowl.-Based Syst.}, vol.\ 59, pp.\ 48--57, 2014.
+\bibitem{celik2015}
+E. \c{C}elik, M. Gul, N. Aydin, A.~T. Gumus, and A.~F. Guneri, ``A comprehensive review of multi criteria decision making approaches based on interval type-2 fuzzy sets,'' \emph{Knowl.-Based Syst.}, vol.\ 85, pp.\ 329--341, 2015.
+\bibitem{qin2014}
+J. Qin and X. Liu, ``Multi-attribute group decision making using combined ranking value under interval type-2 fuzzy environment,'' \emph{Inf. Sci.}, vol.\ 297, pp.\ 293--315, 2015.
+\bibitem{jahanshahloo2006}
+G.~R. Jahanshahloo, F. Hosseinzadeh Lotfi, and M. Izadikhah, ``An algorithmic method to extend TOPSIS for decision-making problems with interval data,'' \emph{Appl. Math. Comput.}, vol.\ 175, no.\ 2, pp.\ 1375--1384, 2006.
+\bibitem{dymova2013}
+L. Dymova, P. Sevastjanov, and A. Tikhonenko, ``A direct interval extension of TOPSIS method,'' \emph{Expert Syst. Appl.}, vol.\ 40, no.\ 12, pp.\ 4841--4847, 2013.
+\bibitem{behzadian2012}
+M. Behzadian, S. Khanmohammadi Otaghsara, M. Yazdani, and J. Ignatius, ``A state-of-the-art survey of TOPSIS applications,'' \emph{Expert Syst. Appl.}, vol.\ 39, no.\ 17, pp.\ 13\,051--13\,069, 2012.
+\bibitem{saaty1980}
+T.~L. Saaty, \emph{The Analytic Hierarchy Process}. New York, NY, USA: McGraw-Hill, 1980.
+\bibitem{chang1996}
+D.-Y. Chang, ``Applications of the extent analysis method on fuzzy AHP,'' \emph{Eur. J. Oper. Res.}, vol.\ 95, no.\ 3, pp.\ 649--655, 1996.
+\bibitem{lei2018}
+Y. Lei, N. Li, L. Guo, N. Li, T. Yan, and J. Lin, ``Machinery health prognostics: A systematic review from data acquisition to RUL prediction,'' \emph{Mech. Syst. Signal Process.}, vol.\ 104, pp.\ 799--834, 2018.
+\bibitem{sikorska2011}
+J.~Z. Sikorska, M. Hodkiewicz, and L. Ma, ``Prognostic modelling options for remaining useful life estimation by industry,'' \emph{Mech. Syst. Signal Process.}, vol.\ 25, no.\ 5, pp.\ 1803--1836, 2011.
+\bibitem{ramasso2014}
+E. Ramasso and A. Saxena, ``Performance benchmarking and analysis of prognostic methods for CMAPSS datasets,'' \emph{Int. J. Prognostics Health Manage.}, vol.\ 5, no.\ 2, 2014.
+\bibitem{babu2016}
+G.~S. Babu, P. Zhao, and X.-L. Li, ``Deep convolutional neural network based regression approach for estimation of remaining useful life,'' in \emph{Proc. DASFAA}, 2016, pp.\ 214--228.
+\end{thebibliography}
+\end{document}
